@@ -1,8 +1,25 @@
 <html>
   <head>
-    <title>GAME</title>
+    <title>TBD</title>
+
+    <!-- Include external libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/lib/gl-matrix-min.js"></script>
+
+    <!-- Include core game files -->
+    <script src="js/main.js"></script>
+    <script src="js/math.js"></script>
+
+    <!-- Include stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-  
+    <canvas id="glcanvas" width="200" height="200"></canvas>
+    <script>
+      $(document).ready(function() {
+        // Create game class.
+        var main = new Main();
+      });
+    </script>
   </body>
 </html>
