@@ -8,11 +8,19 @@ class _GlobalVars_ //Internal class
         this.interpolation = 0; //Fraction of how far we are in between game world updates
         this.tickcount = 0; //The total number of game world updates
         this.curtime = 0; //The cumulative time SINCE the beginning of execution
+        this.lasttime = 0; //Previous time stamp
+        this.maxtimeskip = 10;
         this.framecount = 0; //Number of frames being pushed to renderer
         this.framedelay = 0; //Number of seconds it takes to push one frame used for FPS calculation
         this.timescale = 1.0; //Scalar that affects how fast or slow time flows useful for debugging.
     }
 
+    timeToTicks(time) {
+        return time * this.tickinterval;
+    }
+    ticksToTime(ticks) {
+        return ticks * this.tickrate;
+    }
     setTickrate(tickrate) {
         this.tickrate = tickrate;
         this.tickinterval = 1 / tickrate;

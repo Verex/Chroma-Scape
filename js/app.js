@@ -70,24 +70,47 @@ class App {
     var timer = Timer.getInstance();
 
     var time = timer.getCurrentTime();
+    timer.updateTimers();
+
+    var delta = time - globals.lasttime;
+    globals.lasttime = time;
+
+    //The target amount of time in milliseconds inbetween game world updates
+    var targettime = globals.tickinterval * 1000;
+
+    //Control the passage of time with our timescale
+    delta *= globals.timescale;
+
+    globals.frametime += delta;
+
+    //We're going to calculate how many ticks we are about to advance, if it's really high the game thread
+    // was probably sleeping and we don't need to jump a ridiculous amount of frames.
+    var estimatedticks = Math.ceil(globals.frametime / targettime);
+    if(estimatedticks > globals.maxtimeskip) {
+      console.error("GAME WORLD ATTEMPTED TO ADVANCE: " + estimatedticks + " TICKS BUT WAS STOPPED");
+      globals.frametime = 0;
+    }
 
     /*
-    timer.createRelativeTimer(
-      "TEST",
-      3000,
-      (x) => {console.log("TIMER!");},
-      null,
-      null
-    );
+      We want to allow the game world to advance in time as long as we have accumulated
+      mor
     */
+    while(globals.frametime >= targettime) { 
+      globals.tickcount++;
+      globals.frametime -= targettime;
+      this.tick(globals.tickinterval);
+    }
+    globals.framecount++;
+    globals.curtime = time;
+    globals.interpolation = globals.frametime / targettime;
 
-    timer.updateTimers();
+
 
     // Request next tick.
     requestAnimationFrame(() => this.loop());
   }
 
-  tick() {
+  tick(dt) {
 
   }
 
