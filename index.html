@@ -7,8 +7,10 @@
     <script src="js/lib/gl-matrix-min.js"></script>
 
     <!-- Include core game files -->
-    <script src="js/main.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/math.js"></script>
+    <script src="js/globalvars.js"></script>
+    <script src="js/steptimer.js"></script>
 
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
@@ -16,9 +18,16 @@
   <body>
     <canvas id="glcanvas" width="200" height="200"></canvas>
     <script>
-      $(document).ready(function() {
+      var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
+      $(document).ready(() => {
         // Create game class.
-        var main = new Main();
+        var app = new App();
+        debug = app;
+        switch(app.setup()) {
+          case AppStatus.STATUS_OK: app.exec(); break;
+          case AppStatus.STATUS_BAD_BROWSER: alert("Your web browser does not support WebGL!"); break;
+          default: break;
+        }
       });
     </script>
   </body>
