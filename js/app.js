@@ -16,10 +16,6 @@ var AppStatus = {
 
 class App {
   constructor() {
-    // Get Canvas DOM element.
-    this.canvas = $('#glcanvas')[0];
-    // Get WebGL canvas context.
-    this.gl = this.canvas.getContext('webgl');
 
     this.start = 0; //The time in which the program began execution
   }
@@ -31,11 +27,23 @@ class App {
     Anything that needs to happen on page load goes here
   */
   setup() {
+    // Get Canvas DOM element.
+    this.canvas = $('#glcanvas')[0];
+
+    // Get WebGL canvas context.
+    this.gl = this.canvas.getContext('webgl');
+
     // Ensure WebGL is working.
     if (!this.gl) {
       console.error("WebGL is not supported by your browser.");
       return AppStatus.STATUS_BAD_BROWSER;
     }
+
+    // Apply ajax settings for app.
+    $.ajaxSetup({
+      cache: true,
+      async: false
+    });
 
     return AppStatus.STATUS_OK;
   }
@@ -49,11 +57,12 @@ class App {
     var globals = GlobalVars.getInstance();
     globals.setTickrate(60);
     globals.timescale = 1.0;
+
     /*
       Setup input listeners here
     */
 
-    
+
    //TODO(Jake): Add platform level input listening code
    requestAnimationFrame(() => this.loop());
   }
