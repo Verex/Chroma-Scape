@@ -37,6 +37,8 @@ class App {
       return AppStatus.STATUS_BAD_BROWSER;
     }
 
+    this.gameworld = new GameWorld();
+
     return AppStatus.STATUS_OK;
   }
   /*
@@ -93,7 +95,7 @@ class App {
 
     /*
       We want to allow the game world to advance in time as long as we have accumulated
-      mor
+      enough time
     */
     while(globals.frametime >= targettime) { 
       globals.tickcount++;
