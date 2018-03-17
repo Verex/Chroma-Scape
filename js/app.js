@@ -20,8 +20,11 @@ class App {
     this.canvas = $('#glcanvas')[0];
     // Get WebGL canvas context.
     this.gl = this.canvas.getContext('webgl');
-
     this.start = 0; //The time in which the program began execution
+
+    this.preRenderSystems = [];
+    this.renderSystems = [];
+    this.postRenderSystems = [];
   }
 
   /*
@@ -54,8 +57,7 @@ class App {
     /*
       Setup input listeners here
     */
-
-    
+    var s = new Scene();
    //TODO(Jake): Add platform level input listening code
    requestAnimationFrame(() => this.loop());
   }
