@@ -4,5 +4,11 @@
     A renderer object should be able to be extended for more specific use
 */
 class Renderer {
+  constructor() {
     
+  }
+
+  render() {
+
+  }
 }
