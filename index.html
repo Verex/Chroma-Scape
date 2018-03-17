@@ -11,7 +11,11 @@
     <script src="js/math.js"></script>
     <script src="js/globalvars.js"></script>
     <script src="js/steptimer.js"></script>
-    <script src="js/glshader.js"></script>
+    <script src="js/shader.js"></script>
+    <script src="js/program.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/scene.js"></script>
+    <script src="js/gameworld.js"></script>
 
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
@@ -20,10 +24,16 @@
     <canvas id="glcanvas" width="200" height="200"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
+      var ajaxSettings = {
+          cache: true,
+          async: false
+      };
+      var refreshAjax = () => {$.ajaxSetup(ajaxSettings)};
       $(document).ready(() => {
         // Create game class.
         var app = new App();
         debug = app;
+        $.ajaxSetup(ajaxSettings);
         switch(app.setup()) {
           case AppStatus.STATUS_OK: app.exec(); break;
           case AppStatus.STATUS_BAD_BROWSER: alert("Your web browser does not support WebGL!"); break;
