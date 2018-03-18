@@ -18,7 +18,6 @@ class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
 
-    this.preRenderSystems = [];
     this.renderSystems = [];
     this.postRenderSystems = [];
   }
@@ -41,6 +40,9 @@ class App {
       console.error("WebGL is not supported by your browser.");
       return AppStatus.STATUS_BAD_BROWSER;
     }
+    this.renderSystems.push(
+      new Renderer(this.gl)
+    );
     this.gameworld = new GameWorld();
     return AppStatus.STATUS_OK;
   }
@@ -58,9 +60,9 @@ class App {
     /*
       Setup input listeners here
     */
-    var s = new Scene();
-   //TODO(Jake): Add platform level input listening code
-   requestAnimationFrame(() => this.loop());
+
+    //TODO(Jake): Add platform level input listening code
+    requestAnimationFrame(() => this.loop());
   }
 
 
