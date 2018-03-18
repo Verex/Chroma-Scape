@@ -43,6 +43,7 @@ class App {
     this.renderSystems.push(
       new Renderer(this.gl)
     );
+
     this.gameworld = new GameWorld();
     return AppStatus.STATUS_OK;
   }
@@ -111,8 +112,7 @@ class App {
     globals.curtime = time;
     globals.interpolation = globals.frametime / targettime;
 
-
-
+    this.render();
     // Request next tick.
     requestAnimationFrame(() => this.loop());
   }
@@ -122,6 +122,8 @@ class App {
   }
 
   render() {
-
+    this.renderSystems.forEach((value, index, array) => {
+      value.render();
+    });
   }
 }

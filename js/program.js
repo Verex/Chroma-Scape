@@ -93,6 +93,10 @@ class Program {
                     value:ctx,
                     writable:false
                 },
+                '_innerProgram':{
+                    value:innerProgram,
+                    writable:false
+                },
                 '_shaders':{
                     value:shaders,
                     writable:false
@@ -160,6 +164,9 @@ class Program {
         }
         console.error("[GLPROGRAM]: Link status: " + info);
         ctx.deleteProgram(p);
+    }
+    activate() {
+        this._ctx.useProgram(this._innerProgram);
     }
     static get Builder() {
         /*
