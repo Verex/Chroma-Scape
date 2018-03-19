@@ -37,7 +37,6 @@ class App {
 
     // Ensure WebGL is working.
     if (!this.gl) {
-      console.error("WebGL is not supported by your browser.");
       return AppStatus.STATUS_BAD_BROWSER;
     }
     this.renderSystems.push(
@@ -103,7 +102,7 @@ class App {
       We want to allow the game world to advance in time as long as we have accumulated
       enough time
     */
-    while(globals.frametime >= targettime) { 
+    while(globals.frametime >= targettime) {
       globals.tickcount++;
       globals.frametime -= targettime;
       this.tick(globals.tickinterval);
