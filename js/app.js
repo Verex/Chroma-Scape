@@ -37,14 +37,21 @@ class App {
 
     // Ensure WebGL is working.
     if (!this.gl) {
-      console.error("WebGL is not supported by your browser.");
       return AppStatus.STATUS_BAD_BROWSER;
     }
     this.renderSystems.push(
       new Renderer(this.gl)
     );
 
-    this.gameworld = new GameWorld();
+    //TODO(Jake): Implement resize callback handler using Observer design pattern
+    var globals = GlobalVars.getInstance();
+    globals.clientWidth = this.canvas.clientWidth;
+    globals.clientHeight = this.canvas.clientHeight;
+
+    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
+    this.testEnt2 = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
+    console.log(this.testEnt);
     return AppStatus.STATUS_OK;
   }
   /*
@@ -122,8 +129,23 @@ class App {
   }
 
   render() {
+
+    /*
+      Run all of our pre-render systems
+      Might take this out
+    */
+
+    /*
+      All of our render systems are responsible for rendering our gameworld
+      so we're gunna pass our gameworld to our render function
+    */
+    var gameworld = this.gameworld;
     this.renderSystems.forEach((value, index, array) => {
-      value.render();
+      value.render(gameworld);
     });
+
+    /*
+      Run all of our post render systems
+    */
   }
 }
