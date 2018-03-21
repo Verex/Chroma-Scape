@@ -17,3 +17,10 @@ Math.randomRange = function(min, max) {
 Math.randInt = function(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
+
+Math.PITCH = 0;
+Math.YAW = 1;
+Math.ROLL = 2;
+Math.X = 0;
+Math.Y = 1;
+Math.Z = 2;

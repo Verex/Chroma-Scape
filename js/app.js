@@ -42,8 +42,25 @@ class App {
     this.renderSystems.push(
       new Renderer(this.gl)
     );
+    
+    //TODO(Jake): Implement resize callback handler using Observer design pattern
+    var globals = GlobalVars.getInstance();
+    globals.clientWidth = this.canvas.clientWidth;
+    globals.clientHeight = this.canvas.clientHeight;
 
-    this.gameworld = new GameWorld();
+    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_GENERIC);
+    this.testCamera = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
+    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_MESH);
+    this.testEnt.components[ComponentID.COMPONENT_MESH].setModel(
+      new Model(
+        this.gl,
+        TestMesh().indices(),
+        TestMesh().vertices(),
+        TestMesh().color()
+      )
+    );
     return AppStatus.STATUS_OK;
   }
   /*
@@ -117,12 +134,22 @@ class App {
   }
 
   tick(dt) {
-
+    this.gameworld.tick(dt);
+    this.gameworld.updateSceneGraph();
   }
 
   render() {
+    /*
+      All of our render systems are responsible for rendering our gameworld
+      so we're gunna pass our gameworld to our render function
+    */
+    var gameworld = this.gameworld;
     this.renderSystems.forEach((value, index, array) => {
-      value.render();
+      value.render(gameworld);
     });
+
+    /*
+      Run all of our post render systems
+    */
   }
 }

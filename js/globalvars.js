@@ -13,6 +13,9 @@ class _GlobalVars_ //Internal class
         this.framecount = 0; //Number of frames being pushed to renderer
         this.framedelay = 0; //Number of seconds it takes to push one frame used for FPS calculation
         this.timescale = 1.0; //Scalar that affects how fast or slow time flows useful for debugging.
+        //TODO(Zach): Look into maybe putting this somewhere else? I think it's fine here but it also feels kinda hacky
+        this.clientWidth = 0; //We're going to go ahead and store our client width & height in the global vars
+        this.clientHeight = 0;
     }
 
     timeToTicks(time) {

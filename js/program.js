@@ -168,6 +168,12 @@ class Program {
     activate() {
         this._ctx.useProgram(this._innerProgram);
     }
+    attributeLocation(name) {
+        return this._attributes.get(name);
+    }
+    uniformLocation(name) {
+        return this._uniforms.get(name);
+    }
     static get Builder() {
         /*
             Javascript Builder Design Pattern
