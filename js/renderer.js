@@ -38,11 +38,5 @@ class Renderer {
         var testtransformcomponent = testent.components[ComponentID.COMPONENT_TRANSFORM];
         var testmeshcomponent = testent.components[ComponentID.COMPONENT_MESH];
         testmeshcomponent.render(this.program, this.ctx);
-        
-        mat4.rotateY(
-            testtransformcomponent.localTransform,
-            testtransformcomponent.localTransform,
-            0.05
-        );
     }
 }

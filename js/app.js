@@ -55,10 +55,9 @@ class App {
     this.canvas.height = this.canvas.clientHeight;
 
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_GENERIC);
+    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     this.testCamera = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
-    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
-    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_MESH);
+
     this.testEnt.components[ComponentID.COMPONENT_MESH].setModel(
       new Model(
         this.gl,
