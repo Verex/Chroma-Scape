@@ -22,25 +22,32 @@
     <script src="js/meshcomponent.js"></script>
     <script src="js/transformcomponent.js"></script>
     <script src="js/model.js"></script>
-    <script src="js/testmesh.js"></script>
+
+    <!-- Include js mesh files -->
+    <script src="js/meshes/test.js"></script>
 
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <canvas id="glcanvas" width="1920" height="1080"></canvas>
+    <canvas id="glcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-      var ajaxSettings = {
+
+      $(document).ready(() => {
+        // Setup initial AJAX settings.
+        $.ajaxSetup({
           cache: true,
           async: false
-      };
-      var refreshAjax = () => {$.ajaxSetup(ajaxSettings)};
-      $(document).ready(() => {
-        // Create game class.
+        });
+
+        // Instantiate the application.
         var app = new App();
+
+        // Setup debug reference to app.
         debug = app;
-        $.ajaxSetup(ajaxSettings);
+
+        // Setup app and handle response.
         switch(app.setup()) {
           case AppStatus.STATUS_OK: app.exec(); break;
           case AppStatus.STATUS_BAD_BROWSER: alert("Your web browser does not support WebGL!"); break;

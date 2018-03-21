@@ -1,3 +1,13 @@
-body {
-  margin: 0px;
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden
+}
+
+#glcanvas {
+  border: 2px solid black;
+  float: left;
+  width: 100vw;
+  height: 100vh;
+  display: block;
 }

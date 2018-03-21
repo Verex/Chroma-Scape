@@ -42,7 +42,7 @@ class App {
     this.renderSystems.push(
       new Renderer(this.gl)
     );
-    
+
     //TODO(Jake): Implement resize callback handler using Observer design pattern
     var globals = GlobalVars.getInstance();
     globals.clientWidth = this.canvas.clientWidth;
@@ -63,6 +63,7 @@ class App {
     );
     return AppStatus.STATUS_OK;
   }
+
   /*
     Function: exec
     Parameters: void
@@ -82,9 +83,8 @@ class App {
     requestAnimationFrame(() => this.loop());
   }
 
-
   /*
-    Function: Loop
+    Function: loop
     Parameters: void
     Purpose: Powers the main loop of the application also manages all of the timers
     ECS Subsystems will be executed from here as well
@@ -115,6 +115,17 @@ class App {
       globals.frametime = 0;
     }
 
+    // Check for canvas resize.
+    if (this.canvas.width != this.canvas.clientWidth
+    || this.canvas.height != this.canvas.clientHeight) {
+        // Change canvas size.
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.heigth = this.canvas.clientHeight;
+
+        // Update gl with viewport change.
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     /*
       We want to allow the game world to advance in time as long as we have accumulated
       enough time
@@ -124,20 +135,34 @@ class App {
       globals.frametime -= targettime;
       this.tick(globals.tickinterval);
     }
+
+    // Update global variables.
     globals.framecount++;
     globals.curtime = time;
     globals.interpolation = globals.frametime / targettime;
 
+    // Call render method.
     this.render();
+
     // Request next tick.
     requestAnimationFrame(() => this.loop());
   }
 
+  /*
+    Function: tick
+    Parameters: dt
+    Purpose: Perform logical updates on all entities and components.
+  */
   tick(dt) {
     this.gameworld.tick(dt);
     this.gameworld.updateSceneGraph();
   }
 
+  /*
+    Function: render
+    Parameters: void
+    Purpose: Call and perform render functions.
+  */
   render() {
     /*
       All of our render systems are responsible for rendering our gameworld
