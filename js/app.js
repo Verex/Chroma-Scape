@@ -42,16 +42,25 @@ class App {
     this.renderSystems.push(
       new Renderer(this.gl)
     );
-
+    
     //TODO(Jake): Implement resize callback handler using Observer design pattern
     var globals = GlobalVars.getInstance();
     globals.clientWidth = this.canvas.clientWidth;
     globals.clientHeight = this.canvas.clientHeight;
 
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
-    this.testEnt2 = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
-    console.log(this.testEnt);
+    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_GENERIC);
+    this.testCamera = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
+    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+    this.testEnt.componentFactory.construct(ComponentID.COMPONENT_MESH);
+    this.testEnt.components[ComponentID.COMPONENT_MESH].setModel(
+      new Model(
+        this.gl,
+        TestMesh().indices(),
+        TestMesh().vertices(),
+        TestMesh().color()
+      )
+    );
     return AppStatus.STATUS_OK;
   }
   /*
@@ -126,15 +135,29 @@ class App {
 
   tick(dt) {
 
+    var root = this.gameworld;
+    var queue = [root];
+    var n;
+
+    while(queue.length > 0) {
+      n = queue.shift();
+      //Do work on entity here
+      if(!n.hasComponent(ComponentID.COMPONENT_TICKABLE)) continue;
+
+      var tickable = n.components[ComponentID.COMPONENT_TICKABLE];
+      tickable.tick(dt);
+
+      if(!n.children.length) continue;
+
+      for(var i = 0; i < n.children.length; i++) {
+        queue.push(n.children[i]);
+      }
+    }
+
+    this.gameworld.components[ComponentID.COMPONENT_TICKABLE].tick(dt);
   }
 
   render() {
-
-    /*
-      Run all of our pre-render systems
-      Might take this out
-    */
-
     /*
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function

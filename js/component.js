@@ -1,7 +1,8 @@
 var ComponentID = {
     COMPONENT_TRANSFORM: 0,
     COMPONENT_MESH: 1,
-    COMPONENT_MAX: 2 //This is the number of components that we recognize as a thing
+    COMPONENT_TICKABLE: 2,
+    COMPONENT_MAX: 3 //This is the number of components that we recognize as a thing
 }
 class EntityComponent {
     constructor(guid, owner) {
@@ -18,6 +19,12 @@ class EntityComponent {
                 switch(cid) {
                     case ComponentID.COMPONENT_TRANSFORM:
                         this.ent.components[cid] = new TransformComponent(this.ent);
+                        return this;
+                    case ComponentID.COMPONENT_MESH:
+                        this.ent.components[cid] = new MeshComponent(this.ent);
+                        return this;
+                    case ComponentID.COMPONENT_TICKABLE:
+                        this.ent.components[cid] = new TickableComponent(this.ent);
                         return this;
                     default: 
                         return this;

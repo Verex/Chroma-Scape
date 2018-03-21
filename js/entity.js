@@ -1,7 +1,8 @@
     var EntityType = {
     ENTITY_INVALID: {id:-1, construction: (owner) => {console.error("no");}},
     ENTITY_GAMEWORLD: {id: 0},
-    ENTITY_CAMERA: {id: 1}
+    ENTITY_GENERIC: {id: 1},
+    ENTITY_CAMERA: {id: 2}
 }
 
 var newID = 0;
@@ -48,3 +49,7 @@ class Entity {
         return Factory;
     }
 };
+
+EntityType.ENTITY_GENERIC.construction = (owner) => {
+    return new Entity(newID++, owner, EntityType.ENTITY_GENERIC);
+}

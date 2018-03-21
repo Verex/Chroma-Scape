@@ -2,9 +2,7 @@ class Camera extends Entity {
     constructor(width, height, eid, owner) {
         super(eid, owner, EntityType.ENTITY_CAMERA);
 
-        this.components.push(
-            new TransformComponent(this)
-        );
+        this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
 
         this.width = width;
         this.height = height;
@@ -18,6 +16,13 @@ class Camera extends Entity {
             this.aspectRatio,
             0.1,
             100.0
+        );
+
+        var pos = vec3.fromValues(6, 8, -30);
+        mat4.translate(
+            this.components[ComponentID.COMPONENT_TRANSFORM].transform,
+            this.components[ComponentID.COMPONENT_TRANSFORM].transform,
+            pos
         );
     }
 };

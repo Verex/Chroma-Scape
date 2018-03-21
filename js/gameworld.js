@@ -2,6 +2,9 @@ class GameWorld extends Entity {
     constructor() {
         super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+        this.componentFactory.construct(ComponentID.COMPONENT_TICKABLE);
+
+        this.components[ComponentID.COMPONENT_TICKABLE].onTick = this.tick;
 
         //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
         //and our renderer will be responsible for processing the gameworld and rendering it's scene
@@ -20,6 +23,10 @@ class GameWorld extends Entity {
         if(newEnt.hasComponent(ComponentID.COMPONENT_MESH)) { 
 
         }
+    }
+
+    tick(dt) {
+        console.log(dt);
     }
 };
 EntityType.ENTITY_GAMEWORLD.construction = () => {
