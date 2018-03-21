@@ -50,6 +50,10 @@ class App {
     globals.clientWidth = this.canvas.clientWidth;
     globals.clientHeight = this.canvas.clientHeight;
 
+    // Set canvas size to client sizes.
+    this.canvas.width = this.canvas.clientWidth;
+    this.canvas.height = this.canvas.clientHeight;
+
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
     this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_GENERIC);
     this.testCamera = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
