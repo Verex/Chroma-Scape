@@ -45,8 +45,14 @@ class App {
 
     //TODO(Jake): Implement resize callback handler using Observer design pattern
     var globals = GlobalVars.getInstance();
+
+    // Store width and heigth in globals.
     globals.clientWidth = this.canvas.clientWidth;
     globals.clientHeight = this.canvas.clientHeight;
+
+    // Set canvas size to client sizes.
+    this.canvas.width = this.canvas.clientWidth;
+    this.canvas.height = this.canvas.clientHeight;
 
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
     this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_GENERIC);
@@ -120,7 +126,11 @@ class App {
     || this.canvas.height != this.canvas.clientHeight) {
         // Change canvas size.
         this.canvas.width = this.canvas.clientWidth;
-        this.canvas.heigth = this.canvas.clientHeight;
+        this.canvas.height = this.canvas.clientHeight;
+
+        // Update globals width/height.
+        globals.clientWidth = this.canvas.clientWidth;
+        globals.clientHeight = this.canvas.clientHeight;
 
         // Update gl with viewport change.
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
