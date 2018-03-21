@@ -54,11 +54,20 @@ class App {
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
 
+    // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-    this.testEnt = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
-    this.testCamera = new Entity.Factory(this.testEnt).ofType(EntityType.ENTITY_CAMERA);
 
-    this.testEnt.components[ComponentID.COMPONENT_MESH].setModel(
+    // Create player entity.
+    this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
+
+    // Create camera entity.
+    this.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
+
+    // Create ship entity.
+    this.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
+
+    // Set model for our ship.
+    this.ship.components[ComponentID.COMPONENT_MESH].setModel(
       new Model(
         this.gl,
         TestMesh().indices(),
@@ -66,6 +75,7 @@ class App {
         TestMesh().color()
       )
     );
+
     return AppStatus.STATUS_OK;
   }
 
