@@ -18,12 +18,13 @@ class Camera extends Entity {
             100.0
         );
 
-        var pos = vec3.fromValues(6, 8, -30);
-        mat4.translate(
-            this.components[ComponentID.COMPONENT_TRANSFORM].transform,
-            this.components[ComponentID.COMPONENT_TRANSFORM].transform,
-            pos
-        );
+        this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
+    }
+    tick(dt) {
+        this.transformComponent.origin[Math.Z] = -10;
+        this.transformComponent.updateTransform();
+
+        super.tick(dt);
     }
 };
 
@@ -36,3 +37,4 @@ EntityType.ENTITY_CAMERA.construction = (owner) => {
         owner
     );
 }
+

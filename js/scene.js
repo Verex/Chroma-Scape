@@ -4,16 +4,17 @@
 
 */
 class SceneNode {
-    constructor() {
-        this.children = [];
+    constructor(entity) {
         this.localMatrix = mat4.create();
         this.worldMatrix = mat4.create();
+        this.children = [];
+        this.ent = entity;
     }
     attachTo(parent) {
         if(this.parent) {
-            var cidx = this.parent.children.indexOf(this);
+            var cidx = this.parent.indexOf(this.ent);
             if(cidx >= 0) {
-                this.parent.children.splice(cidx, 1);
+                this.parent.splice(cidx, 1);
             }
         }
         if(parent) {
@@ -22,14 +23,19 @@ class SceneNode {
         this.parent = parent;
     }
     update(worldMatrix) {
-        if(worldMatrix !== undefined) {
-            mat4.multiply(this.worldMatrix, worldMatrix, this.localMatrix);
+        if(this.ent.hasComponent(ComponentID.COMPONENT_TRANSFORM)) {
+            var transformComp = this.ent.getComponent(ComponentID.COMPONENT_TRANSFORM);
+            this.localMatrix = transformComp.localTransform;
+            this.worldMatrix = transformComp.computeWorldTransform(worldMatrix);
         } else {
-            mat4.copy(this.worldMatrix, this.localMatrix);
+            if(worldMatrix !== undefined) {
+                mat4.multiply(this.worldMatrix, worldMatrix, this.localMatrix);
+            } else {
+                mat4.copy(this.worldMatrix, this.localMatrix);
+            }
         }
-
         var m = this.worldMatrix;
-        this.children.forEach((child) => { child.updateWorldMatrix(m); });
+        this.children.forEach((child) => { child.update(m); });
     }
 }
 

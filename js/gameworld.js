@@ -2,13 +2,12 @@ class GameWorld extends Entity {
     constructor() {
         super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
-        this.componentFactory.construct(ComponentID.COMPONENT_TICKABLE);
-
-        this.components[ComponentID.COMPONENT_TICKABLE].onTick = this.tick;
 
         //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
         //and our renderer will be responsible for processing the gameworld and rendering it's scene
         this.scene = new Scene(); 
+        this.sceneNode = new SceneNode(this);
+        this.scene.rootNode = this.sceneNode;
     }
 
     onEntityCreated(newEnt) {
@@ -18,15 +17,18 @@ class GameWorld extends Entity {
                 break;
             default: break;
         }
-
-        //This entity has some sort of component mesh and needs to be included in the scene graph
-        if(newEnt.hasComponent(ComponentID.COMPONENT_MESH)) { 
-
+        newEnt.sceneNode = new SceneNode(newEnt);
+        if(newEnt.owner) {
+            newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
         }
     }
 
     tick(dt) {
-        console.log(dt);
+        super.tick(dt);
+    }
+
+    updateSceneGraph() {
+        this.sceneNode.update();
     }
 };
 EntityType.ENTITY_GAMEWORLD.construction = () => {

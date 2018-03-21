@@ -31,23 +31,17 @@ class Renderer {
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_viewMatrix"),
             false,
-            gameworld.scene.cameras[0].components[ComponentID.COMPONENT_TRANSFORM].transform
+            gameworld.scene.cameras[0].sceneNode.worldMatrix
         );
 
         var testent = gameworld.children[0];
         var testtransformcomponent = testent.components[ComponentID.COMPONENT_TRANSFORM];
         var testmeshcomponent = testent.components[ComponentID.COMPONENT_MESH];
         testmeshcomponent.render(this.program, this.ctx);
-
-        mat4.rotateX(
-            testtransformcomponent.transform,
-            testtransformcomponent.transform,
-            0.05
-        );
         
         mat4.rotateY(
-            testtransformcomponent.transform,
-            testtransformcomponent.transform,
+            testtransformcomponent.localTransform,
+            testtransformcomponent.localTransform,
             0.05
         );
     }

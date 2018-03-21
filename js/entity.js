@@ -23,6 +23,12 @@ class Entity {
         this.componentFactory = new EntityComponent.ComponentFactory(this);
     }
 
+    tick(dt) {
+        this.children.forEach((value, index, array) => {
+            value.tick(dt);
+        });
+    }
+
     onEntityCreated(newEnt) {
         if(this.owner) {
             this.owner.onEntityCreated(newEnt);
@@ -31,6 +37,20 @@ class Entity {
 
     hasComponent(cid) {
         return this.components[cid] != undefined;
+    }
+
+    getComponent(cid) {
+        if(cid >= 0 && cid < ComponentID.COMPONENT_MAX) {
+            var c = this.components[cid];
+            if(!c) {
+                this.componentFactory.construct(cid);
+                c = this.components[cid];
+            }
+            return c;
+        } else {
+            Console.error("INVALID COMPONENT ID: " + cid);
+            return undefined;
+        }
     }
 
     static get Factory() {

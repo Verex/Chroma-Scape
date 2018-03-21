@@ -134,27 +134,8 @@ class App {
   }
 
   tick(dt) {
-
-    var root = this.gameworld;
-    var queue = [root];
-    var n;
-
-    while(queue.length > 0) {
-      n = queue.shift();
-      //Do work on entity here
-      if(!n.hasComponent(ComponentID.COMPONENT_TICKABLE)) continue;
-
-      var tickable = n.components[ComponentID.COMPONENT_TICKABLE];
-      tickable.tick(dt);
-
-      if(!n.children.length) continue;
-
-      for(var i = 0; i < n.children.length; i++) {
-        queue.push(n.children[i]);
-      }
-    }
-
-    this.gameworld.components[ComponentID.COMPONENT_TICKABLE].tick(dt);
+    this.gameworld.tick(dt);
+    this.gameworld.updateSceneGraph();
   }
 
   render() {

@@ -57,7 +57,7 @@ class MeshComponent extends EntityComponent {
         gl.uniformMatrix4fv(
             program.uniformLocation("u_modelMatrix"),
             false,
-            this.owner.components[ComponentID.COMPONENT_TRANSFORM].transform
+            this.owner.components[ComponentID.COMPONENT_TRANSFORM].worldTransform
         );
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.model.idxBuffer);
