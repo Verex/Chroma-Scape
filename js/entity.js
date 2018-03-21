@@ -3,7 +3,8 @@
     ENTITY_GAMEWORLD: {id: 0},
     ENTITY_GENERIC: {id: 1},
     ENTITY_CAMERA: {id: 2},
-    ENTITY_PLAYER: {id: 3}
+    ENTITY_PLAYER: {id: 3},
+    ENTITY_SHIP: {id: 4}
 }
 
 var newID = 0;

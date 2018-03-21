@@ -34,7 +34,7 @@ class Renderer {
             gameworld.scene.cameras[0].sceneNode.worldMatrix
         );
 
-        var testent = gameworld.children[0];
+        var testent = gameworld.children[0].children[1];
         var testtransformcomponent = testent.components[ComponentID.COMPONENT_TRANSFORM];
         var testmeshcomponent = testent.components[ComponentID.COMPONENT_MESH];
         testmeshcomponent.render(this.program, this.ctx);
