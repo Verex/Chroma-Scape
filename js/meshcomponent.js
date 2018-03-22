@@ -62,13 +62,13 @@ class MeshComponent extends EntityComponent {
 
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.model.idxBuffer);
         {
-            const vertexCount = 36;
+            const vertexCount = this.model.indices.length;
             const type = gl.UNSIGNED_SHORT;
             const offset = 0;
             gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
         }
 
-        
+
     }
 
     static get CID() { return ComponentID.COMPONENT_MESH; };
