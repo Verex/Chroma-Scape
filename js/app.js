@@ -76,19 +76,6 @@ class App {
       )
     );
 
-    // Create ship entity.
-    this.cube = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
-
-    // Set model for our ship.
-    this.cube.components[ComponentID.COMPONENT_MESH].setModel(
-      new Model(
-        this.gl,
-        TestMesh().indices(),
-        TestMesh().vertices(),
-        TestMesh().color()
-      )
-    );
-
     // Dummy Entity
     this.testent = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
     this.testent.meshComponent.setModel(

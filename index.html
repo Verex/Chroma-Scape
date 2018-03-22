@@ -40,6 +40,8 @@
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
 
+      var app = null;
+
       $(document).ready(() => {
         // Setup initial AJAX settings.
         $.ajaxSetup({
@@ -48,7 +50,7 @@
         });
 
         // Instantiate the application.
-        var app = new App();
+        app = new App();
 
         // Setup debug reference to app.
         debug = app;

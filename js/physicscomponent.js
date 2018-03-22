@@ -4,6 +4,7 @@ class PhysicsComponent extends EntityComponent {
 
         this.interpolateMovement = true;
         this.velocity = vec3.fromValues(-1, 1, -2);
+        this.velocity = vec3.fromValues(1, 0, 0);
         this.angularVelocity = vec3.fromValues(0, 0, 0);
         this.lastTransform = mat4.create();
     }
