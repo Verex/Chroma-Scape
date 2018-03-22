@@ -1,8 +1,10 @@
 var ComponentID = {
     COMPONENT_TRANSFORM: 0,
     COMPONENT_MESH: 1,
-    COMPONENT_MAX: 2 //This is the number of components that we recognize as a thing
+    COMPONENT_INPUT: 2,
+    COMPONENT_MAX: 3 //This is the number of components that we recognize as a thing
 }
+
 class EntityComponent {
     constructor(guid, owner) {
         this.guid = guid;
@@ -22,7 +24,10 @@ class EntityComponent {
                     case ComponentID.COMPONENT_MESH:
                         this.ent.components[cid] = new MeshComponent(this.ent);
                         return this;
-                    default: 
+                    case ComponentID.COMPONENT_INPUT:
+                        this.ent.components[cid] = new InputComponent(this.ent);
+                        return this;
+                    default:
                         return this;
                 }
             }

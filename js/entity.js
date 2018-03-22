@@ -1,4 +1,4 @@
-    var EntityType = {
+var EntityType = {
     ENTITY_INVALID: {id:-1, construction: (owner) => {console.error("no");}},
     ENTITY_GAMEWORLD: {id: 0},
     ENTITY_GENERIC: {id: 1},

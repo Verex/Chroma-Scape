@@ -61,26 +61,26 @@ class App {
     this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
 
     // Create camera entity.
-    this.camera = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
+    this.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
 
     // Create ship entity.
     this.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
-
-    // Create ship entity.
-    this.ship2 = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SHIP);
 
     // Set model for our ship.
     this.ship.components[ComponentID.COMPONENT_MESH].setModel(
       new Model(
         this.gl,
-        TestMesh().indices(),
-        TestMesh().vertices(),
-        TestMesh().color()
+        ShipMesh().indices(),
+        ShipMesh().vertices(),
+        ShipMesh().color()
       )
     );
 
+    // Create ship entity.
+    this.cube = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
+
     // Set model for our ship.
-    this.ship2.components[ComponentID.COMPONENT_MESH].setModel(
+    this.cube.components[ComponentID.COMPONENT_MESH].setModel(
       new Model(
         this.gl,
         TestMesh().indices(),

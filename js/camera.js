@@ -46,8 +46,6 @@ class Camera extends Entity {
           this.setupPerspective();
         }
 
-        this.transformComponent.origin[Math.X] -= 0.01;
-
         this.transformComponent.updateTransform();
 
         super.tick(dt);
