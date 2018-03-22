@@ -14,7 +14,6 @@ class Dummy extends Entity {
     }
     tick(dt) {
         //this.transformComponent.origin[Math.Y] -= 0.01;
-        this.transformComponent.absRotation[Math.Y] += 1;
         this.transformComponent.updateTransform();
         super.tick(dt);
     }
