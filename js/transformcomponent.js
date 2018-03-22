@@ -4,25 +4,25 @@ class TransformComponent extends EntityComponent {
 
         this.worldTransform = mat4.create();
         this.localTransform = mat4.create();
-        this.origin = vec3.fromValues(0,0,0);
-        this.rotation = vec3.fromValues(0,0,0);
-        this.scale = vec3.fromValues(1,1,1);
+        this.absOrigin = vec3.fromValues(0,0,0);
+        this.absRotation = vec3.fromValues(0,0,0);
+        this.absScale = vec3.fromValues(1,1,1);
     }
 
     updateTransform() {
         var q = quat.create();
         quat.fromEuler(
             q,
-            this.rotation[Math.PITCH],
-            this.rotation[Math.YAW],
-            this.rotation[Math.ROLL]
+            this.absRotation[Math.PITCH],
+            this.absRotation[Math.YAW],
+            this.absRotation[Math.ROLL]
         );
 
         mat4.fromRotationTranslationScale(
             this.localTransform,
             q,
-            this.origin,
-            this.scale
+            this.absOrigin,
+            this.absScale
         );
     }
 
