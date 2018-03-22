@@ -28,11 +28,12 @@ class TransformComponent extends EntityComponent {
 
     computeWorldTransform(worldMatrix) {
         if(worldMatrix !== undefined) {
-            if (this.owner.type == EntityType.ENTITY_CAMERA) {
-              mat4.invert(this.localTransform, this.localTransform);
-            }
-
             mat4.multiply(this.worldTransform, worldMatrix, this.localTransform);
+
+            // HACK HACK: Invert the world transform if we're a camera? I feel like cam should handle this.
+            if (this.owner.type == EntityType.ENTITY_CAMERA) {
+              mat4.invert(this.worldTransform, this.worldTransform);
+            }
         } else {
             mat4.copy(this.worldTransform, this.localTransform);
         }

@@ -26,11 +26,6 @@ class SceneNode {
         if(this.ent.hasComponent(ComponentID.COMPONENT_TRANSFORM)) {
             var transformComp = this.ent.getComponent(ComponentID.COMPONENT_TRANSFORM);
             this.localMatrix = transformComp.localTransform;
-
-            if (this.ent.type == EntityType.ENTITY_CAMERA) {
-              //mat4.invert(this.localMatrix, this.localMatrix);
-            }
-
             this.worldMatrix = transformComp.computeWorldTransform(worldMatrix);
         } else {
             if(worldMatrix !== undefined) {

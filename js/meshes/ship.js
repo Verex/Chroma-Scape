@@ -52,7 +52,7 @@ var vertices = [
     -1.0,  1.0, -1.0,
   ];
 
-var TestMesh = () => {
+var ShipMesh = () => {
     return {
         indices: () => { return indices; },
         vertices: () => { return vertices; },
