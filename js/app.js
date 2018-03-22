@@ -89,6 +89,22 @@ class App {
       )
     );
 
+    // Dummy Entity
+    this.testent = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
+    this.testent.meshComponent.setModel(
+      new Model(
+          this.gl,
+          TestMesh().indices(),
+          TestMesh().vertices(),
+          TestMesh().color()
+      )
+    );
+
+    this.testcamera = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
+    this.testcamera.transformComponent.absOrigin = vec3.fromValues(5, 5, 5);
+    this.testcamera.transformComponent.absRotation = vec3.fromValues(-15, 0, 0);
+    this.gameworld.scene.mainCameraID = 0;
+
     return AppStatus.STATUS_OK;
   }
 

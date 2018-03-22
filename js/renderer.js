@@ -36,17 +36,18 @@ class Renderer {
         this.ctx.viewport(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.clear();
         this.program.activate();
-
+        
+        var cameraID = gameworld.scene.mainCameraID;
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_projectionMatrix"),
             false,
-            gameworld.scene.cameras[0].projectionMatrix
+            gameworld.scene.cameras[cameraID].projectionMatrix
         );
 
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_viewMatrix"),
             false,
-            gameworld.scene.cameras[0].sceneNode.worldMatrix
+            gameworld.scene.cameras[cameraID].sceneNode.worldMatrix
         );
 
         // Recursively render each mesh component.

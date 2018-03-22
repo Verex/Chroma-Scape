@@ -4,7 +4,8 @@ var EntityType = {
     ENTITY_GENERIC: {id: 1},
     ENTITY_CAMERA: {id: 2},
     ENTITY_PLAYER: {id: 3},
-    ENTITY_SHIP: {id: 4}
+    ENTITY_SHIP: {id: 4},
+    ENTITY_DUMMY: {id: 5},
 }
 
 var newID = 0;
