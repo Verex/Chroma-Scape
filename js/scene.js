@@ -26,6 +26,11 @@ class SceneNode {
         if(this.ent.hasComponent(ComponentID.COMPONENT_TRANSFORM)) {
             var transformComp = this.ent.getComponent(ComponentID.COMPONENT_TRANSFORM);
             this.localMatrix = transformComp.localTransform;
+
+            if (this.ent.type == EntityType.ENTITY_CAMERA) {
+              //mat4.invert(this.localMatrix, this.localMatrix);
+            }
+
             this.worldMatrix = transformComp.computeWorldTransform(worldMatrix);
         } else {
             if(worldMatrix !== undefined) {
@@ -46,7 +51,7 @@ class SceneNode {
     A scene is ONLY responsible for RENDERING the data that is computed from the gameworld
     A scene will be composed of a scene graph
 */
-class Scene {  
+class Scene {
     constructor() {
         this.rootNode = new SceneNode(); //Construct an empty scene node
         this.cameras = [];

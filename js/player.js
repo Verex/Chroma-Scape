@@ -8,7 +8,7 @@ class Player extends Entity {
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
     }
     tick(dt) {
-        this.transformComponent.origin[Math.Y] += 0.01;
+        this.transformComponent.origin[Math.X] -= 0.01;
         this.transformComponent.updateTransform();
         super.tick(dt);
     }

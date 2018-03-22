@@ -28,6 +28,10 @@ class TransformComponent extends EntityComponent {
 
     computeWorldTransform(worldMatrix) {
         if(worldMatrix !== undefined) {
+            if (this.owner.type == EntityType.ENTITY_CAMERA) {
+              
+            }
+
             mat4.multiply(this.worldTransform, worldMatrix, this.localTransform);
         } else {
             mat4.copy(this.worldTransform, this.localTransform);

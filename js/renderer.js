@@ -17,6 +17,21 @@ class Renderer {
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
     }
+
+    recursiveRender(ent) {
+      // Render entity's mesh if it exists.
+      if (ent.hasComponent(ComponentID.COMPONENT_MESH)) {
+        ent.components[ComponentID.COMPONENT_MESH].render(this.program, this.ctx);
+      }
+
+      // Render children.
+      if (ent.children.length > 0) {
+        ent.children.forEach((child) => {
+          this.recursiveRender(child);
+        });
+      }
+    }
+
     render(gameworld) {
         this.ctx.viewport(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.clear();
@@ -34,9 +49,9 @@ class Renderer {
             gameworld.scene.cameras[0].sceneNode.worldMatrix
         );
 
-        var testent = gameworld.children[0].children[1];
-        var testtransformcomponent = testent.components[ComponentID.COMPONENT_TRANSFORM];
-        var testmeshcomponent = testent.components[ComponentID.COMPONENT_MESH];
-        testmeshcomponent.render(this.program, this.ctx);
+        // Recursively render each mesh component.
+        gameworld.children.forEach((child) => {
+          this.recursiveRender(child);
+        });
     }
 }
