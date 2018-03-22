@@ -12,8 +12,6 @@ class Camera extends Entity {
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
-
-        this.transformComponent.origin[Math.Z] = -10;
     }
 
     setupPerspective() {
@@ -34,7 +32,6 @@ class Camera extends Entity {
     }
 
     tick(dt) {
-        //this.transformComponent.origin[Math.Z] = -10;
         var globals = GlobalVars.getInstance();
 
         // Check for canvas resize.
@@ -48,6 +45,8 @@ class Camera extends Entity {
           // Create new perspective.
           this.setupPerspective();
         }
+
+        this.transformComponent.origin[Math.X] -= 0.01;
 
         this.transformComponent.updateTransform();
 
