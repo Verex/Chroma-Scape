@@ -57,7 +57,7 @@ class App {
     var assets = Assets.getInstance();
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
-    assets.addModel(this.gl, GridMesh(200, 30), "grid");
+    assets.addModel(this.gl, GridMesh(50000, 4500), "grid");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
@@ -66,23 +66,27 @@ class App {
     this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
+    this.player.camera.boomAngle = 15;
+    this.player.camera.boomRadius = 10;
     // Create ship entity.\
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
-
+    // Set model for our ship.
+    this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
+      assets.getModel("ship")
+    );
+    //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absOrigin = vec3.fromValues(0, 10, 15);
+    //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absRotation = vec3.fromValues(-38, 0, 0);
     // Dummy Entity
     this.testent = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
     this.testent.meshComponent.setModel(
       assets.getModel("test")
     );
-    // Set model for our ship.
-    this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
-      assets.getModel("ship")
-    );
+
 
     this.testcamera = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
     this.testcamera.transformComponent.absOrigin = vec3.fromValues(0, 80, 5);
     this.testcamera.transformComponent.absRotation = vec3.fromValues(-90, 0, 0);
-    this.gameworld.scene.mainCameraID = 1;
+    this.gameworld.scene.mainCameraID = 0;
 
     this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
     var gridmesh = GridMesh(200, 30);
