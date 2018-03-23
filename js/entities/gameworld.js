@@ -2,12 +2,24 @@ class GameWorld extends Entity {
     constructor() {
         super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+        this.componentFactory.construct(ComponentID.COMPONENT_INPUT);
+
+        this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
 
         //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
         //and our renderer will be responsible for processing the gameworld and rendering it's scene
         this.scene = new Scene(); 
         this.sceneNode = new SceneNode(this);
         this.scene.rootNode = this.sceneNode;
+
+        this.inputComponent.registerEvent(
+            InputMethod.INPUT_KEYBOARD,
+            InputType.BTN_PRESS,
+            'KeyD',
+            (event) => {
+              this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
+            }
+          );
     }
 
     onEntityCreated(newEnt) {

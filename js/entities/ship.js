@@ -5,16 +5,18 @@ class Ship extends Entity {
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
         this.componentFactory.construct(ComponentID.COMPONENT_MESH);
+        this.componentFactory.construct(ComponentID.COMPONENT_PHYSICS);
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
+        this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
         this.transformComponent.absOrigin[Math.Z] = -10;
-        this.transformComponent.absRotation[Math.Y] += 10;
 
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
     }
     tick(dt) {
         //this.transformComponent.origin[Math.Y] -= 0.01;
-        this.meshComponent.absRotation[Math.Y] += 1;
+        //this.meshComponent.absRotation[Math.Y] += 1;
+        this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);
     }
