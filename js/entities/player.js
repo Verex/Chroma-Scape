@@ -10,16 +10,12 @@ class Player extends Entity {
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
+        this.activeCamera = 0;
+    
 
-        this.inputComponent.registerEvent(
-          InputMethod.INPUT_KEYBOARD,
-          InputType.BTN_PRESS,
-          'KeyW',
-          (event) => {
-            this.children[0].transformComponent.absOrigin[Math.Z] -= 0.1;
-          }
-        );
+        this.transformComponent.absOrigin[Math.Y] = 10;
 
+        /*
         this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_PRESS,
@@ -32,20 +28,13 @@ class Player extends Entity {
         this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_PRESS,
-          'KeyS',
-          (event) => {
-            this.children[0].transformComponent.absOrigin[Math.Z] += 0.1;
-          }
-        );
-
-        this.inputComponent.registerEvent(
-          InputMethod.INPUT_KEYBOARD,
-          InputType.BTN_PRESS,
           'KeyD',
           (event) => {
             this.children[0].transformComponent.absOrigin[Math.X] += 0.1;
           }
         );
+        
+        */
     }
     tick(dt) {
         //this.transformComponent.origin[Math.X] -= 0.01;
