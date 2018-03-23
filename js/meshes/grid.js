@@ -24,9 +24,6 @@ var GridMesh = (size, divisions) => {
     for(var i = 0; i < vertices.length; i++) {
         indices.push(i);
     }
-    console.log("Vertices: " + vertices);
-    console.log("Colors: " + colors);
-    console.log("Indices: " + indices);
     return {
         indices: () => { return undefined; },
         vertices: () => { return vertices; },
