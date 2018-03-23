@@ -27,13 +27,12 @@ class Camera extends Entity {
           Math.radians(45),
           this.aspectRatio,
           0.1,
-          100.0
+          200.0
       );
     }
 
     tick(dt) {
         var globals = GlobalVars.getInstance();
-
         // Check for canvas resize.
         if (globals.clientWidth != this.width
           || globals.clientHeight != this.height) {
@@ -44,6 +43,11 @@ class Camera extends Entity {
 
           // Create new perspective.
           this.setupPerspective();
+        }
+        if(this.boomAngle !== undefined && this.boomRadius !== undefined) {
+            this.transformComponent.absOrigin[Math.Y] = Math.sin(Math.radians(this.boomAngle)) * this.boomRadius;
+            this.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(this.boomAngle)) * this.boomRadius;
+            this.transformComponent.absRotation[Math.PITCH] = -this.boomAngle;
         }
 
         this.transformComponent.updateTransform();

@@ -47,27 +47,3 @@ Math.angleVectors = (angle, forward) => {
   forward[Math.Y] = cp * sy;
   forward[Math.Z] = -sp;
 };
-
-Math.vectorAngles = (forward, angles) =>{
-  var tmp, yaw, pitch;
-
-  if(forward[Math.Y] == 0 && forward[Math.X] == 0) {
-    yaw = 0;
-    if(forward[Math.Z] > 0)
-      pitch = 270;
-    else
-      pitch = 90;
-  } else {
-    yaw = Math.atan2(forward[Math.Y], forward[Math.X]) * 180 / Math.PI;
-    if(yaw < 0)
-      yaw += 360;
-      tmp = Math.sqrt(forward[0] * forward[0] + forward[1] * forward[1]);
-      pitch = (Math.atan2(-forward[2], tmp) * 180 / Math.PI);
-      if (pitch < 0)
-        pitch += 360;
-  }
-
-  angles[Math.PITCH] = pitch;
-  angles[Math.YAW] = yaw;
-  angles[Math.ROLL] = roll;
-};
