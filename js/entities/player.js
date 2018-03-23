@@ -9,9 +9,9 @@ class Player extends Entity {
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
-        this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
-        this.activeCamera = 0;
-    
+        this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);    
+
+        this.physicsComponent.velocity[Math.Z] = -50;
 
         this.transformComponent.absOrigin[Math.Y] = 10;
 

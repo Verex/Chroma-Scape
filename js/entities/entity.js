@@ -6,6 +6,7 @@ var EntityType = {
     ENTITY_PLAYER: {id: 3},
     ENTITY_SHIP: {id: 4},
     ENTITY_DUMMY: {id: 5},
+    ENTITY_CAMERABOOM: {id: 6}
 }
 
 var newID = 0;
