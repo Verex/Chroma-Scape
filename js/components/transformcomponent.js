@@ -26,6 +26,12 @@ class TransformComponent extends EntityComponent {
         );
     }
 
+    getWorldTranslation() {
+        var res = vec3.create();
+        mat4.getTranslation(res, this.worldTransform);
+        return res;
+    }
+
     computeWorldTransform(worldMatrix) {
         if(worldMatrix !== undefined) {
             mat4.multiply(this.worldTransform, worldMatrix, this.localTransform);
