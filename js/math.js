@@ -47,3 +47,13 @@ Math.angleVectors = (angle, forward) => {
   forward[Math.Y] = cp * sy;
   forward[Math.Z] = -sp;
 };
+
+Math.screenToWorld = (invViewProjection, screenCoords, screenWidth, screenHeight) => {
+  var x = 2 * screenCoords[Math.X] / screenWidth - 1;
+  var y = 1 - (2 * screenCoords[Math.Y] / screenHeight);
+  var z = 0;
+  var worldPos = vec3.fromValues(x,y,z);
+  vec3.transformMat4(worldPos, worldPos, invViewProjection);
+
+  return worldPos;
+}

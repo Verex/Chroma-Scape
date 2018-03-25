@@ -11,9 +11,10 @@ class Player extends Entity {
         this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);    
 
-        this.physicsComponent.velocity[Math.Z] = -50;
+        this.physicsComponent.velocity[Math.X] = 0;
 
         this.transformComponent.absOrigin[Math.Y] = 10;
+        this.cursorPosition = vec2.fromValues(-1, -1);
 
         /*
         this.inputComponent.registerEvent(
@@ -35,9 +36,35 @@ class Player extends Entity {
         );
         
         */
+
+        this.inputComponent.registerEvent(
+            InputMethod.INPUT_MOUSE,
+            InputType.MSE_MOVE,
+            null,
+            (event) => { this.onMouseMove(event); }
+        )
+    }
+    onMouseMove(event) {
+        this.cursorPosition = vec2.fromValues(
+            event.offsetX,
+            event.offsetY
+        );
+    }
+    swayShip() {
+        var globals = GlobalVars.getInstance();
+        var x = 2 * this.cursorPosition[Math.X] / globals.clientWidth - 1;
+        var y = 1 - (2 * this.cursorPosition[Math.Y] / globals.clientHeight);
+        var pos = vec3.fromValues(x, y, 0);
+        vec3.transformMat4(
+            pos,
+            pos,
+            this.camera.getInvViewProjectionMatrix()
+        );        
     }
     tick(dt) {
-        //this.transformComponent.origin[Math.X] -= 0.01;
+        if(this.cursorPosition[0] !== -1 && this.cursorPosition[1] !== -1) {
+            this.swayShip();
+        }
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);

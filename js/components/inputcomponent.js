@@ -5,7 +5,8 @@ var InputMethod = {
 
 var InputType = {
     BTN_PRESS: 0,
-    BTN_RELEASE: 1
+    BTN_RELEASE: 1,
+    MSE_MOVE: 2
 }
 
 class InputComponent extends EntityComponent {
@@ -19,16 +20,17 @@ class InputComponent extends EntityComponent {
         document.addEventListener('keyup', (event) => { this.handleEvent(event); });
         document.addEventListener('mousedown', (event) => { this.handleEvent(event); });
         document.addEventListener('mouseup', (event) => { this.handleEvent(event); });
+        document.addEventListener('mousemove', (event) => { this.handleEvent(event);});
     }
 
     getEventType(type) {
       switch(type) {
         case "keydown":
           return InputType.BTN_PRESS;
-          break;
         case "keyup":
           return InputType.BTN_RELEASE;
-          break;
+        case "mousemove":
+          return InputType.MSE_MOVE;
         default:
           return undefined;
       }
@@ -53,7 +55,10 @@ class InputComponent extends EntityComponent {
           }
         }
       } else if (event instanceof MouseEvent) {
-
+        var e = this.events.mouse[this.getEventType(event.type)];
+        if(e !== undefined) {
+          e.callback(event);
+        }
       }
     }
 
