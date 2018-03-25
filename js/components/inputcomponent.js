@@ -15,6 +15,10 @@ class InputComponent extends EntityComponent {
 
         this.events = {mouse: {}, keyboard: {}};
 
+        // Create keyboard press groups.
+        this.events.keyboard[InputType.BTN_PRESS] = {};
+        this.events.keyboard[InputType.BTN_RELEASE] = {};
+
         // Add event listeners.
         document.addEventListener('keydown', (event) => { this.handleEvent(event); });
         document.addEventListener('keyup', (event) => { this.handleEvent(event); });
@@ -42,17 +46,30 @@ class InputComponent extends EntityComponent {
           this.events.mouse[type] = {callback: callback};
           break;
         case InputMethod.INPUT_KEYBOARD:
-          this.events.keyboard[target] = {type: type, callback: callback};
+          if (this.events.keyboard[type][target] == undefined) {
+            this.events.keyboard[type][target] = {};
+          }
+          this.events.keyboard[type][target] = {callback: callback};
           break;
+      }
+    }
+
+    registerKeyboardEvent(key, pressCallback = null, releaseCallback = null) {
+      // Assign callback for press event if needed.
+      if (pressCallback != null) {
+        this.registerEvent(InputMethod.INPUT_KEYBOARD, InputType.BTN_PRESS, key, pressCallback);
+      }
+
+      // Assign callback for release event if needed.
+      if (releaseCallback != null) {
+        this.registerEvent(InputMethod.INPUT_KEYBOARD, InputType.BTN_RELEASE, key, releaseCallback);
       }
     }
 
     handleEvent(event) {
       if (event instanceof KeyboardEvent) {
-        if (this.events.keyboard[event.code] != undefined) {
-          if (this.getEventType(event.type) == this.events.keyboard[event.code].type) {
-            this.events.keyboard[event.code].callback(event);
-          }
+        if (this.events.keyboard[this.getEventType(event.type)][event.code] != undefined) {
+            this.events.keyboard[this.getEventType(event.type)][event.code].callback(event);
         }
       } else if (event instanceof MouseEvent) {
         var e = this.events.mouse[this.getEventType(event.type)];
