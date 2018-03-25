@@ -42,6 +42,10 @@ class GameWorld extends Entity {
     updateSceneGraph() {
         this.sceneNode.update();
     }
+
+    getViewMatrix() {
+        return this.scene.cameras[this.scene.mainCameraID].getComponent(ComponentID.COMPONENT_TRANSFORM).worldTransform;
+    }
 };
 EntityType.ENTITY_GAMEWORLD.construction = () => {
     if(newID != 0) {

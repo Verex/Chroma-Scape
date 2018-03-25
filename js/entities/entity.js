@@ -39,6 +39,13 @@ class Entity {
         }
     }
 
+    getGameWorld() {
+        if(this.owner !== undefined) {
+            return this.owner.getGameWorld();
+        }
+        return this;
+    }
+
     hasComponent(cid) {
         return this.components[cid] != undefined;
     }

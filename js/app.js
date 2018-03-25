@@ -66,10 +66,11 @@ class App {
     this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
-    this.player.camera.boomAngle = 15;
-    this.player.camera.boomRadius = 10;
+    this.player.camera.boomAngle = 0;
+    this.player.camera.boomRadius = 15;
     // Create ship entity.\
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
+    this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
     // Set model for our ship.
     this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
       assets.getModel("ship")
@@ -108,7 +109,7 @@ class App {
   */
   exec() {
     var globals = GlobalVars.getInstance();
-    globals.setTickrate(60);
+    globals.setTickrate(240);
     globals.timescale = 1.0;
 
     /*

@@ -31,6 +31,19 @@ class Camera extends Entity {
       );
     }
 
+    getViewProjectionMatrix() {
+        var ret = mat4.create();
+        mat4.invert(ret, this.transformComponent.worldTransform);
+        mat4.multiply(ret, this.projectionMatrix, ret);
+        return ret;
+    }
+
+    getInvViewProjectionMatrix() {
+        var ret = this.getViewProjectionMatrix();
+        mat4.invert(ret, ret);
+        return ret;
+    }
+
     tick(dt) {
         var globals = GlobalVars.getInstance();
         // Check for canvas resize.
