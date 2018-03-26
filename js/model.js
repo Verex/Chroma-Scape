@@ -23,7 +23,45 @@ class Model {
         }
 
     }
-    constructAABB() {
-        
+
+    render(program) {
+        {
+            const numComponents = 3;
+            const type = this.ctx.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.vtxBuffer);
+            this.ctx.vertexAttribPointer(
+                program.attributeLocation("a_position"),
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset
+            );
+            this.ctx.enableVertexAttribArray(
+                program.attributeLocation("a_position")
+            );
+        }
+        {
+            const numComponents = 4;
+            const type = this.ctx.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.clrBuffer);
+            this.ctx.vertexAttribPointer(
+                program.attributeLocation("a_color"),
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset
+            );
+            this.ctx.enableVertexAttribArray(
+                program.attributeLocation("a_color")
+            );
+        }
     }
 };

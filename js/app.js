@@ -73,7 +73,8 @@ class App {
     // Create ship entity.\
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
     this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
-    this.player.ship.physicsComponent.aabb = new AABB(this.player.ship, 2.5, 5, 6.35);
+    this.player.ship.physicsComponent.aabb = new AABB(this.player.ship, 1.5, 1, 2.75);
+    this.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
 
     // Set model for our ship.
     this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
