@@ -57,10 +57,20 @@ class Camera extends Entity {
           // Create new perspective.
           this.setupPerspective();
         }
+        /*
+            HACK HACK: This math is NOT right at all but somehow works if you are either orbiting on yaw or pitch
+        */
         if(this.boomAngle !== undefined && this.boomRadius !== undefined) {
-            this.transformComponent.absOrigin[Math.Y] = Math.sin(Math.radians(this.boomAngle)) * this.boomRadius;
-            this.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(this.boomAngle)) * this.boomRadius;
-            this.transformComponent.absRotation[Math.PITCH] = -this.boomAngle;
+            var cp = Math.cos(Math.radians(this.boomAngle[Math.PITCH]));
+            var sp = Math.sin(Math.radians(this.boomAngle[Math.PITCH]));
+            var cy = Math.cos(Math.radians(this.boomAngle[Math.YAW]));
+            var sy = Math.sin(Math.radians(this.boomAngle[Math.YAW]));
+            var r = this.boomRadius;
+            this.transformComponent.absOrigin[Math.X] = r * sy * cp;
+            this.transformComponent.absOrigin[Math.Y] = r * cy * sp;
+            this.transformComponent.absOrigin[Math.Z] = r * cp * cy;
+            this.transformComponent.absRotation[Math.PITCH] = -this.boomAngle[0];
+            this.transformComponent.absRotation[Math.YAW] = this.boomAngle[1];
         }
 
         this.transformComponent.updateTransform();

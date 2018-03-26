@@ -8,44 +8,7 @@ class MeshComponent extends EntityComponent {
     }
     preRender(program, gl) {
         if(!this.model) return;
-        {
-            const numComponents = 3;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.model.vtxBuffer);
-            gl.vertexAttribPointer(
-                program.attributeLocation("a_position"),
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset
-            );
-            gl.enableVertexAttribArray(
-                program.attributeLocation("a_position")
-            );
-        }
-        {
-            const numComponents = 4;
-            const type = gl.FLOAT;
-            const normalize = false;
-            const stride = 0;
-            const offset = 0;
-            gl.bindBuffer(gl.ARRAY_BUFFER, this.model.clrBuffer);
-            gl.vertexAttribPointer(
-                program.attributeLocation("a_color"),
-                numComponents,
-                type,
-                normalize,
-                stride,
-                offset
-            );
-            gl.enableVertexAttribArray(
-                program.attributeLocation("a_color")
-            );
-        }
+
     }
     /*
     uniform mat4 u_viewMatrix;
@@ -53,7 +16,8 @@ class MeshComponent extends EntityComponent {
     uniform mat4 u_projectionMatrix;
     */
     render(program, gl) {
-        this.preRender(program, gl);
+        if(!this.model) return;
+        this.model.render(program);
         gl.uniformMatrix4fv(
             program.uniformLocation("u_modelMatrix"),
             false,
