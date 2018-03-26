@@ -8,6 +8,8 @@ class Model {
         this.vtxBuffer = glContext.createBuffer();
         this.clrBuffer = glContext.createBuffer();
 
+        this.drawType = this.ctx.TRIANGLES;
+
         this.numVertices = this.vertices.length / 3;
 
         glContext.bindBuffer(glContext.ARRAY_BUFFER, this.vtxBuffer);

@@ -41,6 +41,47 @@ class AABB  {
             gl.drawElements(gl.LINE_STRIP, vertexCount, type, offset);
         }
     }
+    checkCollision(other) {
+        var center = this.owner.transformComponent.getWorldTranslation();
+        var otherCenter = other.owner.transformComponent.getWorldTranslation();
+        var otherMin = [other.offset, other.offsetY, other.offsetZ];
+        var otherMax = [0,0,0];
+        var min = [this.offsetX, this.offsetY, this.offsetZ];
+        var max = [0,0,0];
+
+        vec3.scaleAndAdd(
+            max,
+            min,
+            center,
+            1
+        );
+        vec3.scaleAndAdd(
+            min,
+            min,
+            center,
+            -1
+        );
+
+        vec3.scaleAndAdd(
+            otherMax,
+            otherMin,
+            otherCenter,
+            1
+        );
+
+        vec3.scaleAndAdd(
+            otherMin,
+            otherMin,
+            otherCenter,
+            -1
+        );
+
+        console.log(min);
+        console.log(max);
+        console.log(otherMin);
+        console.log(otherMax);
+
+    }
 };
 class PhysicsComponent extends EntityComponent {
     constructor(owner) {
@@ -53,6 +94,13 @@ class PhysicsComponent extends EntityComponent {
         this.angularVelocity = vec3.fromValues(0, 0, 0);
         this.lastTransform = mat4.create();
         this.maxSpeed = 50;
+    }
+
+    isMoving() {
+        if(this.owner.owner.eid != 0 && this.owner.owner.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
+            return this.owner.owner.getComponent(ComponentID.COMPONENT_PHYSICS).isMoving();
+        }
+        return this.velocity[Math.X] != 0 || this.velocity[Math.Y] != 0 || this.velocity[Math.Z] != 0;
     }
 
     physicsSimulate(step) {
