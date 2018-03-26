@@ -13,13 +13,22 @@ class GameWorld extends Entity {
         this.scene.rootNode = this.sceneNode;
 
         this.inputComponent.registerEvent(
-            InputMethod.INPUT_KEYBOARD,
-            InputType.BTN_PRESS,
-            'KeyE',
-            (event) => {
-              this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
-            }
-          );
+          InputMethod.INPUT_KEYBOARD,
+          InputType.BTN_RELEASE,
+          'KeyE',
+          (event) => {
+            this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
+          }
+        );
+
+        this.inputComponent.registerEvent(
+          InputMethod.INPUT_KEYBOARD,
+          InputType.BTN_RELEASE,
+          'KeyQ',
+          (event) => {
+            this.children[0].camera.boomAngle += 30;
+          }
+        );
     }
 
     onEntityCreated(newEnt) {
