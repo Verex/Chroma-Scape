@@ -1,5 +1,7 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>TBD</title>
 
     <!-- Include external libraries -->
@@ -18,7 +20,6 @@
     <script src="js/model.js"></script>
     <script src="js/assets.js"></script>
 
-
     <script src="js/components/component.js"></script>
     <script src="js/components/meshcomponent.js"></script>
     <script src="js/components/transformcomponent.js"></script>
@@ -36,6 +37,7 @@
     <script src="js/meshes/test.js"></script>
     <script src="js/meshes/ship.js"></script>
     <script src="js/meshes/grid.js"></script>
+
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
   </head>
@@ -43,8 +45,6 @@
     <canvas id="glcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-
-      var app = null;
 
       $(document).ready(() => {
         // Setup initial AJAX settings.
@@ -54,7 +54,7 @@
         });
 
         // Instantiate the application.
-        app = new App();
+        var app = new App();
 
         // Setup debug reference to app.
         debug = app;
