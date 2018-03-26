@@ -58,6 +58,10 @@ Math.screenToWorld = (invViewProjection, screenCoords, screenWidth, screenHeight
   return worldPos;
 };
 
-Math.lerp = (a, b, i) => {
-  return a + i * (b - a);
+Math.lerp = (a, b, t) => {
+  return (1 - t) * a + t * b;
 };
+
+Math.between = (a, b, c, inclusive = true) => {
+  return a <= c && c <= b;
+}
