@@ -70,7 +70,7 @@ class App {
     this.player.camera.boomAngle = 0;
     this.player.camera.boomRadius = 15;
 
-    // Create ship entity.\
+    // Create ship entity.
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
     this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
 

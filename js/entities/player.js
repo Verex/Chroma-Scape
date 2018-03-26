@@ -5,21 +5,23 @@ var MoveDirection = {
   RIGHT: 3
 }
 
+var PortalType = {
+  NONE: 0,
+  LEFT: 1,
+  RIGHT: 2,
+  BOTH: 3
+}
+
 class Player extends Entity {
     constructor(width, height, eid, owner) {
         super(eid, owner, EntityType.ENTITY_PLAYER);
 
-        this.maxBounds = {
-          x: 7.5,
-          y: 4,
-          yaw: 90,
-          pitch: 90,
-        }
-
-        this.maxVelocity = 10;
-        this.accelerationSpeed = 20;
-        this.maxAngVelocity = 20;
-        this.rotationSpeed = 4;
+        // Define directional movement conditions.
+        this.movement = {};
+        this.movement[MoveDirection.UP] = false;
+        this.movement[MoveDirection.DOWN] = false;
+        this.movement[MoveDirection.LEFT] = false;
+        this.movement[MoveDirection.RIGHT] = false;
 
         // Assign movement control key codes.
         this.controls = {
@@ -28,12 +30,6 @@ class Player extends Entity {
           keyUp: 'KeyW',
           keyDown: 'KeyS'
         };
-
-        this.movement = {};
-        this.movement[MoveDirection.UP] = false;
-        this.movement[MoveDirection.DOWN] = false;
-        this.movement[MoveDirection.LEFT] = false;
-        this.movement[MoveDirection.RIGHT] = false;
 
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
@@ -130,135 +126,15 @@ class Player extends Entity {
             (event) => { this.onMouseMove(event); }
         )
     }
+
     onMouseMove(event) {
         this.cursorPosition = vec2.fromValues(
             event.offsetX,
             event.offsetY
         );
     }
-    swayShip() {
-        var globals = GlobalVars.getInstance();
-        var x = 2 * this.cursorPosition[Math.X] / globals.clientWidth - 1;
-        var y = 1 - (2 * this.cursorPosition[Math.Y] / globals.clientHeight);
-        var pos = vec3.fromValues(x, y, 0);
-        vec3.transformMat4(
-            pos,
-            pos,
-            this.camera.getInvViewProjectionMatrix()
-        );
-    }
-
-    moveShip(dt) {
-      var velocity = this.ship.physicsComponent.velocity,
-          angVelocity = this.ship.physicsComponent.angularVelocity,
-          origin = this.ship.transformComponent.absOrigin,
-          rotation = this.ship.transformComponent.absRotation;
-
-      if (this.movement[MoveDirection.LEFT]
-      && origin[Math.X] > -this.maxBounds.x) {
-        this.ship.physicsComponent.velocity[Math.X] =
-          Math.lerp(velocity[Math.X], -this.maxVelocity, this.accelerationSpeed * dt);
-
-        this.ship.physicsComponent.angularVelocity[Math.YAW] =
-          Math.lerp(angVelocity[Math.YAW], this.maxAngVelocity, this.rotationSpeed * dt);
-      } else if (!this.movement[MoveDirection.RIGHT]) {
-        this.ship.physicsComponent.velocity[Math.X] =
-          Math.lerp(velocity[Math.X], 0, this.accelerationSpeed * dt);
-
-        this.ship.physicsComponent.angularVelocity[Math.YAW] =
-          Math.lerp(angVelocity[Math.YAW], 0, this.rotationSpeed * dt);
-
-        this.ship.transformComponent.absRotation[Math.YAW] =
-          Math.lerp(rotation[Math.YAW], 0, this.rotationSpeed * dt);
-      }
-
-      if (this.movement[MoveDirection.RIGHT]
-      && origin[Math.X] < this.maxBounds.x) {
-        this.ship.physicsComponent.velocity[Math.X] =
-          Math.lerp(velocity[Math.X], this.maxVelocity, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.YAW] =
-            Math.lerp(angVelocity[Math.YAW], -this.maxAngVelocity, this.rotationSpeed * dt);
-      } else if (!this.movement[MoveDirection.LEFT]) {
-        this.ship.physicsComponent.velocity[Math.X] =
-          Math.lerp(velocity[Math.X], 0, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.YAW] =
-            Math.lerp(angVelocity[Math.YAW], 0, this.rotationSpeed * dt);
-          this.ship.transformComponent.absRotation[Math.YAW] =
-            Math.lerp(rotation[Math.YAW], 0, this.rotationSpeed * dt);
-      }
-
-      // Downward movement.
-      if (this.movement[MoveDirection.DOWN]
-      && origin[Math.Y] > -this.maxBounds.y) {
-        this.ship.physicsComponent.velocity[Math.Y] =
-          Math.lerp(velocity[Math.Y], -this.maxVelocity, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.PITCH] =
-            Math.lerp(angVelocity[Math.PITCH], -this.maxAngVelocity, this.rotationSpeed * dt);
-      } else if (!this.movement[MoveDirection.UP]) {
-        this.ship.physicsComponent.velocity[Math.Y] =
-          Math.lerp(velocity[Math.Y], 0, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.PITCH] =
-            Math.lerp(angVelocity[Math.PITCH], 0, this.rotationSpeed * dt);
-          this.ship.transformComponent.absRotation[Math.PITCH] =
-            Math.lerp(rotation[Math.PITCH], 0, this.rotationSpeed * dt);
-      }
-
-      // Upward movement.
-      if (this.movement[MoveDirection.UP]
-      && origin[Math.Y] < this.maxBounds.y) {
-        this.ship.physicsComponent.velocity[Math.Y] =
-          Math.lerp(velocity[Math.Y], this.maxVelocity, this.accelerationSpeed * dt);
-
-        this.ship.physicsComponent.angularVelocity[Math.PITCH] =
-          Math.lerp(angVelocity[Math.PITCH], this.maxAngVelocity, this.rotationSpeed * dt);
-      } else if (!this.movement[MoveDirection.DOWN]) {
-        this.ship.physicsComponent.velocity[Math.Y] =
-          Math.lerp(velocity[Math.Y], 0, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.PITCH] =
-            Math.lerp(angVelocity[Math.PITCH], 0, this.rotationSpeed * dt);
-
-          this.ship.transformComponent.absRotation[Math.PITCH] =
-            Math.lerp(rotation[Math.PITCH], 0, this.rotationSpeed * dt);
-      }
-
-      // Cancel vertical movement for direction conflict.
-      if ((this.movement[MoveDirection.UP] && this.movement[MoveDirection.DOWN])){
-        this.ship.physicsComponent.velocity[Math.Y] =
-          Math.lerp(velocity[Math.Y], 0, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.PITCH] =
-            Math.lerp(angVelocity[Math.PITCH], 0, this.rotationSpeed * dt);
-          this.ship.transformComponent.absRotation[Math.PITCH] =
-            Math.lerp(rotation[Math.PITCH], 0, this.rotationSpeed * dt);
-      }
-
-      // Cancel horizontal movement for direction conflict.
-      if ((this.movement[MoveDirection.LEFT] && this.movement[MoveDirection.RIGHT])){
-        this.ship.physicsComponent.velocity[Math.X] =
-          Math.lerp(velocity[Math.X], 0, this.accelerationSpeed * dt);
-
-          this.ship.physicsComponent.angularVelocity[Math.YAW] =
-            Math.lerp(angVelocity[Math.YAW], 0, this.rotationSpeed * dt);
-          this.ship.transformComponent.absRotation[Math.YAW] =
-            Math.lerp(rotation[Math.YAW], 0, this.rotationSpeed * dt);
-      }
-    }
 
     tick(dt) {
-        if(this.cursorPosition[0] !== -1 && this.cursorPosition[1] !== -1) {
-            this.swayShip();
-        }
-
-
-        this.physicsComponent.velocity[Math.Z] = Math.lerp(this.physicsComponent.velocity[Math.Z], -200, 0.00001);
-
-        this.moveShip(dt);
-
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);
