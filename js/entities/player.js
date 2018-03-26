@@ -259,6 +259,11 @@ class Player extends Entity {
 
         this.moveShip(dt);
 
+        if(this.camera) {
+            //this.camera.boomAngle[0] += 50 * dt;
+            this.camera.boomAngle[1] += 50 * dt;
+        }
+
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);

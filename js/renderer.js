@@ -24,6 +24,13 @@ class Renderer {
         ent.components[ComponentID.COMPONENT_MESH].render(this.program, this.ctx);
       }
 
+      if(ent.hasComponent(ComponentID.COMPONENT_PHYSICS) && drawAABB) {
+          var physicsComponent = ent.getComponent(ComponentID.COMPONENT_PHYSICS);
+          if(physicsComponent.aabb) {
+              physicsComponent.aabb.draw(this.program, this.ctx);
+          }
+      }
+
       // Render children.
       if (ent.children.length > 0) {
         ent.children.forEach((child) => {

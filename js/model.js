@@ -23,4 +23,7 @@ class Model {
         }
 
     }
+    constructAABB() {
+        
+    }
 };
