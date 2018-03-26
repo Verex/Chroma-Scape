@@ -58,6 +58,7 @@ class App {
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
     assets.addModel(this.gl, GridMesh(50000, 4500), "grid");
+    assets.addModel(this.gl, TestMesh(), "portal");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
@@ -67,12 +68,23 @@ class App {
 
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
-    this.player.camera.boomAngle = 0;
+    this.player.camera.boomAngle = [0, 0];
     this.player.camera.boomRadius = 15;
 
     // Create ship entity.
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
     this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
+    this.player.ship.physicsComponent.aabb = new AABB(this.player.ship, 1.5, 1, 2.75);
+    this.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
+
+    this.portal = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PORTAL);
+    this.portal.transformComponent.absOrigin = vec3.fromValues(0, 5, -150);
+    this.portal.transformComponent.absRotation = vec3.fromValues(0, 90, 0);
+    this.portal.transformComponent.absScale = vec3.fromValues(5, 5, 5);
+    this.portal.physicsComponent.aabb = new AABB(this.portal, 5, 5, 5);
+    this.portal.meshComponent.setModel(
+      assets.getModel("portal")
+    );
 
     // Set model for our ship.
     this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
@@ -201,6 +213,7 @@ class App {
   */
   tick(dt) {
     this.gameworld.tick(dt);
+    this.gameworld.queryCollision();
     this.gameworld.updateSceneGraph();
   }
 
