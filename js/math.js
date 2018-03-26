@@ -56,4 +56,8 @@ Math.screenToWorld = (invViewProjection, screenCoords, screenWidth, screenHeight
   vec3.transformMat4(worldPos, worldPos, invViewProjection);
 
   return worldPos;
-}
+};
+
+Math.lerp = (a, b, i) => {
+  return a + i * (b - a);
+};

@@ -64,17 +64,22 @@ class App {
 
     // Create player entity.
     this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
+
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
     this.player.camera.boomAngle = 0;
     this.player.camera.boomRadius = 15;
+
     // Create ship entity.\
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
     this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
+
     // Set model for our ship.
     this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
       assets.getModel("ship")
     );
+
+
     //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absOrigin = vec3.fromValues(0, 10, 15);
     //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absRotation = vec3.fromValues(-38, 0, 0);
     // Dummy Entity

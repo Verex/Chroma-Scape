@@ -9,7 +9,6 @@ class Ship extends Entity {
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
-        //this.physicsComponent.angularVelocity[Math.PITCH] = 45;
 
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
     }
