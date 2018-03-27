@@ -9,17 +9,16 @@ class Ship extends Entity {
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
-
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
         this.maxVelocity = {
-          linear: 10,
-          angular: 40
+          linear: 20,
+          angular: 50
         }
 
         this.momentum = {
-          linear: 0.8,
-          angular: 0.8
+          linear: 0.75,
+          angular: 0.75
         }
 
         this.bounds = {
@@ -147,6 +146,12 @@ class Ship extends Entity {
           this.transformComponent.absRotation[axis] = -this.bounds.angular[axis];
           this.physicsComponent.angularVelocity[axis] = 0;
         }
+      }
+    }
+
+    onCollisionOverlap(other) {
+      if(other.owner.type == EntityType.ENTITY_PORTAL) {
+        console.log("COLLISION WITH PORTAL");
       }
     }
 

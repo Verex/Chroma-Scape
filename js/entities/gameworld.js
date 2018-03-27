@@ -21,7 +21,7 @@ class GameWorld extends Entity {
           }
         );
 
-        this.inputComponent.registerEvent(
+    this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_RELEASE,
           'KeyQ',
@@ -46,6 +46,43 @@ class GameWorld extends Entity {
 
     tick(dt) {
         super.tick(dt);
+    }
+
+    queryCollision() {
+        var collidables = [];
+        var moving = [];
+        var time = Date.now();
+        var queryCollisionRecursive = (ent) => {
+            if(ent.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
+                var physicsComponent = ent.getComponent(ComponentID.COMPONENT_PHYSICS);
+                if(physicsComponent.aabb) {
+                    collidables.push(physicsComponent);
+                    if(physicsComponent.isMoving()) {
+                        moving.push(physicsComponent);
+                    } 
+                }
+            }
+            ent.children.forEach((value, index, array) => {
+                queryCollisionRecursive(value);
+            });
+        };
+        queryCollisionRecursive(this);
+        moving.forEach((value, index, array) => {
+            collidables.forEach((nValue, nIndex, nArray) => {
+                if(nValue.owner.eid != value.owner.eid) {
+                    if(value.aabb.checkCollision(
+                        nValue.aabb
+                    ) && GlobalVars.getInstance().tickcount > 1) {
+                        value.owner.onCollisionOverlap(nValue);
+                        nValue.owner.onCollisionOverlap(value);
+                        //console.log("COLLISION!");
+                    }
+                }
+            });
+        });
+
+        //time = Date.now() - time;
+        //console.log("Collision took: " + time);
     }
 
     updateSceneGraph() {

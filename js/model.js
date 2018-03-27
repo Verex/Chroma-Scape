@@ -8,19 +8,65 @@ class Model {
         this.vtxBuffer = glContext.createBuffer();
         this.clrBuffer = glContext.createBuffer();
 
+        this.drawType = this.ctx.TRIANGLES;
+
         this.numVertices = this.vertices.length / 3;
 
-        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.vtxBuffer);
-        glContext.bufferData(glContext.ARRAY_BUFFER, new Float32Array(this.vertices), glContext.STATIC_DRAW);
-        glContext.bindBuffer(glContext.ARRAY_BUFFER, this.clrBuffer);
-        glContext.bufferData(glContext.ARRAY_BUFFER, new Float32Array(this.color), glContext.STATIC_DRAW);
+        this.reload();
+    }
+
+    reload() {
+        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.vtxBuffer);
+        this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(this.vertices), this.ctx.STATIC_DRAW);
+        this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.clrBuffer);
+        this.ctx.bufferData(this.ctx.ARRAY_BUFFER, new Float32Array(this.color), this.ctx.STATIC_DRAW);
 
 
-        if(indices) {
-            this.idxBuffer = glContext.createBuffer();
-            glContext.bindBuffer(glContext.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
-            glContext.bufferData(glContext.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), glContext.STATIC_DRAW);
+        if(this.indices) {
+            this.idxBuffer = this.ctx.createBuffer();
+            this.ctx.bindBuffer(this.ctx.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
+            this.ctx.bufferData(this.ctx.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), this.ctx.STATIC_DRAW);
         }
+    }
 
+    render(program) {
+        {
+            const numComponents = 3;
+            const type = this.ctx.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.vtxBuffer);
+            this.ctx.vertexAttribPointer(
+                program.attributeLocation("a_position"),
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset
+            );
+            this.ctx.enableVertexAttribArray(
+                program.attributeLocation("a_position")
+            );
+        }
+        {
+            const numComponents = 4;
+            const type = this.ctx.FLOAT;
+            const normalize = false;
+            const stride = 0;
+            const offset = 0;
+            this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, this.clrBuffer);
+            this.ctx.vertexAttribPointer(
+                program.attributeLocation("a_color"),
+                numComponents,
+                type,
+                normalize,
+                stride,
+                offset
+            );
+            this.ctx.enableVertexAttribArray(
+                program.attributeLocation("a_color")
+            );
+        }
     }
 };

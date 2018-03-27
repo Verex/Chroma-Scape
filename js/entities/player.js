@@ -41,9 +41,10 @@ class Player extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
 
         this.physicsComponent.velocity[Math.Z] = -20;
-
+        this.physicsComponent.acceleration[Math.Z] = -10;
         this.transformComponent.absOrigin[Math.Y] = 10;
         this.cursorPosition = vec2.fromValues(-1, -1);
+        
 
         /*
         this.inputComponent.registerEvent(
@@ -135,6 +136,9 @@ class Player extends Entity {
     }
 
     tick(dt) {
+        //this.physicsComponent.velocity[Math.Z] = Math.lerp(this.physicsComponent.velocity[Math.Z], -200, 0.00001);
+
+  
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);
