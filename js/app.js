@@ -68,8 +68,8 @@ class App {
 
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
-    this.player.camera.boomAngle = [0, 0];
-    this.player.camera.boomRadius = 15;
+    this.player.camera.boomAngle = [15, 0];
+    this.player.camera.boomRadius = 18;
 
     // Create ship entity.
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);

@@ -12,13 +12,13 @@ class Ship extends Entity {
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
         this.maxVelocity = {
-          linear: 15,
-          angular: 45
+          linear: 20,
+          angular: 50
         }
 
         this.momentum = {
-          linear: 0.8,
-          angular: 0.8
+          linear: 0.75,
+          angular: 0.75
         }
 
         this.bounds = {
