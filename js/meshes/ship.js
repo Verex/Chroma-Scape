@@ -1,33 +1,39 @@
 var ShipMesh = () => {
-    const shipBackZ = -1.5;
-    const mhs = 0.65; // Mid height scale.
+    const front = -1.5; // Z position of
+    const back  = 1;
+    const top = 0.25;
+    const bottom = -0.75;
+    const left = -1;
+    const right = 1
+
+    const primaryColor = [0.329, 0.224, 0.196, 1.0];
+    const highlightColor = [0.573, 0.176, 0.071, 1.0];
+    const shadeColor = [0.137, 0.133, 0.133, 1.0];
+    const darkColor = [0.094, 0.09, 0.086, 1.0];
 
     const faceColors = [
-        [1.0,  1.0,  1.0,  1.0],    // Front face: white
-        [1.0,  1.0,  1.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  0.0,  1.0],    // Front face: white
-
-        [0.0,  1.0,  0.0,  1.0],    // Front face: white
-
-        [0.0,  1.0,  0.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  0.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  1.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  1.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  1.0,  1.0],    // Front face: white
-
-        [1.0,  0.0,  0.0,  1.0],    // Front face: white
+        primaryColor,    // Back bottom
+        primaryColor,    // Back middle
+        primaryColor,    // Left panel
+        primaryColor,    // Right Panel
+        highlightColor,    // Top side left
+        highlightColor,    // Top side right
+        primaryColor,    // Top
+        highlightColor,    // Bottom side left
+        highlightColor,    // Bottom side left
+        primaryColor,    // Bottom
+        shadeColor,
+        shadeColor,
+        shadeColor,
+        shadeColor,
+        shadeColor
     ];
     const indices = [
         0,  1,  2,      0,  2,  3,    // front
         3,  4,  5,      2,  3,  5,
         4,  5,  6,      5,  6,  7,
 
-        8,  9, 10,      8,  10, 11,
+        8,  9, 10,      8,  9, 11,
 
         12, 13, 14,     12, 14, 15,
 
@@ -42,61 +48,101 @@ var ShipMesh = () => {
         32, 33, 34,      32, 34, 35,
 
         36, 37, 38,      36, 38, 39,
+
+        // Main thruster.
+        40, 41, 42,      40, 42, 43, // Top
+        40, 44, 45,      40, 45, 41, // Left
+        42, 46, 47,      42, 47, 43, // Right
+        44, 45, 46,      44, 46, 47, // Bottom
+        48, 49, 50,      48, 50, 51, // Inner top
+        52, 53, 54,      52, 54, 55, // Inner bottom
+        48, 52, 53,      48, 53, 49, // Inner left
+        41, 49, 50,      41, 50, 42, // Front top.
     ];
     const vertices = [
-        // Front face
-        -0.25, -1.0 * mhs,  1.0,
-         0.25, -1.0 * mhs,  1.0,
-         0.75, -0.75 * mhs,  1.0,
-        -0.75, -0.75 * mhs,  1.0, // 3
+        // Back panel bottom.
+        -0.25, bottom,  back,
+         0.25, bottom,  back,
+         right, bottom + 0.25,  back,
+         left, bottom + 0.25,  back, // 3
 
-        -0.75,  0.0,  1.0,
-         0.75,  0.0,  1.0,
-        -0.25,  0.25 * mhs,  1.0,
-         0.25,  0.25 * mhs,  1.0, // 7
+        // Back panel bottom.
+         left,  top - 0.25,  back,
+         right,  top - 0.25,  back,
+        -0.25,  top,  back,
+         0.25,  top,  back, // 7
 
-        -0.75, -0.75 * mhs,  1.0,
-        -0.75,  0.0,  1.0,
-        -0.75,  0.0,  shipBackZ,
-        -0.75, -0.75 * mhs, shipBackZ, // 11
+         // Left panel.
+         left, bottom + 0.25, front,
+         left,  top - 0.25,  back,
+         left,  top - 0.25,  front,
+         left, bottom + 0.25, back, // 11
 
-        0.75, -0.75 * mhs,  1.0,
-        0.75,  0.0,  1.0,
-        0.75,  0.0,  shipBackZ,
-        0.75, -0.75 * mhs, shipBackZ, // 15
+        // Right panel
+        right, bottom + 0.25, front,
+        right, top - 0.25,  front,
+        right, top - 0.25,  back,
+        right, bottom + 0.25,  back,// 15
 
-        -0.75,  0.0,  1.0,
-        -0.25,  0.25 * mhs,  1.0,
-        -0.75,  0.0,  shipBackZ,
-        -0.75,  0.0,  shipBackZ, // 19
+        // Left top panel.
+        -0.25,  top,  back,
+        left,  top - 0.25,  back,
+        left,  top - 0.25,  front,
+        -0.25,  top,  back, // 19
 
-        0.75,  0.0,  1.0,
-        0.25,  0.25 * mhs,  1.0,
-        0.75,  0.0,  shipBackZ,
-        0.75,  0.0,  shipBackZ, // 23
+        // Right top panel.
+        right,  top - 0.25,  front,
+        right,  top - 0.25,  back,
+        0.25,  top,  back,
+        right,  top - 0.25,  front, // 23
 
-        // TOP
-       -0.25,  0.25 * mhs,  1.0,
-       -0.75,  0.0,  shipBackZ,
-        0.75,  0.0,  shipBackZ,
-        0.25,  0.25 * mhs,  1.0, // 27
+        // Top panel.
+       -0.25,  top,  back,
+        left,  top - 0.25,  front,
+        right, top - 0.25,  front,
+        0.25,  top,  back, // 27
 
-        // Bottom-side left.
-       -0.75, -0.75 * mhs, shipBackZ,
-       -0.75, -0.75 * mhs,  1.0,
-       -0.25, -1.0 * mhs,   1.0,
-       -0.75, -0.75 * mhs,  shipBackZ, // 31
+        // Left bottom panel.
+        left, bottom + 0.25,  back,
+        left, bottom + 0.25, front,
+        -0.25, bottom, back,
+        left, bottom + 0.25, front, // 31
 
-        // Bottom-side right.
-        0.75, -0.75 * mhs, shipBackZ,
-        0.75, -0.75 * mhs,  1.0,
-        0.25, -1.0 * mhs,   1.0,
-        0.75, -0.75 * mhs,  shipBackZ, // 35
+        // Right bottom panel.
+        right, bottom + 0.25,  back,
+        right, bottom + 0.25, front,
+        0.25, bottom, back,
+        right, bottom + 0.25,  front, // 35
 
-        -0.25, -1.0 * mhs,  1.0,
-        -0.75, -0.75 * mhs,  shipBackZ,
-         0.75, -0.75 * mhs,  shipBackZ,
-         0.25, -1.0 * mhs,  1.0, // 39
+        // Bottom panel.
+        -0.25, bottom,  back,
+         left, bottom + 0.25,  front,
+         right, bottom + 0.25,  front,
+         0.25, bottom,  back, // 39
+
+       // Thruster top
+       -0.25, top, back,
+       -0.25, top, back + 0.25,
+        0.25, top, back + 0.25,
+        0.25, top, back, // 43
+
+      // Thruster bottom
+      -0.25, bottom, back,
+      -0.25, bottom, back + 0.25,
+       0.25, bottom, back + 0.25,
+       0.25, bottom, back, // 47
+
+     // Thruster inner top
+     -0.25 + 0.1, top - 0.1, back,
+     -0.25 + 0.1, top - 0.1, back + 0.25,
+      0.25 - 0.1, top - 0.1, back + 0.25,
+      0.25 - 0.1, top - 0.1, back, // 51
+
+      // Thruster inner bottom
+      -0.25 + 0.1, bottom + 0.1, back,
+      -0.25 + 0.1, bottom + 0.1, back + 0.25,
+       0.25 - 0.1, bottom + 0.1, back + 0.25,
+       0.25 - 0.1, bottom + 0.1, back, // 55
     ];
 
     return {
