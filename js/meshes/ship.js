@@ -126,34 +126,34 @@ var ShipMesh = () => {
          0.25, bottom,  back, // 39
 
        // Thruster top
-       -0.25, top, back,
-       -0.25, top, back + 0.25,
-        0.25, top, back + 0.25,
-        0.25, top, back, // 43
+       left, top - 0.25, back,
+       left, top - 0.25, back + 0.25,
+       right, top - 0.25, back + 0.25,
+       right, top - 0.25, back, // 43
 
       // Thruster bottom
-      -0.25, bottom, back,
-      -0.25, bottom, back + 0.25,
-       0.25, bottom, back + 0.25,
-       0.25, bottom, back, // 47
+      left, bottom + 0.25, back,
+      left, bottom + 0.25, back + 0.25,
+       right, bottom + 0.25, back + 0.25,
+       right, bottom + 0.25, back, // 47
 
      // Thruster inner top
-     -0.25 + 0.1, top - 0.1, back,
-     -0.25 + 0.1, top - 0.1, back + 0.25,
-      0.25 - 0.1, top - 0.1, back + 0.25,
-      0.25 - 0.1, top - 0.1, back, // 51
+     left + 0.1, top - 0.25 - 0.1, back,
+     left + 0.1, top - 0.25 - 0.1, back + 0.25,
+     right - 0.1, top - 0.25 - 0.1, back + 0.25,
+     right - 0.1, top - 0.25 - 0.1, back, // 51
 
       // Thruster inner bottom
-      -0.25 + 0.1, bottom + 0.1, back,
-      -0.25 + 0.1, bottom + 0.1, back + 0.25,
-       0.25 - 0.1, bottom + 0.1, back + 0.25,
-       0.25 - 0.1, bottom + 0.1, back, // 55
+      left + 0.1, bottom + 0.25 + 0.1, back,
+      left + 0.1, bottom + 0.25 + 0.1, back + 0.25,
+      right - 0.1, bottom + 0.25 + 0.1, back + 0.25,
+      right - 0.1, bottom + 0.25 + 0.1, back, // 55
 
        // Thruster inner.
-       -0.25 + 0.1, bottom + 0.1, back + (0.25 * 0.5),
-       -0.25 + 0.1, top - 0.1, back + (0.25 * 0.5),
-       0.25 - 0.1, top - 0.1, back + (0.25 * 0.5),
-       0.25 - 0.1, bottom + 0.1, back + (0.25 * 0.5), // 59
+       left + 0.1, bottom + 0.25 + 0.1, back + (0.25 * 0.5),
+       left + 0.1, top - 0.25 - 0.1, back + (0.25 * 0.5),
+       right - 0.1, top - 0.25 - 0.1, back + (0.25 * 0.5),
+       right - 0.1, bottom + 0.25 + 0.1, back + (0.25 * 0.5), // 59
     ];
 
     return {
