@@ -18,10 +18,10 @@ var PortalMesh = () => {
     return {
         indices: () => { return undefined; },
         vertices: () => { return vertices; },
-        color: () => {
+        color: (portalColor) => {
             var c = [];
             for(var j = 0; j < vertices.length / 3; ++j) {
-                const color = faceColors[0];
+                const color = (portalColor !== undefined) ? portalColor : faceColors[0];
                 c = c.concat(color, color, color, color);
             }
             return c;

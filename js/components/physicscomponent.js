@@ -44,43 +44,19 @@ class AABB  {
     checkCollision(other) {
         var center = this.owner.transformComponent.getWorldTranslation();
         var otherCenter = other.owner.transformComponent.getWorldTranslation();
-        var otherMin = [other.offset, other.offsetY, other.offsetZ];
-        var otherMax = [0,0,0];
-        var min = [this.offsetX, this.offsetY, this.offsetZ];
-        var max = [0,0,0];
 
-        vec3.scaleAndAdd(
-            max,
-            min,
-            center,
-            1
-        );
-        vec3.scaleAndAdd(
-            min,
-            min,
-            center,
-            -1
-        );
+        var otherMin = [otherCenter[0] - other.offsetX, otherCenter[1] - other.offsetY, otherCenter[2] - other.offsetZ];
+        var otherMax = [otherCenter[0] + other.offsetX, otherCenter[1] + other.offsetX, otherCenter[2] + other.offsetZ];
+        var min = [center[0] - this.offsetX, center[1] - this.offsetY, center[2] - this.offsetZ];
+        var max = [center[0] + this.offsetX, center[1] + this.offsetY, center[2] + this.offsetZ];
 
-        vec3.scaleAndAdd(
-            otherMax,
-            otherMin,
-            otherCenter,
-            1
-        );
+        //console.log("MinZ:" + min[2]);
+        //console.log("OthermaxZ: " + otherMax[2]);
+        //console.log("MinZ <= otherMaxZ: " + (min[2] <= otherMax[2]));
 
-        vec3.scaleAndAdd(
-            otherMin,
-            otherMin,
-            otherCenter,
-            -1
-        );
-
-        console.log(min);
-        console.log(max);
-        console.log(otherMin);
-        console.log(otherMax);
-
+        return (min[0] <= otherMax[0] && max[0] >= otherMin[0]) &&
+               (min[1] <= otherMax[1] && max[1] >= otherMin[1]) &&
+               (min[2] <= otherMax[2] && max[2] >= otherMin[2]);
     }
 };
 class PhysicsComponent extends EntityComponent {

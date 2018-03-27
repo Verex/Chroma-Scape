@@ -81,10 +81,12 @@ class App {
     this.portal.transformComponent.absOrigin = vec3.fromValues(0, 5, -150);
     this.portal.transformComponent.absRotation = vec3.fromValues(0, 90, 0);
     this.portal.transformComponent.absScale = vec3.fromValues(5, 5, 5);
-    this.portal.physicsComponent.aabb = new AABB(this.portal, 5, 5, 5);
+    this.portal.physicsComponent.aabb = new AABB(this.portal, 10 ,10, 10);
     this.portal.meshComponent.setModel(
       assets.getModel("portal")
     );
+    this.portal.meshComponent.model.color = TestMesh().color(this.portal.color);
+    this.portal.meshComponent.model.reload();
 
     // Set model for our ship.
     this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
