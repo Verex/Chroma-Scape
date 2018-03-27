@@ -4,7 +4,7 @@ var ShipMesh = () => {
     const top = 0.25;
     const bottom = -0.75;
     const left = -1;
-    const right = 1
+    const right = 1;
 
     const primaryColor = [0.329, 0.224, 0.196, 1.0];
     const highlightColor = [0.573, 0.176, 0.071, 1.0];
@@ -18,15 +18,15 @@ var ShipMesh = () => {
         primaryColor,    // Right Panel
         highlightColor,    // Top side left
         highlightColor,    // Top side right
-        primaryColor,    // Top
+        shadeColor,    // Top
         highlightColor,    // Bottom side left
         highlightColor,    // Bottom side left
-        primaryColor,    // Bottom
+        shadeColor,    // Bottom
+        shadeColor, // Thruster.
         shadeColor,
         shadeColor,
         shadeColor,
-        shadeColor,
-        shadeColor
+        [1.0, 0.0, 1.0, 1.0], // Thruster middle innerColor.
     ];
     const indices = [
         0,  1,  2,      0,  2,  3,    // front
@@ -57,7 +57,12 @@ var ShipMesh = () => {
         48, 49, 50,      48, 50, 51, // Inner top
         52, 53, 54,      52, 54, 55, // Inner bottom
         48, 52, 53,      48, 53, 49, // Inner left
-        41, 49, 50,      41, 50, 42, // Front top.
+        50, 54, 55,      50, 55, 51, // Inner right
+        41, 49, 50,      41, 50, 42, // Front top
+        45, 53, 54,      45, 54, 46, // Front bottom
+        41, 49, 53,      41, 53, 45, // Front Left
+        42, 50, 54,      42, 54, 46, // Front bottom
+        56, 57, 58,      56, 58, 59,
     ];
     const vertices = [
         // Back panel bottom.
@@ -143,6 +148,12 @@ var ShipMesh = () => {
       -0.25 + 0.1, bottom + 0.1, back + 0.25,
        0.25 - 0.1, bottom + 0.1, back + 0.25,
        0.25 - 0.1, bottom + 0.1, back, // 55
+
+       // Thruster inner.
+       -0.25 + 0.1, bottom + 0.1, back + (0.25 * 0.5),
+       -0.25 + 0.1, top - 0.1, back + (0.25 * 0.5),
+       0.25 - 0.1, top - 0.1, back + (0.25 * 0.5),
+       0.25 - 0.1, bottom + 0.1, back + (0.25 * 0.5), // 59
     ];
 
     return {
