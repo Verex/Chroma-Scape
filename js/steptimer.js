@@ -12,7 +12,7 @@ var TimerStatus = {
     TIMER_FAILED: 3
 };
 
-class TimerEntry 
+class TimerEntry
 {
     constructor(time, callback, owner, args) {
         this.time = time; //Time our timer will execute
@@ -24,14 +24,14 @@ class TimerEntry
 
     tick(time) {
         if(this.paused) {
-            //TODO(Jake): If relative, timer needs to be adjusted otherwise when timer is unpaused the callback will be 
+            //TODO(Jake): If relative, timer needs to be adjusted otherwise when timer is unpaused the callback will be
             // triggered on the next cycle if the current time has exceeded the timer time.
             return TimerStatus.TIMER_PAUSED;
         }
         if(time >= this.time) {
             this.callback.apply(this.owner, this.args);
             return TimerStatus.TIMER_DONE;
-        } 
+        }
 
         return TimerStatus.TIMER_TICKING;
     }
@@ -59,7 +59,8 @@ class _StepTimer_ //Internal class
         for(var key in this.timers) {
             if(this.timers.hasOwnProperty(key)) {
                 if(this.timers[key].tick(this.getCurrentTime()) == TimerStatus.TIMER_DONE) {
-                    this.timers[key] = null; //Our timer is done!
+                    this.timers[key] = null;
+                    delete this.timers[key];
                 }
             }
         }
@@ -69,7 +70,7 @@ class _StepTimer_ //Internal class
         Function: createRelativeTimer
         Parameters: @name: string - Name of timer
                     @time: number - Delay in MS before callback occurs
-                    @callback: function - Routine to be executed 
+                    @callback: function - Routine to be executed
                     @owner: Object - Class Object that owns the callback (if any)
                     @args: Array - Array of parameters to be passed to callback (if any)
         Purpose:
@@ -79,7 +80,7 @@ class _StepTimer_ //Internal class
         if(this.timers[name] == null) {
             this.timers[name] = new TimerEntry(
                 this.getCurrentTime() + time,
-                callback, 
+                callback,
                 owner,
                 args
             );
@@ -98,9 +99,9 @@ var Timer = (() => {
     return {
         getInstance: () => {
             if (instance == null) {
-                instance = new _StepTimer_(); 
+                instance = new _StepTimer_();
             }
-            return instance; 
+            return instance;
         }
    };
 })();

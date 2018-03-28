@@ -21,12 +21,12 @@ class GameWorld extends Entity {
           }
         );
 
-        this.inputComponent.registerEvent(
+    this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_RELEASE,
           'KeyQ',
           (event) => {
-            this.children[0].camera.boomAngle += 30;
+            this.children[0].camera.boomAngle[Math.PITCH] += 30;
           }
         );
     }
@@ -59,7 +59,7 @@ class GameWorld extends Entity {
                     collidables.push(physicsComponent);
                     if(physicsComponent.isMoving()) {
                         moving.push(physicsComponent);
-                    } 
+                    }
                 }
             }
             ent.children.forEach((value, index, array) => {
@@ -72,8 +72,10 @@ class GameWorld extends Entity {
                 if(nValue.owner.eid != value.owner.eid) {
                     if(value.aabb.checkCollision(
                         nValue.aabb
-                    )) {
-                        console.log("COLLISION!");
+                    ) && GlobalVars.getInstance().tickcount > 1) {
+                        value.owner.onCollisionOverlap(nValue);
+                        nValue.owner.onCollisionOverlap(value);
+                        //console.log("COLLISION!");
                     }
                 }
             });
