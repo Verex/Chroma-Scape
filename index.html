@@ -68,6 +68,10 @@
           async: false
         });
 
+        $(document).click( () => {
+          $('#glcanvas')[0].requestPointerLock();
+        });
+
         // Instantiate the application.
         var app = new App();
 
