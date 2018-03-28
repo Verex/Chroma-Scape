@@ -70,9 +70,10 @@ var ShipMesh = () => {
         42, 50, 54,      42, 54, 46, // Front bottom
         56, 57, 58,      56, 58, 59,
 
-        60, 61, 62,       63, 64, 65,
-        66, 67, 68,      66, 68, 69,
-        70, 71, 72,       70, 72, 73,
+        60, 61, 62,       60, 62, 63,
+        64, 65, 66,       64, 66, 67,
+        68, 69, 70,      68, 70, 71,
+        72, 73, 74,       72, 74, 75,
     ];
     const vertices = [
         // Back panel bottom.
@@ -167,21 +168,23 @@ var ShipMesh = () => {
 
        left, bottom + 0.25, front,
        left,  top - 0.25,  front,
-       left, middle, front - 1.0, //62
+       left, middle, front - 1.0,
+       left, bottom + 0.25, front, //63
 
        right, bottom + 0.25, front,
        right, top - 0.25,  front,
-       right, middle, front - 1.0, //65
+       right, middle, front - 1.0,
+       right, bottom + 0.25, front, //67
 
        left, middle, front - 1.0,
        right, middle, front - 1.0,
        right, top - 0.25,  front,
-      left,  top - 0.25,  front, // 69
+      left,  top - 0.25,  front, // 71
 
       left, middle, front - 1.0,
       right, middle, front - 1.0,
       right, bottom + 0.25,  front,
-      left, bottom + 0.25,  front, // 73
+      left, bottom + 0.25,  front, // 75
     ];
 
     return {

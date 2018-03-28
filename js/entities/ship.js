@@ -23,7 +23,7 @@ class Ship extends Entity {
 
         this.bounds = {
           linear: [7.5, 5.5, 0],
-          angular: [25, 90, 30]
+          angular: [25, 360, 30]
         }
     }
 

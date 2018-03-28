@@ -26,7 +26,7 @@ class GameWorld extends Entity {
           InputType.BTN_RELEASE,
           'KeyQ',
           (event) => {
-            this.children[0].camera.boomAngle += 30;
+            this.children[0].camera.boomAngle[Math.PITCH] += 30;
           }
         );
     }
@@ -59,7 +59,7 @@ class GameWorld extends Entity {
                     collidables.push(physicsComponent);
                     if(physicsComponent.isMoving()) {
                         moving.push(physicsComponent);
-                    } 
+                    }
                 }
             }
             ent.children.forEach((value, index, array) => {
