@@ -1,3 +1,8 @@
+var CollisionType = {
+    COLLISION_NONE: 0,
+    COLLISION_SOLID: 1,
+    COLLISION_TRIGGER: 2
+};
 class AABB  {
     constructor(owner, width, height, depth) {
         this.owner = owner;
@@ -12,22 +17,29 @@ class AABB  {
         this.color = this.mesh.color();
         this.indices = this.mesh.indices();
         this.translation = vec3.fromValues(0, 0, 0);
+        this.origin = vec3.fromValues(0, 0, 0);
     }
 
     draw(program, gl) {
         if(!this.model) {
             this.model = new Model(gl, this.indices, this.vertices, this.color);
         }
+        gl.uniform1i(
+            program.uniformLocation("u_ignoreLighting"),
+            1
+        );
         this.model.render(program);
         var transform = mat4.create();
-        mat4.fromTranslation(transform, this.translation);
-        mat4.multiply(
-            transform, 
-            transform, 
-            this.owner.getComponent(
-                ComponentID.COMPONENT_TRANSFORM
-            ).worldTransform
-        ); 
+        var finalPosition = vec3.create();
+        vec3.add(
+            finalPosition,
+            this.origin,
+            this.translation
+        );
+        mat4.fromTranslation(transform, finalPosition);
+        if(this.owner.type == EntityType.ENTITY_PLAYER) {
+            //console.log(this.origin, this.owner.transformComponent);
+        }
         gl.uniformMatrix4fv(
             program.uniformLocation("u_modelMatrix"),
             false,
@@ -42,45 +54,26 @@ class AABB  {
         }
     }
     checkCollision(other) {
-        var center = this.owner.transformComponent.getWorldTranslation();
-        var otherCenter = other.owner.transformComponent.getWorldTranslation();
-        var otherMin = [other.offset, other.offsetY, other.offsetZ];
-        var otherMax = [0,0,0];
-        var min = [this.offsetX, this.offsetY, this.offsetZ];
-        var max = [0,0,0];
+        var center = this.origin;
+        var otherCenter = other.origin;
 
-        vec3.scaleAndAdd(
-            max,
-            min,
-            center,
-            1
-        );
-        vec3.scaleAndAdd(
-            min,
-            min,
-            center,
-            -1
-        );
+        if(this.owner.owner && this.owner.owner.hasComponent(ComponentID.COMPONENT_TRANSFORM)) {
+            vec3.add(
+                center,
+                center,
+                this.owner.owner.getComponent(ComponentID.COMPONENT_TRANSFORM).getWorldTranslation()
+            );
+            this.origin = center;
+        }
 
-        vec3.scaleAndAdd(
-            otherMax,
-            otherMin,
-            otherCenter,
-            1
-        );
+        var otherMin = [otherCenter[0] - other.offsetX, otherCenter[1] - other.offsetY, otherCenter[2] - other.offsetZ];
+        var otherMax = [otherCenter[0] + other.offsetX, otherCenter[1] + other.offsetX, otherCenter[2] + other.offsetZ];
+        var min = [center[0] - this.offsetX, center[1] - this.offsetY, center[2] - this.offsetZ];
+        var max = [center[0] + this.offsetX, center[1] + this.offsetY, center[2] + this.offsetZ];
 
-        vec3.scaleAndAdd(
-            otherMin,
-            otherMin,
-            otherCenter,
-            -1
-        );
-
-        console.log(min);
-        console.log(max);
-        console.log(otherMin);
-        console.log(otherMax);
-
+        return (min[0] <= otherMax[0] && max[0] >= otherMin[0]) &&
+               (min[1] <= otherMax[1] && max[1] >= otherMin[1]) &&
+               (min[2] <= otherMax[2] && max[2] >= otherMin[2]);
     }
 };
 class PhysicsComponent extends EntityComponent {
@@ -94,9 +87,12 @@ class PhysicsComponent extends EntityComponent {
         this.angularVelocity = vec3.fromValues(0, 0, 0);
         this.lastTransform = mat4.create();
         this.maxSpeed = 50;
+
+        this.collisionType = CollisionType.COLLISION_NONE;
     }
 
     isMoving() {
+        if(this.owner.eid == 0) return false;
         if(this.owner.owner.eid != 0 && this.owner.owner.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
             return this.owner.owner.getComponent(ComponentID.COMPONENT_PHYSICS).isMoving();
         }
@@ -126,12 +122,49 @@ class PhysicsComponent extends EntityComponent {
             vec3.normalize(this.velocity, this.velocity);
             vec3.scale(this.velocity, this.velocity, this.maxSpeed);   
         }
-        vec3.scaleAndAdd(
-            transformComponent.absOrigin,
-            transformComponent.absOrigin,
-            this.velocity,
-            step
-        );
+
+        var tempOrigin = vec3.create();
+        var collision = false;
+        if(this.aabb && this.isMoving() && this.collisionType == CollisionType.COLLISION_SOLID) {
+            vec3.copy(tempOrigin, transformComponent.absOrigin);
+            var collidables = this.owner.getGameWorld().queryCollisionTree(this.owner);
+            vec3.scaleAndAdd(
+                tempOrigin,
+                transformComponent.absOrigin,
+                this.velocity,
+                step
+            );
+            for(var i = 0; i < collidables.length; i++) {
+                var collidable = collidables[i];
+                vec3.copy(
+                    this.aabb.origin,
+                    tempOrigin
+                );
+                if(this.aabb.checkCollision(collidable.aabb)) {
+                    collision = true;
+                    break;
+                }
+            }
+            if(!collision) {
+                vec3.copy(
+                    transformComponent.absOrigin,
+                    tempOrigin
+                );
+            }
+        } else {
+            vec3.scaleAndAdd(
+                transformComponent.absOrigin,
+                transformComponent.absOrigin,
+                this.velocity,
+                step
+            );
+        }
+        if(this.aabb) {
+            vec3.copy(
+                this.aabb.origin,
+                transformComponent.absOrigin
+            );
+        }
 
         vec3.scaleAndAdd(
             transformComponent.absRotation,

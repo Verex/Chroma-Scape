@@ -55,10 +55,10 @@ var TestMesh = () => {
     return {
         indices: () => { return indices; },
         vertices: () => { return vertices; },
-        color: () => {
+        color: (portalColor) => {
             var c = [];
-            for(var j = 0; j < faceColors.length; ++j) {
-                const color = faceColors[j];
+            for(var j = 0; j < vertices.length / 3; ++j) {
+                const color = (portalColor !== undefined) ? portalColor : faceColors[0];
                 c = c.concat(color, color, color, color);
             }
             return c;
