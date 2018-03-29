@@ -47,6 +47,35 @@ class GameWorld extends Entity {
     tick(dt) {
         super.tick(dt);
     }
+    queryCollisionTree(ent, type = CollisionType.COLLISION_SOLID) {
+        var collidables = [];
+        var queryCollisionRecursive = (itr) =>{
+            if(itr.eid != 0 && itr.eid != ent.eid) {
+                if(itr.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
+                    var d = Math.distance(
+                        ent.transformComponent.getWorldTranslation(),
+                        itr.transformComponent.getWorldTranslation()
+                    );
+                    if(d < 2000) {
+                        var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
+                        if(physicsComponent.collisionType == type) {
+                            if(physicsComponent.aabb) {
+                                collidables.push(physicsComponent);
+                            }
+                            if(physicsComponent.isMoving()) {
+                                collidables.push(physicsComponent);
+                            }
+                        }
+                    }
+                }
+            }
+            itr.children.forEach((value, index, array) => {
+                queryCollisionRecursive(value);
+            });
+        }
+        queryCollisionRecursive(this);
+        return collidables;
+    }
 
     queryCollision() {
         var collidables = [];

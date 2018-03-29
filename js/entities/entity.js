@@ -26,6 +26,7 @@ class Entity {
         }
 
         this.componentFactory = new EntityComponent.ComponentFactory(this);
+        this.onSolidCollision = undefined;
     }
 
     tick(dt) {

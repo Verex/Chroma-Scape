@@ -14,12 +14,13 @@ var TimerStatus = {
 
 class TimerEntry
 {
-    constructor(time, callback, owner, args) {
+    constructor(time, callback, owner, args, repeat) {
         this.time = time; //Time our timer will execute
         this.callback = callback; //Callback function supplied to timer
         this.owner = owner; //Owner of the timer
         this.args = args; //Arguments if any
         this.paused = false; //TODO(any): Deal with this later
+        this.repeat = repeat;
     }
 
     tick(time) {
@@ -59,8 +60,12 @@ class _StepTimer_ //Internal class
         for(var key in this.timers) {
             if(this.timers.hasOwnProperty(key)) {
                 if(this.timers[key].tick(this.getCurrentTime()) == TimerStatus.TIMER_DONE) {
-                    this.timers[key] = null;
-                    delete this.timers[key];
+                    if(this.timers[key].repeat) {
+                        this.timers[key].time += this.timers[key].relativeTime;
+                    } else {
+                        this.timers[key] = null;
+                        delete this.timers[key];
+                    }
                 }
             }
         }
@@ -76,14 +81,16 @@ class _StepTimer_ //Internal class
         Purpose:
                 Create a named timer to execute a specific task after a specified number of milliseconds.
     */
-    createRelativeTimer(name, time, callback, owner, args) {
+    createRelativeTimer(name, time, callback, owner, args, repeat = false) {
         if(this.timers[name] == null) {
             this.timers[name] = new TimerEntry(
                 this.getCurrentTime() + time,
                 callback,
                 owner,
-                args
+                args,
+                repeat
             );
+            this.timers[name].relativeTime = time;
         }
     }
 };

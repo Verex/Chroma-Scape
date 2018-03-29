@@ -11,6 +11,8 @@ class Ship extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
+        this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
+
         this.maxVelocity = {
           linear: 20,
           angular: 50
@@ -151,7 +153,12 @@ class Ship extends Entity {
 
     onCollisionOverlap(other) {
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
-        console.log("COLLISION WITH PORTAL");
+        console.log(this.owner.color === other.owner.col);
+        if(this.owner.color === other.owner.col) {
+
+        } else {
+          this.owner.crash();
+        }
       }
     }
 
