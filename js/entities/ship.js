@@ -11,6 +11,8 @@ class Ship extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
+        this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
+
         this.maxVelocity = {
           linear: 20,
           angular: 50

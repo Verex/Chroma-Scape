@@ -10,6 +10,8 @@ class Portal extends Entity {
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
 
+        this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
+
         var cidx = Math.randInt(0, 3);
         switch(cidx) {
             case 0: this.color = RED.serialize(); break;
@@ -20,6 +22,7 @@ class Portal extends Entity {
     }
 
     tick(dt) {
+        this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
         super.tick(dt);
     }
