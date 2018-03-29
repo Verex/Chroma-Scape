@@ -10,14 +10,7 @@ class TransformComponent extends EntityComponent {
     }
 
     updateTransform() {
-        var q = quat.create();
-        quat.fromEuler(
-            q,
-            this.absRotation[Math.PITCH],
-            this.absRotation[Math.YAW],
-            this.absRotation[Math.ROLL]
-        );
-
+        var q = this.getRotationQuaternion();
         mat4.fromRotationTranslationScale(
             this.localTransform,
             q,
@@ -26,9 +19,42 @@ class TransformComponent extends EntityComponent {
         );
     }
 
+    getRotationQuaternion() {
+        var q = quat.create();
+        quat.fromEuler(
+            q,
+            this.absRotation[Math.PITCH],
+            this.absRotation[Math.YAW],
+            this.absRotation[Math.ROLL]
+        );
+
+        return q;
+    }
+    translateToLocal(pos) {
+        var res = vec3.create();
+        vec3.transformMat4(
+            res, 
+            pos,
+            this.getInvWorldTransform()
+        );
+        return res;
+    }
+    translateToWorld(pos) {
+        var res = vec3.create();
+        var originMat = mat4.create();
+        mat4.fromTranslation(originMat, this.getWorldTranslation());
+        vec3.transformMat4(res, pos, originMat);
+        return res;
+    }
     getWorldTranslation() {
         var res = vec3.create();
         mat4.getTranslation(res, this.worldTransform);
+        return res;
+    }
+
+    getInvWorldTransform() {
+        var res = mat4.create();
+        mat4.invert(res, this.worldTransform);
         return res;
     }
 

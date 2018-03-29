@@ -17,6 +17,16 @@ class MeshComponent extends EntityComponent {
     */
     render(program, gl) {
         if(!this.model) return;
+        if(this.owner.type == EntityType.ENTITY_SHIP) {
+            var color = this.owner.owner.color.serialize(); //Get our player
+            gl.uniform4f(
+                program.uniformLocation("u_thrusterColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+            );
+        }
         this.model.render(program);
         gl.uniformMatrix4fv(
             program.uniformLocation("u_modelMatrix"),

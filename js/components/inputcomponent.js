@@ -1,13 +1,20 @@
 var InputMethod = {
     INPUT_MOUSE: 0,
     INPUT_KEYBOARD: 1
-}
+};
 
 var InputType = {
     BTN_PRESS: 0,
     BTN_RELEASE: 1,
-    MSE_MOVE: 2
-}
+    MSE_MOVE: 2,
+    MSE_PRESS: 3,
+    MSE_RELEASE: 4
+};
+
+var MouseClick = {
+  LEFT_CLICK: 0,
+  RIGHT_CLICK: 1
+};
 
 class InputComponent extends EntityComponent {
     constructor(owner) {
@@ -35,6 +42,10 @@ class InputComponent extends EntityComponent {
           return InputType.BTN_RELEASE;
         case "mousemove":
           return InputType.MSE_MOVE;
+        case "mousedown":
+          return InputType.MSE_PRESS;
+        case "mouseup":
+          return InputType.MSE_RELEASE;
         default:
           return undefined;
       }
