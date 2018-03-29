@@ -153,7 +153,12 @@ class Ship extends Entity {
 
     onCollisionOverlap(other) {
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
-        console.log("COLLISION WITH PORTAL");
+        console.log(this.owner.color === other.owner.col);
+        if(this.owner.color === other.owner.col) {
+
+        } else {
+          this.owner.crash();
+        }
       }
     }
 

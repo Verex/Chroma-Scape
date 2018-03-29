@@ -14,11 +14,13 @@ class Portal extends Entity {
 
         var cidx = Math.randInt(0, 3);
         switch(cidx) {
-            case 0: this.color = RED.serialize(); break;
-            case 1: this.color = GREEN.serialize(); break;
-            case 2: this.color = BLUE.serialize(); break;
-            case 3: this.color = WHITE.serialize(); break;
+            case 0: this.col = RED; break;
+            case 1: this.col = GREEN; break;
+            case 2: this.col = BLUE; break;
+            case 3: this.col = WHITE; break;
         }
+
+        this.color = this.col.serialize();
     }
 
     tick(dt) {

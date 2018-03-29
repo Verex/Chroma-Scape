@@ -1,12 +1,14 @@
 attribute vec4 a_position;
 attribute vec3 a_color;
 
+
 uniform bool u_interpolate;
 uniform float u_interpolation;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_modelMatrix;
 uniform mat4 u_modelPrevMatrix;
 uniform mat4 u_projectionMatrix;
+
 varying vec4 v_color;
 
 mat4 lerpMatrix(mat4 a, mat4 b) {
