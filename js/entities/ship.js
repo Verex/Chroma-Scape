@@ -178,6 +178,8 @@ class Ship extends Entity {
 
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
+
+        this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
         super.tick(dt);
     }
 };

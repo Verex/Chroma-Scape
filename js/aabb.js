@@ -52,15 +52,6 @@ class AABB  {
         var center = this.origin;
         var otherCenter = other.origin;
 
-        if(this.owner.owner && this.owner.owner.hasComponent(ComponentID.COMPONENT_TRANSFORM)) {
-            vec3.add(
-                center,
-                center,
-                this.owner.owner.getComponent(ComponentID.COMPONENT_TRANSFORM).getWorldTranslation()
-            );
-            this.origin = center;
-        }
-
         var otherMin = [otherCenter[0] - other.offsetX, otherCenter[1] - other.offsetY, otherCenter[2] - other.offsetZ];
         var otherMax = [otherCenter[0] + other.offsetX, otherCenter[1] + other.offsetX, otherCenter[2] + other.offsetZ];
         var min = [center[0] - this.offsetX, center[1] - this.offsetY, center[2] - this.offsetZ];
