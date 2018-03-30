@@ -45,10 +45,10 @@ class Player extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
 
         this.physicsComponent.velocity[Math.Z] = -30;
+
         this.physicsComponent.maxVelocity = 500;
         this.physicsComponent.acceleration[Math.Z] = -1;
         this.transformComponent.absOrigin[Math.Y] = 10;
-
 
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
