@@ -157,6 +157,13 @@ class App {
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
+
+        this.renderSystems.forEach((value, index, array) =>{
+          value.onResize(0, 0);
+        });
+
+        // Update gl with viewport change.
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /*

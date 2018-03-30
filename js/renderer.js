@@ -66,17 +66,25 @@ class Renderer {
         //this.renderTargets[1].bindTexture();
         //this.renderTargets[0].bindTexture();
 
-        for(var i = 1; i < this.renderPasses.length; i++) {
-            var ridx = (i % (this.renderTargets.length ));
-            this.renderTargets[ridx].bind();
-            this.renderPasses[i].doPass(this.viewport);
-            this.renderTargets[ridx].bindTexture();
+        if(postProcessing) {
+            for(var i = 1; i < this.renderPasses.length; i++) {
+                var ridx = (i % (this.renderTargets.length ));
+                this.renderTargets[ridx].bind();
+                this.renderPasses[i].doPass(this.viewport);
+                this.renderTargets[ridx].bindTexture();
+            }
         }
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.viewport.bind();
         this.viewport.render();
-        
+    }
+
+    onResize(nw, nh) {
+        this.renderTargets[0] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, true, true); //This is our render target
+        this.renderTargets[1] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, false, true);
+        this.renderTargets[2] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, false, true);
+        this.viewport = new Viewport(this.ctx, 50, 50, this.ctx.canvas.width - 100, this.ctx.canvas.height - 100);
     }
     render(gameworld) {
         this.renderTargets[0].bind();
