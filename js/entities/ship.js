@@ -1,8 +1,8 @@
 class Ship extends Entity {
-    constructor(width, height, eid, owner) {
+    constructor(eid, owner) {
         super(eid, owner, EntityType.ENTITY_SHIP);
 
-        // Add components.
+        // Add entity components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
         this.componentFactory.construct(ComponentID.COMPONENT_MESH);
         this.componentFactory.construct(ComponentID.COMPONENT_PHYSICS);
@@ -11,48 +11,28 @@ class Ship extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
+        // Assign physics component parameters.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
+        this.physicsComponent.maxAngularVelocity = 90;
+        this.physicsComponent.maxVelocity = 60;
 
-        this.maxVelocity = {
-          linear: 20,
-          angular: 50
-        }
+        // Define linear boundaries.
+        this.linearBounds = {};
+        this.linearBounds[Math.X] = {min: -30, max: 30};
+        this.linearBounds[Math.Y] = {min: 1, max: 40};
+        this.linearBounds[Math.Z] = {min: 0, max: 0};
 
-        this.momentum = {
-          linear: 0.75,
-          angular: 0.75
-        }
-
-        this.bounds = {
-          linear: [7.5, 5.5, 0],
-          angular: [25, 360, 30]
-        }
-    }
-
-    direct(axis, targetVelocity, momentum) {
-      // Increment angular velocity towards target.
-      this.physicsComponent.angularVelocity[axis] =
-        Math.lerp(
-          this.physicsComponent.angularVelocity[axis],
-          targetVelocity,
-          momentum
-        );
-    }
-
-    accelerate(axis, targetVelocity, momentum) {
-      // Increment linear velocity towards target.
-      this.physicsComponent.velocity[axis] =
-        Math.lerp(
-          this.physicsComponent.velocity[axis],
-          targetVelocity,
-          momentum
-        );
+        // Define angular boundaries.
+        this.angularBounds = {};
+        this.angularBounds[Math.PITCH] = {min: -25, max: 25};
+        this.angularBounds[Math.YAW] = {min: -25, max: 25};
+        this.angularBounds[Math.ROLL] = {min: -30, max: 30};
     }
 
     getSwayScale(axis) {
       return 1 + (
-        (this.transformComponent.absRotation[axis] - this.bounds.angular[axis])
-        / this.bounds.angular[axis]
+        (this.transformComponent.absRotation[axis] - this.angularBounds[axis].max)
+        / this.angularBounds[axis].max
       );
     }
 
@@ -68,29 +48,19 @@ class Ship extends Entity {
       /*
         Check for horizontal movement.
       */
-      if (move.left) {
-        this.direct(
-          Math.ROLL,
-          this.maxVelocity.angular,
-          10 * dt
-        );
-      } else if (move.right) {
-        // Sway ship right.
-        this.direct(
-          Math.ROLL,
-          -this.maxVelocity.angular,
-          10 * dt
-        );
+      if (move.left && this.canSway(MoveDirection.LEFT)) {
+        this.physicsComponent.angularVelocity[Math.ROLL] = this.physicsComponent.maxAngularVelocity;
+      } else if (move.right && this.canSway(MoveDirection.RIGHT)) {
+        this.physicsComponent.angularVelocity[Math.ROLL] = -this.physicsComponent.maxAngularVelocity;
       } else {
-        // Stop horizontal sway.
-        this.direct(Math.ROLL, 0, this.momentum.angular);
+        this.physicsComponent.angularVelocity[Math.ROLL] = 0;
 
         // Return roll to origin.
         this.transformComponent.absRotation[Math.ROLL] =
           Math.lerp(
             this.transformComponent.absRotation[Math.ROLL],
             0,
-            3 * dt
+            8 * dt
           );
       }
 
@@ -98,29 +68,18 @@ class Ship extends Entity {
         Check for vertical movement.
       */
       if (move.up) {
-        // Sway ship up.
-        this.direct(
-          Math.PITCH,
-          this.maxVelocity.angular,
-          this.momentum.angular
-        );
+        this.physicsComponent.angularVelocity[Math.PITCH] = this.physicsComponent.maxAngularVelocity;
       } else if (move.down) {
-        // Sway ship down.
-        this.direct(
-          Math.PITCH,
-          -this.maxVelocity.angular,
-          this.momentum.angular
-        );
+        this.physicsComponent.angularVelocity[Math.PITCH] = -this.physicsComponent.maxAngularVelocity
       } else {
-        // Stop vertical sway.
-        this.direct(Math.PITCH, 0, this.momentum.angular);
+        this.physicsComponent.angularVelocity[Math.PITCH] = 0;
 
         // Return pitch to origin.
         this.transformComponent.absRotation[Math.PITCH] =
           Math.lerp(
             this.transformComponent.absRotation[Math.PITCH],
             0,
-            3 * dt
+            8 * dt
           );
       }
     }
@@ -128,24 +87,25 @@ class Ship extends Entity {
     move(dt) {
       var hScale = this.getSwayScale(Math.ROLL),
           vScale = this.getSwayScale(Math.PITCH);
-      this.accelerate(Math.X, -this.maxVelocity.linear * hScale, this.momentum.linear);
-      this.accelerate(Math.Y, -this.maxVelocity.linear * -vScale, this.momentum.linear);
+
+      this.physicsComponent.velocity[Math.X] = -this.physicsComponent.maxVelocity * hScale;
+      this.physicsComponent.velocity[Math.Y] = this.physicsComponent.maxVelocity * vScale;
 
       // Enforce velocity bounds.
       for (var axis = 0; axis < 3; axis++) {
-        if (this.transformComponent.absOrigin[axis] > this.bounds.linear[axis]) {
-          this.transformComponent.absOrigin[axis] = this.bounds.linear[axis];
+        if (this.transformComponent.absOrigin[axis] > this.linearBounds[axis].max) {
+          this.transformComponent.absOrigin[axis] = this.linearBounds[axis].max;
           this.physicsComponent.velocity[axis] = 0;
-        } else if (this.transformComponent.absOrigin[axis] < -this.bounds.linear[axis]) {
-          this.transformComponent.absOrigin[axis] = -this.bounds.linear[axis];
+        } else if (this.transformComponent.absOrigin[axis] < this.linearBounds[axis].min) {
+          this.transformComponent.absOrigin[axis] = this.linearBounds[axis].min;
           this.physicsComponent.velocity[axis] = 0;
         }
 
-        if (this.transformComponent.absRotation[axis] > this.bounds.angular[axis]) {
-          this.transformComponent.absRotation[axis] = this.bounds.angular[axis];
+        if (this.transformComponent.absRotation[axis] > this.angularBounds[axis].max) {
+          this.transformComponent.absRotation[axis] = this.angularBounds[axis].max;
           this.physicsComponent.angularVelocity[axis] = 0;
-        } else if (this.transformComponent.absRotation[axis] < -this.bounds.angular[axis]) {
-          this.transformComponent.absRotation[axis] = -this.bounds.angular[axis];
+        } else if (this.transformComponent.absRotation[axis] < this.angularBounds[axis].min) {
+          this.transformComponent.absRotation[axis] = this.angularBounds[axis].min;
           this.physicsComponent.angularVelocity[axis] = 0;
         }
       }
@@ -153,9 +113,8 @@ class Ship extends Entity {
 
     onCollisionOverlap(other) {
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
-        console.log(this.owner.color === other.owner.col);
         if(this.owner.color === other.owner.col) {
-
+          other.owner.disabled = true;
         } else {
           this.owner.crash();
         }
@@ -163,33 +122,54 @@ class Ship extends Entity {
     }
 
     canSway(direction) {
-      var canSway = false,
-          bound = 0, value = 0;
+      var opposite = null,
+          positionAxis = null,
+          rotationAxis = null,
+          minInclude = false,
+          maxInclude = false;
 
       switch(direction) {
         case MoveDirection.UP:
-          canSway = !this.owner.movement[MoveDirection.DOWN];
-          bound = this.bounds.angular[Math.PITCH];
-          value = this.transformComponent.absRotation[Math.PITCH];
+          opposite = MoveDirection.DOWN;
+          positionAxis = Math.Y;
+          rotationAxis = Math.PITCH;
+          minInclude = true;
           break;
         case MoveDirection.DOWN:
-          canSway = !this.owner.movement[MoveDirection.UP];
-          bound = this.bounds.angular[Math.PITCH];
-          value = this.transformComponent.absRotation[Math.PITCH];
+          opposite = MoveDirection.UP;
+          positionAxis = Math.Y;
+          rotationAxis = Math.PITCH;
+          maxInclude = true;
           break;
         case MoveDirection.LEFT:
-          canSway = !this.owner.movement[MoveDirection.RIGHT];
-          bound = this.bounds.angular[Math.ROLL];
-          value = this.transformComponent.absRotation[Math.ROLL];
+          opposite = MoveDirection.RIGHT;
+          positionAxis = Math.X;
+          rotationAxis = Math.ROLL;
+          maxInclude = true;
           break;
         case MoveDirection.RIGHT:
-          canSway = !this.owner.movement[MoveDirection.LEFT];
-          bound = this.bounds.angular[Math.ROLL];
-          value = this.transformComponent.absRotation[Math.ROLL];
+          opposite = MoveDirection.LEFT;
+          positionAxis = Math.X;
+          rotationAxis = Math.ROLL;
+          minInclude = true;
           break;
       }
 
-      return canSway && Math.between(-bound, bound, value);
+      var withinBounds =
+        Math.between(
+          this.angularBounds[rotationAxis].min,
+          this.angularBounds[rotationAxis].max,
+          this.transformComponent.absRotation[rotationAxis],
+          minInclude, maxInclude
+        ) &&
+        Math.between(
+          this.linearBounds[positionAxis].min,
+          this.linearBounds[positionAxis].max,
+          this.transformComponent.absOrigin[positionAxis],
+          minInclude, maxInclude
+        );
+
+      return !this.owner.movement[opposite] && withinBounds;
     }
 
     tick(dt) {
@@ -198,15 +178,14 @@ class Ship extends Entity {
 
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
+
+        this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
         super.tick(dt);
     }
 };
 
 EntityType.ENTITY_SHIP.construction = (owner) => {
-    var globals = GlobalVars.getInstance();
     return new Ship(
-        globals.clientWidth,
-        globals.clientHeight,
         newID++,
         owner
     );

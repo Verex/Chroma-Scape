@@ -22,10 +22,13 @@ class VertexColor {
 var ShipMesh = () => {
     const front = -5.5; // Z position of
     const back  = 1;
-    const top = 0.25;
-    const bottom = -0.75;
+    const top = 0.3;
+    const bottom = -0.8;
     const left = -1;
     const right = 1;
+    const wingRight = 3;
+
+    const wingLeft = -3;
 
     const middle = (top + bottom) * 0.5
 
@@ -44,7 +47,13 @@ var ShipMesh = () => {
       VertexColor.new(shadeColor, 16),
       VertexColor.new(thrusterColor, 4),
       VertexColor.new(primaryColor, 6),
-      VertexColor.new(shadeColor, 8)
+      VertexColor.new(shadeColor, 8),
+      VertexColor.new(shadeColor, 6),
+      VertexColor.new(highlightColor, 12),
+      VertexColor.new(shadeColor, 3),
+      VertexColor.new(shadeColor, 6),
+      VertexColor.new(highlightColor, 12),
+      VertexColor.new(shadeColor, 3),
     ];
 
     const indices = [
@@ -87,6 +96,20 @@ var ShipMesh = () => {
         56, 57, 58,     59, 60, 61, // Front sides
         62, 63, 64,      62, 64, 65, // Front top
         66, 67, 68,       66, 68, 69, // Front bottom
+
+        70, 71, 72,     73, 74, 75, // Left wing top/bottom.
+
+        76, 77, 78,     76, 78, 79,
+        80, 81, 82,     80, 82, 83,
+        84, 85, 86,     84, 86, 87,
+
+        88, 89, 90,
+
+        91, 92, 93,   94, 95, 96,
+        97, 98, 99,   97, 99, 100,
+        101, 102, 103,  101, 103, 104,
+        105, 106, 107, 105, 107, 108,
+        109, 110, 111,
     ];
     const vertices = [
         // Back panel bottom.
@@ -193,6 +216,72 @@ var ShipMesh = () => {
       right, middle, front - 1.0,
       right, bottom + 0.25,  front,
       left, bottom + 0.25,  front, // 69
+
+      // Left wing top.
+      wingLeft, top - 0.25, back, // 70
+      left, top - 0.25, front,
+      left, top - 0.25, back, // 72
+
+      // Left wing bottom.
+      wingLeft, bottom + 0.25, back, // 73
+      left, bottom + 0.25, front,
+      left, bottom + 0.25, back, // 75
+
+      // Left wing back side.
+      wingLeft, top - 0.25, back, // 76
+      left, top - 0.25, back,
+      left, bottom + 0.25, back,
+      wingLeft, bottom + 0.25, back, // 79
+
+      // Left wing front side.
+      wingLeft, top - 0.25, back, // 80
+      left, top - 0.25, front,
+      left, middle, front - 1.0,
+      wingLeft - 2.0, middle, back + 2.0, // 83
+
+      // Left wing front side.
+      wingLeft, bottom + 0.25, back, // 84
+      left, bottom + 0.25, front,
+      left, middle, front - 1.0,
+      wingLeft - 2.0, middle, back + 2.0, // 87
+
+      wingLeft - 2.0, middle, back + 2.0, // 88
+      wingLeft, top - 0.25, back,
+      wingLeft, bottom + 0.25, back, // 90
+
+      // ------
+      // Right wing top.
+      wingRight, top - 0.25, back, // 91
+      right, top - 0.25, front,
+      right, top - 0.25, back, // 93
+
+      // Right wing bottom.
+      wingRight, bottom + 0.25, back, // 94
+      right, bottom + 0.25, front,
+      right, bottom + 0.25, back, // 96
+
+      // Right wing back side.
+      wingRight, top - 0.25, back, // 97
+      right, top - 0.25, back,
+      right, bottom + 0.25, back,
+      wingRight, bottom + 0.25, back, // 100
+
+      // Right wing front side.
+      wingRight, top - 0.25, back, // 101
+      right, top - 0.25, front,
+      right, middle, front - 1.0,
+      wingRight + 2.0, middle, back + 2.0, // 104
+
+      // Right wing front side.
+      wingRight, bottom + 0.25, back, // 105
+      right, bottom + 0.25, front,
+      right, middle, front - 1.0,
+      wingRight + 2.0, middle, back + 2.0, // 108
+
+      wingRight + 2.0, middle, back + 2.0, // 109
+      wingRight, top - 0.25, back,
+      wingRight, bottom + 0.25, back, // 111
+
     ];
 
     return {
@@ -203,7 +292,6 @@ var ShipMesh = () => {
             for(var j = 0; j < faceColors.length; ++j) {
                 c = c.concat(faceColors[j].getData());
             }
-            console.log(c.length);
             return c;
         }
     };

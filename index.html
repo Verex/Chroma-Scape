@@ -16,16 +16,30 @@
     <script src="js/color.js"></script>
     <script src="js/program.js"></script>
     <script src="js/renderer.js"></script>
+    <script src="js/rendertarget.js"></script>
+    <script src="js/renderpass.js"></script>
+    <script src="js/viewport.js"></script>
     <script src="js/scene.js"></script>
     <script src="js/model.js"></script>
+    <script src="js/aabb.js"></script>
     <script src="js/assets.js"></script>
 
+    <!-- Include Post Processing Effects -->
+    <script src="js/post-fx/crt-pass.js"></script>
+    <script src="js/post-fx/scanline-pass.js"></script>
+    <script src="js/post-fx/copy-pass.js"></script>
+    <script src="js/post-fx/scale-pass.js"></script>
+    <script src="js/post-fx/curved-pass.js"></script>
+    <script src="js/post-fx/barrel-pass.js"></script>
+
+    <!-- Include entity components -->
     <script src="js/components/component.js"></script>
     <script src="js/components/meshcomponent.js"></script>
     <script src="js/components/transformcomponent.js"></script>
     <script src="js/components/inputcomponent.js"></script>
     <script src="js/components/physicscomponent.js"></script>
 
+    <!-- Include entities -->
     <script src="js/entities/entity.js"></script>
     <script src="js/entities/camera.js"></script>
     <script src="js/entities/gameworld.js"></script>
@@ -33,6 +47,7 @@
     <script src="js/entities/player.js"></script>
     <script src="js/entities/ship.js"></script>
     <script src="js/entities/portal.js"></script>
+    <script src="js/entities/spawner.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -61,6 +76,7 @@
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
       var drawAABB = true;
+      var postProcessing = false;
       $(document).ready(() => {
         // Setup initial AJAX settings.
         $.ajaxSetup({

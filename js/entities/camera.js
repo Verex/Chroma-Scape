@@ -27,7 +27,7 @@ class Camera extends Entity {
           Math.radians(45),
           this.aspectRatio,
           0.1,
-          200.0
+          600.0
       );
     }
 

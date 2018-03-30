@@ -8,7 +8,7 @@
 var TimerStatus = {
     TIMER_DONE: 0,
     TIMER_TICKING: 1,
-    TIMER_PAUSED: 2,
+    TIMER_PAUSED: 2,    
     TIMER_FAILED: 3
 };
 
