@@ -39,11 +39,11 @@ class App {
     if (!this.gl) {
       return AppStatus.STATUS_BAD_BROWSER;
     }
-    
+
     // Set canvas size to client sizes.
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
-    
+
     this.renderSystems.push(
       new Renderer(this.gl)
     );
@@ -157,9 +157,6 @@ class App {
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
-
-        // Update gl with viewport change.
-        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
     /*
