@@ -28,12 +28,10 @@ class Portal extends Entity {
     }
 
     checkForMiss() {
-      this.children.forEach((child) => {
-        if (!child.disabled && child.transformComponent.absOrigin[Math.Z] - 10
-          > owner.player.transformComponent.absOrigin[Math.Z]) {
-          player.crash();
-        }
-      });
+      if (!this.disabled && this.transformComponent.absOrigin[Math.Z]
+        > this.owner.player.transformComponent.absOrigin[Math.Z]) {
+        this.owner.player.crash();
+      }
     }
 
     tick(dt) {

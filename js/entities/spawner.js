@@ -18,7 +18,7 @@ class Spawner extends Entity {
     portal.meshComponent.setModel(
       assets.getModel("portal")
     );
-    portal.meshComponent.model.color = TestMesh().color(portal.color);
+    portal.meshComponent.model.color = TestMesh().color([1.0, 0.0, 1.0, 1.0]);
     portal.meshComponent.model.reload();
   }
 
