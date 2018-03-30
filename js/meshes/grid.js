@@ -1,18 +1,18 @@
 var GridMesh = (size, divisions) => {
     var center = divisions / 2;
     var step = size / divisions;
-    var halfSize = size /2 ;
+    var halfSize = size / 2 ;
     var vertices = [], colors = [], indices = [];
 
     var faceColors = [
         [1.0,  1.0,  1.0,  1.0],    // Front face: white
-        [1.0,  0.0,  0.0,  1.0],    // Back face: red
+        [0.227,  0.662,  0.913,  1.0],    // Back face: red
     ];
 
     for(var i = 0, j = 0, k = -halfSize; i <= divisions; i++, k += step) {
         vertices.push(
-            -halfSize, 0, k, 
-            halfSize,0, k, 
+            -halfSize, 0, k,
+            halfSize,0, k,
             k, 0, -halfSize,
             k, 0, halfSize
         );

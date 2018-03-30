@@ -17,7 +17,7 @@ class PhysicsComponent extends EntityComponent {
         this.acceleration = vec3.fromValues(0, 0, 0);
         this.angularAcceleration = vec3.fromValues(0, 0, 0);
 
-        // Define max linear and angular velocity.
+        // Define max linear and angular velocity for any direction.
         this.maxVelocity = 50;
         this.maxAngularVelocity = 50;
 
@@ -48,13 +48,18 @@ class PhysicsComponent extends EntityComponent {
             );
         }
 
+        // Get current linear velocity.
         var velocity = vec3.length(this.velocity);
+
+        // Increase velocity by acceleration.
         vec3.scaleAndAdd(
             this.velocity,
             this.velocity,
             this.acceleration,
             step
         );
+
+        // Cap out linear velocity at max.
         if(velocity > this.maxVelocity) {
             vec3.normalize(this.velocity, this.velocity);
             vec3.scale(this.velocity, this.velocity, this.maxVelocity);

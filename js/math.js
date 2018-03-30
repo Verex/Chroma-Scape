@@ -62,6 +62,6 @@ Math.lerp = (a, b, t) => {
   return (1 - t) * a + t * b;
 };
 
-Math.between = (a, b, c, inclusive = true) => {
-  return a <= c && c <= b;
+Math.between = (a, b, c, minInclude = true, maxInclude = true) => {
+  return (minInclude ? a <= c : a < c) && (maxInclude ? c <= b : c < b);
 }

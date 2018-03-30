@@ -7,7 +7,8 @@ var EntityType = {
     ENTITY_SHIP: {id: 4},
     ENTITY_DUMMY: {id: 5},
     ENTITY_CAMERABOOM: {id: 6},
-    ENTITY_PORTAL: {id: 7}
+    ENTITY_PORTAL: {id: 7},
+    ENTITY_SPAWNER: {id: 8},
 }
 
 var newID = 0;

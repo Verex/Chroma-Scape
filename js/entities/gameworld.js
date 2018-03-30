@@ -1,52 +1,53 @@
 class GameWorld extends Entity {
     constructor() {
-        super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
-        this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
-        this.componentFactory.construct(ComponentID.COMPONENT_INPUT);
+      super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
+      this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+      this.componentFactory.construct(ComponentID.COMPONENT_INPUT);
 
-        this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
+      this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
 
-        //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
-        //and our renderer will be responsible for processing the gameworld and rendering it's scene
-        this.scene = new Scene();
-        this.sceneNode = new SceneNode(this);
-        this.scene.rootNode = this.sceneNode;
+      //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
+      //and our renderer will be responsible for processing the gameworld and rendering it's scene
+      this.scene = new Scene();
+      this.sceneNode = new SceneNode(this);
+      this.scene.rootNode = this.sceneNode;
 
-        this.inputComponent.registerEvent(
-          InputMethod.INPUT_KEYBOARD,
-          InputType.BTN_RELEASE,
-          'KeyE',
-          (event) => {
-            this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
-          }
-        );
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyE',
+        (event) => {
+          this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
+        }
+      );
 
-    this.inputComponent.registerEvent(
-          InputMethod.INPUT_KEYBOARD,
-          InputType.BTN_RELEASE,
-          'KeyQ',
-          (event) => {
-            this.children[0].camera.boomAngle[Math.PITCH] += 30;
-          }
-        );
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyQ',
+        (event) => {
+            this.spawner.spawnPortal(vec3.fromValues(0, 25, this.player.transformComponent.absOrigin[Math.Z] - 200));
+        }
+      );
     }
 
     onEntityCreated(newEnt) {
-        switch(newEnt.type) {
-            case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
-                this.scene.cameras.push(newEnt);
-                break;
-            default: break;
-        }
-        newEnt.sceneNode = new SceneNode(newEnt);
-        if(newEnt.owner) {
-            newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
-        }
+      switch(newEnt.type) {
+          case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
+              this.scene.cameras.push(newEnt);
+              break;
+          default: break;
+      }
+      newEnt.sceneNode = new SceneNode(newEnt);
+      if(newEnt.owner) {
+          newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
+      }
     }
 
     tick(dt) {
-        super.tick(dt);
+      super.tick(dt);
     }
+
     queryCollisionTree(ent, type = CollisionType.COLLISION_SOLID) {
         var collidables = [];
         var queryCollisionRecursive = (itr) =>{

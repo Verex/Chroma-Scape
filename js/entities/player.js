@@ -13,7 +13,7 @@ var PortalType = {
 }
 
 class Player extends Entity {
-    constructor(width, height, eid, owner) {
+    constructor(eid, owner) {
         super(eid, owner, EntityType.ENTITY_PLAYER);
 
         // Define directional movement conditions.
@@ -45,8 +45,11 @@ class Player extends Entity {
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
 
         this.physicsComponent.velocity[Math.Z] = -30;
-        //this.physicsComponent.acceleration[Math.Z] = -10;
-        //this.transformComponent.absOrigin[Math.Y] = 10;
+        this.physicsComponent.maxVelocity = 500;
+        this.physicsComponent.acceleration[Math.Z] = -1;
+        this.transformComponent.absOrigin[Math.Y] = 10;
+
+
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
 
@@ -54,6 +57,7 @@ class Player extends Entity {
         var colorCheck = (thisptr) => {
 
         };
+
         timer.createRelativeTimer("COLORCHECK", 250, () => {
           this.color = WHITE;
           if(this.mouseClicked[0]) this.color = RED;
@@ -63,80 +67,27 @@ class Player extends Entity {
           }
         }, this, null, true);
 
-
-        /*
-        this.inputComponent.registerEvent(
-          InputMethod.INPUT_KEYBOARD,
-          InputType.BTN_PRESS,
-          'KeyA',
-          (event) => {
-            this.children[0].transformComponent.absOrigin[Math.X] -= 0.1;
-          }
-        );
-
-        */
-
         // Register movement callbacks.
         this.inputComponent.registerKeyboardEvent(
-          'KeyD',
-          (event) => {
-            this.movement[MoveDirection.RIGHT] = true;
-          },
-          (event) => {
-            this.movement[MoveDirection.RIGHT] = false;
-          }
+          this.controls.keyRight,
+          () => {this.movement[MoveDirection.RIGHT] = true;},
+          () => {this.movement[MoveDirection.RIGHT] = false;}
         );
-
         this.inputComponent.registerKeyboardEvent(
-          'KeyA',
-          (event) => {
-            this.movement[MoveDirection.LEFT] = true;
-          },
-          (event) => {
-            this.movement[MoveDirection.LEFT] = false;
-          }
+          this.controls.keyLeft,
+          () => {this.movement[MoveDirection.LEFT] = true;},
+          () => {this.movement[MoveDirection.LEFT] = false;}
         );
-
         this.inputComponent.registerKeyboardEvent(
-          'KeyW',
-          () => {
-            this.movement[MoveDirection.UP] = true;
-          },
-          () => {
-            this.movement[MoveDirection.UP] = false;
-          }
+          this.controls.keyUp,
+          () => {this.movement[MoveDirection.UP] = true;},
+          () => {this.movement[MoveDirection.UP] = false;}
         );
-
         this.inputComponent.registerKeyboardEvent(
-          'KeyS',
-          () => {
-            this.movement[MoveDirection.DOWN] = true;
-          },
-          () => {
-            this.movement[MoveDirection.DOWN] = false;
-          }
+          this.controls.keyDown,
+          () => {this.movement[MoveDirection.DOWN] = true;},
+          () => {this.movement[MoveDirection.DOWN] = false;}
         );
-
-        this.inputComponent.registerKeyboardEvent(
-          'KeyX',
-          (event) => {
-            this.ship.physicsComponent.angularVelocity[Math.YAW] = 50;
-          },
-          (event) => {
-            this.ship.physicsComponent.angularVelocity[Math.YAW] = 0;
-          }
-        );
-
-        this.inputComponent.registerKeyboardEvent(
-          'KeyZ',
-          (event) => {
-            this.ship.physicsComponent.angularVelocity[Math.YAW] = -50;
-          },
-          (event) => {
-            this.ship.physicsComponent.angularVelocity[Math.YAW] = 0;
-          }
-        );
-
 
         this.inputComponent.registerEvent(
             InputMethod.INPUT_MOUSE,
@@ -161,10 +112,6 @@ class Player extends Entity {
     }
 
     onMouseMove(event) {
-        this.cursorPosition = vec2.fromValues(
-            event.offsetX,
-            event.offsetY
-        );
     }
 
     onMouseClick(event) {
@@ -181,12 +128,22 @@ class Player extends Entity {
     }
 
     crash() {
-      console.log("HMM?");
+      console.log("We have crashed.");
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
     }
 
+    moveCamera(dt) {
+      var cameraPosition = this.camera.transformComponent.absOrigin,
+          shipPosition = this.ship.transformComponent.absOrigin;
+
+      // Interpolate the camera's X and Y position.
+      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 3 * dt);
+      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 2 * dt);
+    }
+
     tick(dt) {
+      this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();
       super.tick(dt);
@@ -194,10 +151,7 @@ class Player extends Entity {
 };
 
 EntityType.ENTITY_PLAYER.construction = (owner) => {
-    var globals = GlobalVars.getInstance();
     return new Player(
-        globals.clientWidth,
-        globals.clientHeight,
         newID++,
         owner
     );

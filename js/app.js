@@ -57,59 +57,34 @@ class App {
     var assets = Assets.getInstance();
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
-    assets.addModel(this.gl, GridMesh(50000, 4500), "grid");
+    assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
     assets.addModel(this.gl, TestMesh(), "portal");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
 
     // Create player entity.
-    this.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
+    this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
 
     // Create camera entity.
-    this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
-    this.player.camera.boomAngle = [15, 0];
-    this.player.camera.boomRadius = 18;
+    this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
+    this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
+    this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
 
     // Create ship entity.
-    this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
-    this.player.shipOrigin = this.player.ship.transformComponent.absOrigin;
-    this.player.ship.physicsComponent.aabb = new AABB(this.player.ship, 1.5, 1, 2.75);
-    this.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-
-    this.portal = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PORTAL);
-    this.portal.transformComponent.absOrigin = vec3.fromValues(0, 5, -150);
-    this.portal.transformComponent.absRotation = vec3.fromValues(0, 90, 0);
-    this.portal.transformComponent.absScale = vec3.fromValues(5, 5, 5);
-    this.portal.physicsComponent.aabb = new AABB(this.portal, 10 ,10, 10);
-    this.portal.meshComponent.setModel(
-      assets.getModel("portal")
-    );
-    this.portal.meshComponent.model.color = TestMesh().color(this.portal.color);
-    this.portal.meshComponent.model.reload();
+    this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
+    this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
+    this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 1.5, 1, 2.75);
+    this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
 
     // Set model for our ship.
-    this.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
+    this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
       assets.getModel("ship")
     );
 
-
-    //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absOrigin = vec3.fromValues(0, 10, 15);
-    //this.player.camera.components[ComponentID.COMPONENT_TRANSFORM].absRotation = vec3.fromValues(-38, 0, 0);
-    // Dummy Entity
-    this.testent = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    this.testent.meshComponent.setModel(
-      assets.getModel("test")
-    );
-
-
-    this.testcamera = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_CAMERA);
-    this.testcamera.transformComponent.absOrigin = vec3.fromValues(0, 80, 5);
-    this.testcamera.transformComponent.absRotation = vec3.fromValues(-90, 0, 0);
-    this.gameworld.scene.mainCameraID = 0;
+    this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
 
     this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    var gridmesh = GridMesh(200, 30);
     this.testgrid.meshComponent.setModel(
       assets.getModel("grid")
     );
