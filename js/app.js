@@ -39,6 +39,11 @@ class App {
     if (!this.gl) {
       return AppStatus.STATUS_BAD_BROWSER;
     }
+    
+    // Set canvas size to client sizes.
+    this.canvas.width = this.canvas.clientWidth;
+    this.canvas.height = this.canvas.clientHeight;
+    
     this.renderSystems.push(
       new Renderer(this.gl)
     );
@@ -49,10 +54,6 @@ class App {
     // Store width and heigth in globals.
     globals.clientWidth = this.canvas.clientWidth;
     globals.clientHeight = this.canvas.clientHeight;
-
-    // Set canvas size to client sizes.
-    this.canvas.width = this.canvas.clientWidth;
-    this.canvas.height = this.canvas.clientHeight;
 
     var assets = Assets.getInstance();
     assets.addModel(this.gl, TestMesh(), "test");
@@ -69,7 +70,7 @@ class App {
     // Create camera entity.
     this.player.camera = new Entity.Factory(this.player).ofType(EntityType.ENTITY_CAMERA);
     this.player.camera.boomAngle = [15, 0];
-    this.player.camera.boomRadius = 18;
+    this.player.camera.boomRadius = 20;
 
     // Create ship entity.
     this.player.ship = new Entity.Factory(this.player).ofType(EntityType.ENTITY_SHIP);
