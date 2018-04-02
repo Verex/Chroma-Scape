@@ -59,7 +59,7 @@ class App {
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
-    assets.addModel(this.gl, TestMesh(), "portal");
+    assets.addModel(this.gl, PortalMesh(), "portal");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
