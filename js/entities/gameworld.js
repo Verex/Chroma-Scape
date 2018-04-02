@@ -14,6 +14,8 @@ class GameWorld extends Entity {
       this.sceneNode = new SceneNode(this);
       this.scene.rootNode = this.sceneNode;
 
+      // Assign max z-value before we reset position.
+      this.zReset = -2000;
       this.gamestate = new Gamestate();
 
       this.inputComponent.registerEvent(
@@ -49,6 +51,7 @@ class GameWorld extends Entity {
     }
 
     tick(dt) {
+      this.handleZReset();
       super.tick(dt);
     }
 
@@ -117,6 +120,24 @@ class GameWorld extends Entity {
 
         //time = Date.now() - time;
         //console.log("Collision took: " + time);
+    }
+
+    handleZReset() {
+      // Get player's current position.
+      var position = this.player.transformComponent.absOrigin;
+
+      // Check if the player has gone past our z-Reset.
+      if (position[Math.Z] <= this.zReset) {
+        // Subtract our zReset from origin.
+        this.player.transformComponent.absOrigin[Math.Z] -= this.zReset;
+
+        // Move all portals back as well.
+        this.children.forEach((child) => {
+          if (child.type == EntityType.ENTITY_PORTAL) {
+            child.transformComponent.absOrigin[Math.Z] -= this.zReset;
+          }
+        });
+      }
     }
 
     updateSceneGraph() {
