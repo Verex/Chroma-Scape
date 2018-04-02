@@ -18,8 +18,8 @@ class Ship extends Entity {
 
         // Define linear boundaries.
         this.linearBounds = {};
-        this.linearBounds[Math.X] = {min: -30, max: 30};
-        this.linearBounds[Math.Y] = {min: 1, max: 40};
+        this.linearBounds[Math.X] = {min: -40, max: 40};
+        this.linearBounds[Math.Y] = {min: 1, max: 60};
         this.linearBounds[Math.Z] = {min: 0, max: 0};
 
         // Define angular boundaries.

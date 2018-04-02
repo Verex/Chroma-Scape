@@ -143,6 +143,18 @@ class Player extends Entity {
     }
 
     tick(dt) {
+      var position = this.transformComponent.absOrigin;
+
+      if (position[Math.Z] < -1000) {
+        this.transformComponent.absOrigin[Math.Z] += 1000;
+        this.owner.children.forEach((child) => {
+          if (child.type == EntityType.ENTITY_PORTAL) {
+            child.transformComponent.absOrigin[Math.Z] += 1000;
+          }
+        })
+        console.log("[PLAYER] Position reset.");
+      }
+
       this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();

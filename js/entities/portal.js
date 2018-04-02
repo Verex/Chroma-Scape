@@ -32,6 +32,15 @@ class Portal extends Entity {
         > this.owner.player.transformComponent.absOrigin[Math.Z]) {
         this.owner.player.crash();
       }
+
+      if (this.disabled && this.transformComponent.absOrigin[Math.Z] - 50
+      > this.owner.player.transformComponent.absOrigin[Math.Z]) {
+        for (var i = 0; i < this.owner.children.length; i++ ) {
+          if (this.owner.children[i].eid == this.eid) {
+            this.owner.children.splice(i, 1);
+          }
+        }
+      }
     }
 
     tick(dt) {
