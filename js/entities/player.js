@@ -22,6 +22,7 @@ class Player extends Entity {
         this.movement[MoveDirection.DOWN] = false;
         this.movement[MoveDirection.LEFT] = false;
         this.movement[MoveDirection.RIGHT] = false;
+
         this.mouseClicked = [];
         this.mouseClicked[0] = false;
         this.mouseClicked[2] = false;
@@ -32,7 +33,9 @@ class Player extends Entity {
           keyLeft: 'KeyA',
           keyRight: 'KeyD',
           keyUp: 'KeyW',
-          keyDown: 'KeyS'
+          keyDown: 'KeyS',
+          color0: 'KeyJ',
+          color1: 'KeyL'
         };
 
         // Add components.
@@ -44,20 +47,18 @@ class Player extends Entity {
         this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
 
+        // Set initial physics parameters.
+        this.physicsComponent.maxVelocity = 800;
         this.physicsComponent.velocity[Math.Z] = -30;
-
-        this.physicsComponent.maxVelocity = 500;
         this.physicsComponent.acceleration[Math.Z] = -1;
+
+        // Translate player position.
         this.transformComponent.absOrigin[Math.Y] = 10;
 
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
 
         var timer = Timer.getInstance();
-        var colorCheck = (thisptr) => {
-
-        };
-
         timer.createRelativeTimer("COLORCHECK", 250, () => {
           this.color = WHITE;
           if(this.mouseClicked[0]) this.color = RED;
@@ -109,6 +110,17 @@ class Player extends Entity {
           null,
           (event) => { this.onMouseClick(event); }
         );
+
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color0,
+          () => {this.mouseClicked[0] = true;},
+          () => {this.mouseClicked[0] = false;}
+        );
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color1,
+          () => {this.mouseClicked[1] = true;},
+          () => {this.mouseClicked[1] = false;}
+        );
     }
 
     onMouseMove(event) {
@@ -143,18 +155,6 @@ class Player extends Entity {
     }
 
     tick(dt) {
-      var position = this.transformComponent.absOrigin;
-
-      if (position[Math.Z] < -1000) {
-        this.transformComponent.absOrigin[Math.Z] += 1000;
-        this.owner.children.forEach((child) => {
-          if (child.type == EntityType.ENTITY_PORTAL) {
-            child.transformComponent.absOrigin[Math.Z] += 1000;
-          }
-        })
-        console.log("[PLAYER] Position reset.");
-      }
-
       this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();

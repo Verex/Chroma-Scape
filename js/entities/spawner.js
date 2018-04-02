@@ -7,12 +7,7 @@ class Spawner extends Entity {
 
     this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
-    var timer = Timer.getInstance();
-    timer.createRelativeTimer("PORTALSPAWN", 5000, () => {
-      var x = Math.randInt(-40, 40),
-          y = Math.randInt(10, 60);
-      this.spawnPortal(vec3.fromValues(x, y, this.owner.player.transformComponent.absOrigin[Math.Z] - 500));
-    }, this, null, true);
+    this.nextSpawnTime = 0;
   }
 
   spawnPortal(position) {
@@ -27,7 +22,46 @@ class Spawner extends Entity {
     );
   }
 
+  spawnRandomPortal() {
+    var x = Math.randInt(-40, 40),
+        y = Math.randInt(10, 60);
+        
+    this.spawnPortal(
+      vec3.fromValues(x, y, this.owner.player.transformComponent.absOrigin[Math.Z] - 850)
+    );
+  }
+
+  getNextSpawn() {
+    // Get instance of timer.
+    var timer = Timer.getInstance();
+
+    return timer.getCurrentTime() + 5000;
+  }
+
+  shouldSpawn() {
+    // Get instance of timer.
+    var timer = Timer.getInstance();
+
+    // Check if we are past next spawn time.
+    if (timer.getCurrentTime() >= this.nextSpawnTime) {
+      return true;
+    }
+
+    return false;
+  }
+
+
+
   tick(dt) {
+    // Check if we should spawn a portal.
+    if (this.shouldSpawn()) {
+      // Spawn a random portal in front of player.
+      this.spawnRandomPortal();
+
+      // Set the next portal spawn time.
+      this.nextSpawnTime = this.getNextSpawn();
+    }
+
     this.transformComponent.updateTransform();
     super.tick(dt);
   }

@@ -37,7 +37,7 @@ var PortalMesh = () => {
       // Back portal.
       left * 0.5, top, back * 0.5, // 7
       right * 0.5, top, back * 0.5,
-      left, 0.0, front * 0.5, // 9
+      left, 0.0, back * 0.5, // 9
       left * 0.5, bottom, back * 0.5,
       right * 0.5, bottom, back * 0.5, // 11
       right, 0.0, back * 0.5, // 12
