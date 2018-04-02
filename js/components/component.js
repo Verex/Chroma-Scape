@@ -3,7 +3,8 @@ var ComponentID = {
     COMPONENT_MESH: 1,
     COMPONENT_INPUT: 2,
     COMPONENT_PHYSICS: 3,
-    COMPONENT_MAX: 4 //This is the number of components that we recognize as a thing
+    COMPONENT_AUDIO: 4,
+    COMPONENT_MAX: 5 //This is the number of components that we recognize as a thing
 }
 
 class EntityComponent {
@@ -30,6 +31,10 @@ class EntityComponent {
                         return this;
                     case ComponentID.COMPONENT_PHYSICS:
                         this.ent.components[cid] = new PhysicsComponent(this.ent);
+                        return this;
+                    case ComponentID.COMPONENT_AUDIO:
+                        this.ent.components[cid] = new AudioComponent(this.ent);
+                        return this;
                     default:
                         return this;
                 }
