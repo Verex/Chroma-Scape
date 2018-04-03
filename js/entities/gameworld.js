@@ -29,6 +29,16 @@ class GameWorld extends Entity {
             this.spawner.spawnPortal(vec3.fromValues(0, 25, this.player.transformComponent.absOrigin[Math.Z] - 200));
         }
       );
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyF',
+        (event) => {
+            postProcessing = !postProcessing;
+        }
+      );
+
+
     }
 
     onEntityCreated(newEnt) {

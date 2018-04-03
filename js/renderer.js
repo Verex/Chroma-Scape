@@ -21,8 +21,8 @@ class Renderer {
         this.renderPasses = [
             new CopyPass(glContext),
             new CurvedPass(glContext),
-            new ScalePass(glContext),
-            new BarrelPass(glContext),
+            //new ScalePass(glContext),
+            //new BarrelPass(glContext),
             new CRTPass(glContext),
             new ScanlinePass(glContext)
         ];
