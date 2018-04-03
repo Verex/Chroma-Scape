@@ -1,6 +1,17 @@
 class _Assets_ {
     constructor() {
         this.models = new Map();
+        this.sounds = new Map();
+    }
+
+    addSound(name, filepath) {
+        this.sounds[name] = new Howl({
+            src: [filepath]
+        });
+    }
+
+    getSound(name) {
+        return this.sounds[name];
     }
 
     addModel(gl, mesh, name) {

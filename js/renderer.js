@@ -54,7 +54,7 @@ class Renderer {
       }
     }
 
-    pushTexture() {
+    postProcessing() {
         var gl = this.ctx;
         var viewport = this.viewport;
         var renderTargets = this.renderTargets;
@@ -103,11 +103,6 @@ class Renderer {
             false,
             gameworld.scene.cameras[cameraID].sceneNode.worldMatrix
         );
-
-        // Recursively render each mesh component.
-        gameworld.children.forEach((child) => {
-          this.recursiveRender(child);
-        }); 
-        this.pushTexture();
+        this.recursiveRender(gameworld); 
     }
 }

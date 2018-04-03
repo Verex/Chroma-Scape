@@ -7,6 +7,7 @@ class TransformComponent extends EntityComponent {
         this.absOrigin = vec3.fromValues(0,0,0);
         this.absRotation = vec3.fromValues(0,0,0);
         this.absScale = vec3.fromValues(1,1,1);
+        this.upVector = vec3.fromValues(0, 1, 0);
     }
 
     updateTransform() {
@@ -49,6 +50,12 @@ class TransformComponent extends EntityComponent {
     getWorldTranslation() {
         var res = vec3.create();
         mat4.getTranslation(res, this.worldTransform);
+        return res;
+    }
+
+    getWorldRotation() {
+        var res = vec3.create();
+        mat4.getRotation(res, this.worldTransform);
         return res;
     }
 

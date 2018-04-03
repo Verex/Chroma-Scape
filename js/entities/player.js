@@ -22,6 +22,7 @@ class Player extends Entity {
         this.movement[MoveDirection.DOWN] = false;
         this.movement[MoveDirection.LEFT] = false;
         this.movement[MoveDirection.RIGHT] = false;
+
         this.mouseClicked = [];
         this.mouseClicked[0] = false;
         this.mouseClicked[2] = false;
@@ -32,7 +33,9 @@ class Player extends Entity {
           keyLeft: 'KeyA',
           keyRight: 'KeyD',
           keyUp: 'KeyW',
-          keyDown: 'KeyS'
+          keyDown: 'KeyS',
+          color0: 'KeyJ',
+          color1: 'KeyL'
         };
 
         // Add components.
@@ -44,21 +47,20 @@ class Player extends Entity {
         this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
 
-        this.physicsComponent.velocity[Math.Z] = -50;
-        this.physicsComponent.acceleration[Math.Z] = -25;
+        // Set initial physics parameters.
+        this.physicsComponent.maxVelocity = 800;
+        this.physicsComponent.velocity[Math.Z] = -30;
+        this.physicsComponent.acceleration[Math.Z] = -1;
 
-        this.physicsComponent.maxSpeed = 300;
+        // Translate player position.
         this.transformComponent.absOrigin[Math.Y] = 10;
 
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
 
         var timer = Timer.getInstance();
-        var colorCheck = (thisptr) => {
 
-        };
-
-        timer.createRelativeTimer("COLORCHECK", 250, () => {
+        timer.createRelativeTimer("COLORCHECK", 150, () => {
           this.color = WHITE;
           if(this.mouseClicked[0]) this.color = RED;
           if(this.mouseClicked[1]) this.color = BLUE;
@@ -88,6 +90,16 @@ class Player extends Entity {
           () => {this.movement[MoveDirection.DOWN] = true;},
           () => {this.movement[MoveDirection.DOWN] = false;}
         );
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color0,
+          () => {this.mouseClicked[0] = true;},
+          () => {this.mouseClicked[0] = false;}
+        );
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color1,
+          () => {this.mouseClicked[1] = true;},
+          () => {this.mouseClicked[1] = false;}
+        );
 
         this.inputComponent.registerEvent(
             InputMethod.INPUT_MOUSE,
@@ -109,6 +121,17 @@ class Player extends Entity {
           null,
           (event) => { this.onMouseClick(event); }
         );
+
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color0,
+          () => {this.mouseClicked[0] = true;},
+          () => {this.mouseClicked[0] = false;}
+        );
+        this.inputComponent.registerKeyboardEvent(
+          this.controls.color1,
+          () => {this.mouseClicked[1] = true;},
+          () => {this.mouseClicked[1] = false;}
+        );
     }
 
     onMouseMove(event) {
@@ -124,11 +147,13 @@ class Player extends Entity {
       }
     }
 
-    onCollisionOverlap(owner) {
+    onCollisionOverlap(other) {
+      if(other.owner.type == EntityType.ENTITY_PORTAL) {
+        this.physicsComponent.maxVelocity += 1;
+      }
     }
 
     crash() {
-      console.log("We have crashed.");
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
     }
@@ -146,6 +171,26 @@ class Player extends Entity {
       this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();
+
+      var worldTranslation = this.ship.transformComponent.getWorldTranslation();
+      var worldOrientation = this.transformComponent.getWorldRotation();
+      var upVector = this.transformComponent.upVector;
+
+      Howler.pos(worldTranslation[Math.X], worldTranslation[Math.Y], worldTranslation[Math.Z]);
+
+      /*
+      //Update the howler listen position and orientation
+      //TODO(Any): Maybe put this inside of a microphone component or something. 
+      Howler._pos = worldTranslation;
+      Howler.orientation(
+        worldOrientation[Math.PITCH], 
+        worldOrientation[Math.YAW],
+        worldOrientation[Math.ROLL],
+        upVector[Math.X],
+        upVector[Math.Y],
+        upVector[Math.Z]
+      );
+      */
       super.tick(dt);
     }
 };
