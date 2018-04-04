@@ -8,6 +8,7 @@ class Spawner extends Entity {
     this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
     this.nextSpawnTime = 0;
+    this.enabled = false;
   }
 
   spawnPortal(position) {
@@ -54,7 +55,9 @@ class Spawner extends Entity {
 
   tick(dt) {
     // Check if we should spawn a portal.
-    if (this.shouldSpawn()) {
+    if(!this.enabled) {
+      this.nextSpawnTime = this.getNextSpawn();
+    } else if (this.shouldSpawn()) {
       // Spawn a random portal in front of player.
       this.spawnRandomPortal();
 

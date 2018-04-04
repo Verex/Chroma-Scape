@@ -72,6 +72,11 @@ class App {
     this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
     this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
 
+    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_MENUCAMERA);
+    this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
+    this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
+    
+
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
@@ -94,6 +99,8 @@ class App {
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
+
+    this.gameworld.scene.mainCameraID = 1;
 
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);

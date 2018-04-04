@@ -9,7 +9,8 @@ var EntityType = {
     ENTITY_CAMERABOOM: {id: 6},
     ENTITY_PORTAL: {id: 7},
     ENTITY_SPAWNER: {id: 8},
-    ENTITY_SPEAKER: {id: 9}
+    ENTITY_SPEAKER: {id: 9},
+    ENTITY_MENUCAMERA: {id: 10},
 };
 
 var newID = 0;
@@ -32,9 +33,10 @@ class Entity {
     }
 
     tick(dt) {
-        this.children.forEach((value, index, array) => {
-            value.tick(dt);
-        });
+        for(var i = 0; i < this.children.length; i++) {
+            var child = this.children[i];
+            child.tick(dt);
+        }
     }
 
     onEntityCreated(newEnt) {

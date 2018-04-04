@@ -7,6 +7,7 @@ class GameWorld extends Entity {
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+      
 
       //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
       //and our renderer will be responsible for processing the gameworld and rendering it's scene
@@ -44,11 +45,21 @@ class GameWorld extends Entity {
         }
       );
 
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyM',
+        (event) => {
+            postProcessing = !postProcessing;
+        }
+      );
+
 
     }
 
     onEntityCreated(newEnt) {
       switch(newEnt.type) {
+          case EntityType.ENTITY_MENUCAMERA:
           case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
               this.scene.cameras.push(newEnt);
               break;
@@ -62,6 +73,7 @@ class GameWorld extends Entity {
 
     tick(dt) {
       this.handleZReset();
+      this.gamestate.updateDifficultyCurve();
       super.tick(dt);
     }
 
