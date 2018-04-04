@@ -6,6 +6,7 @@
 
     <!-- Include external libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
     <script src="js/lib/gl-matrix.js"></script>
     <script src="js/lib/howler/howler.core.js"></script>
     <script src="js/lib/howler/plugins/howler.spatial.js"></script>
@@ -67,8 +68,18 @@
   <body>
     <!-- Define our gl canvas. -->
     <canvas id="glcanvas"></canvas>
-
+    <canvas id="text"></canvas>
     <script>
+      opentype.load('assets/fonts/PressStart2P-Regular.ttf', function(err, font) {
+          if (err) {
+               alert('Font could not be loaded: ' + err);
+          } else {
+            var ctx = document.getElementById('text').getContext('2d');
+            ctx.fillStyle="red";
+            font.draw(ctx, "HELLL", 0, 0, 32, );
+          }
+      });
+
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
       var drawAABB = true;
       var postProcessing = false;
