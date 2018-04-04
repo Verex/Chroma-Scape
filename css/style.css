@@ -5,8 +5,12 @@ html, body {
   background-color:black;
 }
 
+#textcanvas {
+    display: none;
+}
+
 #glcanvas {
-  border: 2px solid black;
+  border: 0px;
   float: left;
   width: 100vw;
   height: 100vh;
