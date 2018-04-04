@@ -46,13 +46,13 @@ class GameWorld extends Entity {
       );
 
       this.inputComponent.registerEvent(
-        InputMethod.INPUT_KEYBOARD,
-        InputType.BTN_RELEASE,
-        'KeyM',
-        (event) => {
-            postProcessing = !postProcessing;
-        }
-      );
+          InputMethod.INPUT_KEYBOARD,
+          InputType.BTN_RELEASE,
+          'KeyM',
+          (event) => {
+              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+          }
+      )
 
 
     }
@@ -74,6 +74,24 @@ class GameWorld extends Entity {
     tick(dt) {
       this.handleZReset();
       this.gamestate.updateDifficultyCurve();
+      if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
+          //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
+          var boom = this.player.menuCamera.yawBoom;
+          this.player.menuCamera.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absOrigin[Math.X] = Math.sin(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
+          this.player.menuCamera.yawBoom -= 35 * dt;
+          if(this.player.menuCamera.yawBoom < 1) {
+              this.player.menuCamera.yawBoom = 0;
+              var timer = Timer.getInstance();
+              timer.createRelativeTimer("GAMESTART", 150, () => {
+                  console.log("GAMESTART!");
+                  this.gamestate.currentState = GameStates.GAMESTATE_GAME;
+                  this.spawner.enabled = true;
+                  this.scene.mainCameraID = 0;
+              }, this, null, false);
+          }
+      }
       super.tick(dt);
     }
 

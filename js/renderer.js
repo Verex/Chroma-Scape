@@ -16,7 +16,12 @@ class Renderer {
         this.renderTargets[0] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, true, true); //This is our render target
         this.renderTargets[1] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, false, true);
         this.renderTargets[2] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, false, true);
+
+        this.textRenderTarget = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, false, true);
         this.viewport = new Viewport(glContext, 50, 50, glContext.canvas.width - 100, glContext.canvas.height - 100);
+
+        this.textCanvasTexture = glContext.createTexture();
+
 
         this.renderPasses = [
             new CopyPass(glContext),
@@ -78,6 +83,19 @@ class Renderer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.viewport.bind();
         this.viewport.render();
+    }
+
+    blitCanvasTexture(textureCanvas) {
+        var gl = this.ctx;
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.bindTexture(gl.TEXTURE_2D, this.textCanvasTexture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureCanvas); // This is the important line!
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
+        gl.generateMipmap(gl.TEXTURE_2D); 
+        this.textRenderTarget.bind();
+        this.renderPasses[0].doPass(this.viewport);
+        //gl.bindTexture(gl.TEXTURE_2D, null);
     }
 
     onResize(nw, nh) {

@@ -63,13 +63,14 @@
     <script src="js/meshes/aabb.js"></script>
     <script src="js/meshes/portal.js"></script>
 
+
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
     <!-- Define our gl canvas. -->
     <canvas id="glcanvas"></canvas>
-
+    <canvas id="textcanvas"></canvas>
     <script>
       opentype.load('assets/fonts/PressStart2P-Regular.ttf', function(err, font) {
           if (err) {
@@ -83,6 +84,7 @@
       var drawAABB = true;
       var postProcessing = false;
       $(document).ready(() => {
+        "use strict";
         // Setup initial AJAX settings.
         $.ajaxSetup({
           cache: true,

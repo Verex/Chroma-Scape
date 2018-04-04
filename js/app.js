@@ -31,9 +31,13 @@ class App {
   setup() {
     // Get Canvas DOM element.
     this.canvas = $('#glcanvas')[0];
+    this.textCanvas = $('#textcanvas')[0];
+    this.textCanvas.width = 1024;
+    this.textCanvas.height = 1024;
 
     // Get WebGL canvas context.
     this.gl = this.canvas.getContext('webgl');
+    this.textCtx = this.textCanvas.getContext('2d');
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -72,9 +76,10 @@ class App {
     this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
     this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
 
-    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_MENUCAMERA);
+    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
     this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
     this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
+    this.gameworld.player.menuCamera.yawBoom = 180;
     
 
     // Create ship entity.
@@ -222,11 +227,15 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
+    this.textCtx.fillStyle = 'green';
+    this.textCtx.fillRect(0, 0, 150, 150);
     var gameworld = this.gameworld;
+    /*
     this.renderSystems.forEach((value, index, array) => {
       value.render(gameworld);
-      value.postProcessing()
+      value.blitCanvasTexture(this.textCanvas);
+      value.postProcessing();
     });
-
+    */
   }
 }
