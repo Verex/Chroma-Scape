@@ -68,13 +68,15 @@
   <body>
     <!-- Define our gl canvas. -->
     <canvas id="glcanvas"></canvas>
-
+    <canvas id="text"></canvas>
     <script>
       opentype.load('assets/fonts/PressStart2P-Regular.ttf', function(err, font) {
           if (err) {
                alert('Font could not be loaded: ' + err);
           } else {
-              console.log(font);
+            var ctx = document.getElementById('text').getContext('2d');
+            ctx.fillStyle="red";
+            font.draw(ctx, "HELLL", 0, 0, 32, );
           }
       });
 
