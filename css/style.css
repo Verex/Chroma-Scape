@@ -5,29 +5,6 @@ html, body {
   background-color:black;
 }
 
-.interface {
-  display: block;
-  position: absolute;
-  color: #fff;
-  background-color: transparent;
-  width: 100vw;
-  height: 100vh;
-}
-
-.interface.hud {
-  text-align: center;
-}
-
-#overlay {
-  display: block;
-  position: absolute;
-  color: #fff;
-  background-color: transparent;
-  width: 100vw;
-  height: 100vh;
-  user-select: none;
-}
-
 #glcanvas {
   border: 2px solid black;
   float: left;

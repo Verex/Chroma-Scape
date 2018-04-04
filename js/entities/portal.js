@@ -28,17 +28,17 @@ class Portal extends Entity {
     }
 
     checkForMiss() {
-      if (!this.disabled && this.transformComponent.absOrigin[Math.Z]
-        > this.owner.player.transformComponent.absOrigin[Math.Z]) {
-        this.owner.player.crash();
-      }
-
-      if (this.disabled && this.transformComponent.absOrigin[Math.Z] - 50
-      > this.owner.player.transformComponent.absOrigin[Math.Z]) {
-        for (var i = 0; i < this.owner.children.length; i++ ) {
-          if (this.owner.children[i].eid == this.eid) {
-            this.owner.children.splice(i, 1);
+      var position = this.transformComponent.absOrigin,
+          playerPosition = this.owner.player.transformComponent.absOrigin;
+      if (position[Math.Z] > playerPosition[Math.Z]) {
+        if (this.disabled) {
+          for (var i = 0; i < this.owner.children.length; i++ ) {
+            if (this.owner.children[i].eid == this.eid) {
+              this.owner.children.splice(i, 1);
+            }
           }
+        } else {
+          this.owner.player.crash();
         }
       }
     }
