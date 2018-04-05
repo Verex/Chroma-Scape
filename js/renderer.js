@@ -88,9 +88,9 @@ class Renderer {
     }
     render(gameworld) {
         this.renderTargets[0].bind();
-        this.clear();
+        this.clear(DARK);
         this.program.activate();
-        
+
         var cameraID = gameworld.scene.mainCameraID;
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_projectionMatrix"),

@@ -8,6 +8,7 @@ class Spawner extends Entity {
     this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
     this.nextSpawnTime = 0;
+    this.lastPortal = vec3.fromValues(0, 30, -150);
   }
 
   spawnPortal(position) {
@@ -23,19 +24,21 @@ class Spawner extends Entity {
   }
 
   spawnRandomPortal() {
-    var x = Math.randInt(-40, 40),
-        y = Math.randInt(10, 60);
-
-    this.spawnPortal(
-      vec3.fromValues(x, y, this.owner.player.transformComponent.absOrigin[Math.Z] - 850)
+    var position = vec3.fromValues(
+      Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
+      Math.min(Math.max(this.lastPortal[Math.Y] + Math.randInt(-20, 20), 20), 60),
+      this.lastPortal[Math.Z] - Math.randInt(200, 700)
     );
+    console.log(position);
+    this.lastPortal = position;
+    this.spawnPortal(position);
   }
 
   getNextSpawn() {
     // Get instance of timer.
     var timer = Timer.getInstance();
 
-    return timer.getCurrentTime() + 5000;
+    return timer.getCurrentTime() + 2000;
   }
 
   shouldSpawn() {

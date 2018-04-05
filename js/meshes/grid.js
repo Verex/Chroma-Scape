@@ -6,7 +6,7 @@ var GridMesh = (size, divisions) => {
 
     var faceColors = [
         [1.0,  1.0,  1.0,  1.0],    // Front face: white
-        [0.227,  0.662,  0.913,  1.0],    // Back face: red
+        [0.09,  0.75,  0.91,  1.0],    // Back face: red
     ];
 
     for(var i = 0, j = 0, k = -halfSize; i <= divisions; i++, k += step) {

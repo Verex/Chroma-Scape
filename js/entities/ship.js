@@ -113,7 +113,7 @@ class Ship extends Entity {
 
     onCollisionOverlap(other) {
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
-        if(this.owner.color === other.owner.col) {
+        if(this.owner.color === other.owner.color) {
           other.owner.disabled = true;
           this.owner.onCollisionOverlap(other);
         } else {

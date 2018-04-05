@@ -61,11 +61,11 @@ class Player extends Entity {
         var timer = Timer.getInstance();
 
         timer.createRelativeTimer("COLORCHECK", 150, () => {
-          this.color = WHITE;
-          if(this.mouseClicked[0]) this.color = RED;
-          if(this.mouseClicked[1]) this.color = BLUE;
+          this.color = COLORSET[0];
+          if(this.mouseClicked[0]) this.color = COLORSET[1];
+          if(this.mouseClicked[1]) this.color = COLORSET[2];
           if(this.mouseClicked[1] && this.mouseClicked[0]) {
-            this.color = GREEN;
+            this.color = COLORSET[3];
           }
         }, this, null, true);
 
