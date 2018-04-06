@@ -95,7 +95,10 @@ class Renderer {
         gl.generateMipmap(gl.TEXTURE_2D); 
         this.textRenderTarget.bind();
         this.renderPasses[0].doPass(this.viewport);
-        //gl.bindTexture(gl.TEXTURE_2D, null);
+        this.textRenderTarget.bindTexture();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        this.viewport.bind();
+        this.viewport.render();
     }
 
     onResize(nw, nh) {

@@ -230,12 +230,11 @@ class App {
     this.textCtx.fillStyle = 'green';
     this.textCtx.fillRect(0, 0, 150, 150);
     var gameworld = this.gameworld;
-    /*
+    
     this.renderSystems.forEach((value, index, array) => {
       value.render(gameworld);
       value.blitCanvasTexture(this.textCanvas);
       value.postProcessing();
     });
-    */
   }
 }

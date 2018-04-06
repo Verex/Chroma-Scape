@@ -35,7 +35,7 @@ class RenderPass {
         this.ctx.enableVertexAttribArray(texcoordLocation);
         // Bind the position buffer.
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, viewport.texCoordBuffer);  
-        // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+        // Tell the position attribute how to ge t data out of positionBuffer (ARRAY_BUFFER)
         var size = 2;          // 2 components per iteration
         var type = this.ctx.FLOAT;   // the data is 32bit floats
         var normalize = false; // don't normalize the data
