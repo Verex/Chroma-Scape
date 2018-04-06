@@ -227,8 +227,10 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
+    this.textCtx.globalAlpha = 0.0;
     this.textCtx.fillStyle = '#F0F';
     this.textCtx.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
+    this.textCtx.globalAlpha = 1.0;
     this.textCtx.fillStyle = 'green';
     this.textCtx.fillRect(0, 0, 150, 150);
     if(testFont != null) {
@@ -240,7 +242,7 @@ class App {
     
     this.renderSystems.forEach((value, index, array) => {
       value.render(gameworld);
-      value.blitCanvasTexture(this.textCanvas);
+      //value.blitCanvasTexture(this.textCanvas);
       value.postProcessing();
     });
   }

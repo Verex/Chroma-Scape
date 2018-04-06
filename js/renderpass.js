@@ -1,6 +1,7 @@
 class RenderPass {
     constructor(glContext, vtx, fgmt, name) {
         this.ctx = glContext;
+        this.name = name;
         this.passProgram = new Program.Builder(glContext).
             withShader(vtx, glContext.VERTEX_SHADER, name + "-vtx").
             withShader(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
