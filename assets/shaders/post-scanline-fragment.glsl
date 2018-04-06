@@ -1,5 +1,5 @@
 precision highp float;
- 
+
 // our texture
 uniform sampler2D u_image;
 uniform float Time;
@@ -14,12 +14,12 @@ vec2 radialDistortion(vec2 coord, vec2 pos) {
     return coord * (pos + cc * (1.0 + dist) * dist) / pos;
 }
 */
- 
+
 void main() {
    // Look up a color from the texture.
    vec2 texCoord = v_texCoord;
    vec4 color = texture2D(u_image, texCoord);
-   color -= abs(sin(texCoord.y * 100.0 + Time * 5.0)) * 0.009; // (1)
-   color -= abs(sin(texCoord.y * 300.0 - Time * 10.0)) * 0.01; // (2)
+   color += abs(sin(texCoord.y * 100.0 + Time * 5.0)) * 0.009; // (1)
+   color += abs(sin(texCoord.y * 300.0 - Time * 10.0)) * 0.01; // (2)
    gl_FragColor = color;
 }
