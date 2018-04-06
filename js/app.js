@@ -32,11 +32,11 @@ class App {
     // Get Canvas DOM element.
     this.canvas = $('#glcanvas')[0];
     this.textCanvas = $('#textcanvas')[0];
-    this.textCanvas.width = 1024;
-    this.textCanvas.height = 1024;
+    this.textCanvas.width = 2048;
+    this.textCanvas.height = 2048;
 
     // Get WebGL canvas context.
-    this.gl = this.canvas.getContext('webgl');
+    this.gl = this.canvas.getContext('webgl', {alpha: false});
     this.textCtx = this.textCanvas.getContext('2d');
 
     // Ensure WebGL is working.
@@ -227,8 +227,15 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
+    this.textCtx.fillStyle = '#F0F';
+    this.textCtx.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
     this.textCtx.fillStyle = 'green';
     this.textCtx.fillRect(0, 0, 150, 150);
+    if(testFont != null) {
+      var path = testFont.getPath('Hello, World!', 0, 200, 32);
+      path.fill = "white";
+      path.draw(this.textCtx);
+    }
     var gameworld = this.gameworld;
     
     this.renderSystems.forEach((value, index, array) => {

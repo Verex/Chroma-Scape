@@ -31,9 +31,12 @@ class Renderer {
             new CRTPass(glContext),
             new ScanlinePass(glContext)
         ];
+
+        this.uiPass = new UIPass(glContext);
     }
     clear(color = BLACK) {
-        this.ctx.clearColor(color.r, color.g, color.b, color.a);
+        //this.ctx.colorMask(false, false, false, true);
+        this.ctx.clearColor(0, 0, 0, 1);
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
     }
@@ -94,7 +97,8 @@ class Renderer {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
         gl.generateMipmap(gl.TEXTURE_2D); 
         this.textRenderTarget.bind();
-        this.renderPasses[0].doPass(this.viewport);
+        this.uiPass.canvasTexture = this.renderTargets[0].texture;
+        this.uiPass.doPass(this.viewport);
         this.textRenderTarget.bindTexture();
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.viewport.bind();
@@ -110,6 +114,8 @@ class Renderer {
     render(gameworld) {
         this.renderTargets[0].bind();
         this.clear();
+        this.ctx.enable(this.ctx.BLEND);
+        this.ctx.blendFunc(this.ctx.ONE, this.ctx.ONE_MINUS_SRC_ALPHA);
         this.program.activate();
         
         var cameraID = gameworld.scene.mainCameraID;
