@@ -1,4 +1,3 @@
-var MARGIN 
 class Viewport {
     constructor(glContext, x, y, width, height) {
         this.posBuffer = glContext.createBuffer();

@@ -6,7 +6,10 @@
 
     <!-- Include external libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
     <script src="js/lib/gl-matrix.js"></script>
+    <script src="js/lib/howler/howler.core.js"></script>
+    <script src="js/lib/howler/plugins/howler.spatial.js"></script>
 
     <!-- Include core game files -->
     <script src="js/app.js"></script>
@@ -23,6 +26,7 @@
     <script src="js/model.js"></script>
     <script src="js/aabb.js"></script>
     <script src="js/assets.js"></script>
+    <script src="js/gamestate.js"></script>
 
     <!-- Include Post Processing Effects -->
     <script src="js/post-fx/crt-pass.js"></script>
@@ -38,6 +42,7 @@
     <script src="js/components/transformcomponent.js"></script>
     <script src="js/components/inputcomponent.js"></script>
     <script src="js/components/physicscomponent.js"></script>
+    <script src="js/components/audiocomponent.js"></script>
 
     <!-- Include entities -->
     <script src="js/entities/entity.js"></script>
@@ -48,6 +53,7 @@
     <script src="js/entities/ship.js"></script>
     <script src="js/entities/portal.js"></script>
     <script src="js/entities/spawner.js"></script>
+    <script src="js/entities/speaker.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -55,6 +61,7 @@
     <script src="js/meshes/grid.js"></script>
     <script src="js/meshes/aabb.js"></script>
     <script src="js/meshes/portal.js"></script>
+    <script src="js/meshes/pillar.js"></script>
 
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
@@ -62,21 +69,11 @@
   <body>
     <!-- Define our gl canvas. -->
     <canvas id="glcanvas"></canvas>
-
-    <!-- User interface elements with no interaction. -->
-    <div id="i_hud" class="interface hud">
-      <p>Distance: <span id="p_distance">0</span></p>
-    </div>
-
-    <!-- Overlay (Disables selection) -->
-    <div id="overlay"></div>
-
-    <!-- User interface elements with interaction. -->
-
+    <canvas id="textcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-      var drawAABB = true;
-      var postProcessing = false;
+      var drawAABB = false;
+      var postProcessing = true;
       $(document).ready(() => {
         // Setup initial AJAX settings.
         $.ajaxSetup({
@@ -86,6 +83,20 @@
 
         $(document).click( () => {
           $('#glcanvas')[0].requestPointerLock();
+        });
+
+        opentype.load('assets/fonts/PressStart2P-Regular.ttf', function(err, font) {
+            if (err) {
+                 alert('Font could not be loaded: ' + err);
+            } else {
+              var canvas = document.getElementById('textcanvas');
+              canvas.width = 1024;
+              canvas.height = 1024;
+              var ctx = canvas.getContext('2d');
+              var path = font.getPath('Hello, World!', 0, 200, 32);
+              path.fill = "white";
+              path.draw(ctx);
+            }
         });
 
         // Instantiate the application.

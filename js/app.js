@@ -59,7 +59,8 @@ class App {
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
-    assets.addModel(this.gl, TestMesh(), "portal");
+    assets.addModel(this.gl, PortalMesh(), "portal");
+    assets.addModel(this.gl, PillarMesh(), "pillar");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
@@ -75,7 +76,7 @@ class App {
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
-    this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 1.5, 1, 2.75);
+    this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
 
     // Set model for our ship.
@@ -86,12 +87,13 @@ class App {
     this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
 
     this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    this.testgrid.meshComponent.setModel(
+    this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
 
-    this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
-    this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
+    //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
+    //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
+
 
     return AppStatus.STATUS_OK;
   }
@@ -212,10 +214,8 @@ class App {
     var gameworld = this.gameworld;
     this.renderSystems.forEach((value, index, array) => {
       value.render(gameworld);
+      value.postProcessing()
     });
 
-    /*
-      Run all of our post render systems
-    */
   }
 }

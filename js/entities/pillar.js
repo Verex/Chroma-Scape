@@ -1,6 +1,6 @@
-class Portal extends Entity {
+class Pillar extends Entity {
     constructor(eid, owner) {
-        super(eid, owner, EntityType.ENTITY_PORTAL);
+        super(eid, owner, EntityType.ENTITY_PILLAR);
 
         // Add entity components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
@@ -13,25 +13,18 @@ class Portal extends Entity {
 
         // Define entity's collision type.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
-
-        var cidx = Math.randInt(0, 3);
-        this.color = COLORSET[cidx];
-
-        this.disabled = false;
     }
 
     checkForMiss() {
       var position = this.transformComponent.absOrigin,
           playerPosition = this.owner.player.transformComponent.absOrigin;
-      if (position[Math.Z] + 5 > playerPosition[Math.Z]) {
-        if (this.disabled) {
-          for (var i = 0; i < this.owner.children.length; i++ ) {
-            if (this.owner.children[i].eid == this.eid) {
-              this.owner.children.splice(i, 1);
-            }
+
+      // Check if behind player, and remove.
+      if (position[Math.Z] - 50 > playerPosition[Math.Z]) {
+        for (var i = 0; i < this.owner.children.length; i++ ) {
+          if (this.owner.children[i].eid == this.eid) {
+            this.owner.children.splice(i, 1);
           }
-        } else {
-          this.owner.player.crash();
         }
       }
     }
@@ -47,8 +40,8 @@ class Portal extends Entity {
 
     }
 };
-EntityType.ENTITY_PORTAL.construction = (owner) => {
-    return new Portal(
+EntityType.ENTITY_PILLAR.construction = (owner) => {
+    return new Pillar(
         newID++,
         owner
     );

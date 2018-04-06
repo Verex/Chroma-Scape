@@ -54,7 +54,7 @@ class Renderer {
       }
     }
 
-    pushTexture() {
+    postProcessing() {
         var gl = this.ctx;
         var viewport = this.viewport;
         var renderTargets = this.renderTargets;
@@ -88,9 +88,9 @@ class Renderer {
     }
     render(gameworld) {
         this.renderTargets[0].bind();
-        this.clear();
+        this.clear(DARK);
         this.program.activate();
-        
+
         var cameraID = gameworld.scene.mainCameraID;
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_projectionMatrix"),
@@ -103,11 +103,6 @@ class Renderer {
             false,
             gameworld.scene.cameras[cameraID].sceneNode.worldMatrix
         );
-
-        // Recursively render each mesh component.
-        gameworld.children.forEach((child) => {
-          this.recursiveRender(child);
-        }); 
-        this.pushTexture();
+        this.recursiveRender(gameworld); 
     }
 }

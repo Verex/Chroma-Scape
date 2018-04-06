@@ -18,8 +18,8 @@ class Ship extends Entity {
 
         // Define linear boundaries.
         this.linearBounds = {};
-        this.linearBounds[Math.X] = {min: -30, max: 30};
-        this.linearBounds[Math.Y] = {min: 1, max: 40};
+        this.linearBounds[Math.X] = {min: -80, max: 80};
+        this.linearBounds[Math.Y] = {min: 1, max: 60};
         this.linearBounds[Math.Z] = {min: 0, max: 0};
 
         // Define angular boundaries.
@@ -113,8 +113,9 @@ class Ship extends Entity {
 
     onCollisionOverlap(other) {
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
-        if(this.owner.color === other.owner.col) {
+        if(this.owner.color === other.owner.color) {
           other.owner.disabled = true;
+          this.owner.onCollisionOverlap(other);
         } else {
           this.owner.crash();
         }
