@@ -57,6 +57,7 @@ class Player extends Entity {
 
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
+        this.hasCrashed = false;
 
         var timer = Timer.getInstance();
 
@@ -156,6 +157,7 @@ class Player extends Entity {
     crash() {
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
+      this.hasCrashed = true;
     }
 
     moveCamera(dt) {

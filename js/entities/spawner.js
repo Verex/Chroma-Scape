@@ -29,7 +29,7 @@ class Spawner extends Entity {
       Math.min(Math.max(this.lastPortal[Math.Y] + Math.randInt(-20, 20), 20), 60),
       this.lastPortal[Math.Z] - Math.randInt(200, 700)
     );
-    console.log(position);
+    console.log("Spawned portal at: " + position);
     this.lastPortal = position;
     this.spawnPortal(position);
   }
@@ -42,11 +42,11 @@ class Spawner extends Entity {
   }
 
   shouldSpawn() {
-    // Get instance of timer.
-    var timer = Timer.getInstance();
+    // Get current time.
+    var time = Timer.getInstance().getCurrentTime();
 
     // Check if we are past next spawn time.
-    if (timer.getCurrentTime() >= this.nextSpawnTime) {
+    if (time >= this.nextSpawnTime && !this.owner.player.hasCrashed) {
       return true;
     }
 
