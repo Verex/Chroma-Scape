@@ -18,22 +18,46 @@ class MeshComponent extends EntityComponent {
     render(program, gl) {
         if(!this.model) return;
         if(this.owner.type == EntityType.ENTITY_SHIP) {
-            var color = this.owner.owner.color.serialize(); //Get our player
+            var color = this.owner.owner.color.serialize(); // Get our player
+
+            // Color the player's body for color selection.
             gl.uniform4f(
-                program.uniformLocation("u_replaceColor"),
+                program.uniformLocation("u_selectionColor"),
                 color[0],
                 color[1],
                 color[2],
                 color[3]
             );
+
+            // HACK HACK: Thruster color based on time? Must be better way to do this.
+            var time = Timer.getInstance();
+            var cTime = time.getCurrentTime(),
+                f = (cTime % 5000) / 5000;
+
+            var add = 0.2;
+            if (f <= 0.5) {
+              add *= (f/0.5);
+            } else {
+              add -= add * (f - 0.5/0.5);
+            }
+
+            gl.uniform4f(
+                program.uniformLocation("u_thrusterColor"),
+                0.086 + add,
+                0.596 + add,
+                0.886 + add,
+                1.0
+            );
         } else if(this.owner.type == EntityType.ENTITY_PORTAL) {
+            var color = this.owner.color.serialize();
+
             // Color our portal.
             gl.uniform4f(
-                program.uniformLocation("u_replaceColor"),
-                this.owner.color[0],
-                this.owner.color[1],
-                this.owner.color[2],
-                this.owner.color[3]
+                program.uniformLocation("u_selectionColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
             );
         }
         this.model.render(program);

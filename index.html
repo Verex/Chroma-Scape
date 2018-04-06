@@ -63,6 +63,7 @@
     <script src="js/meshes/grid.js"></script>
     <script src="js/meshes/aabb.js"></script>
     <script src="js/meshes/portal.js"></script>
+    <script src="js/meshes/pillar.js"></script>
 
 
     <!-- Include stylesheets -->
@@ -74,9 +75,8 @@
     <canvas id="textcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-      var drawAABB = true;
-      var postProcessing = false;
-      var testFont = null;
+      var drawAABB = false;
+      var postProcessing = true;
       $(document).ready(() => {
         "use strict";
         // Setup initial AJAX settings.

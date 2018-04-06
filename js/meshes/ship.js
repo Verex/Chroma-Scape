@@ -36,23 +36,24 @@ var ShipMesh = () => {
     const highlightColor = [0.573, 0.176, 0.071, 1.0];
     const shadeColor = [0.137, 0.133, 0.133, 1.0];
     const darkColor = [0.094, 0.09, 0.086, 1.0];
-    const thrusterColor = [1.0, 0.0, 1.0, 1.0];
+    const thrusterColor = [1.0, 0.0, 0.9, 1.0];
+    const tempColor1 = [1.0, 0.0, 1.0, 1.0];
 
     const faceColors = [
       VertexColor.new(primaryColor, 16),
-      VertexColor.new(highlightColor, 6),
+      VertexColor.new(tempColor1, 6),
       VertexColor.new(shadeColor, 4),
-      VertexColor.new(highlightColor, 6),
+      VertexColor.new(tempColor1, 6),
       VertexColor.new(shadeColor, 4),
       VertexColor.new(shadeColor, 16),
       VertexColor.new(thrusterColor, 4),
       VertexColor.new(primaryColor, 6),
       VertexColor.new(shadeColor, 8),
       VertexColor.new(shadeColor, 6),
-      VertexColor.new(highlightColor, 12),
+      VertexColor.new(tempColor1, 12),
       VertexColor.new(shadeColor, 3),
       VertexColor.new(shadeColor, 6),
-      VertexColor.new(highlightColor, 12),
+      VertexColor.new(tempColor1, 12),
       VertexColor.new(shadeColor, 3),
     ];
 

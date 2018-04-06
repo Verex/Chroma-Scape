@@ -8,7 +8,7 @@ var PortalMesh = () => {
 
     const faceColors = [
         VertexColor.new([1.0,  0.0,  1.0,  1.0], 14),
-        VertexColor.new([0.2, 0.2, 0.2, 1.0], 24)
+        VertexColor.new([0.094, 0.09, 0.086, 1.0], 24)
     ];
     var indices = [
       6, 0, 1,

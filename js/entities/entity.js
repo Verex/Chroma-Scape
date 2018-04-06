@@ -10,7 +10,7 @@ var EntityType = {
     ENTITY_PORTAL: {id: 7},
     ENTITY_SPAWNER: {id: 8},
     ENTITY_SPEAKER: {id: 9},
-    ENTITY_MENUCAMERA: {id: 10},
+    ENTITY_PILLAR: {id: 10},
 };
 
 var newID = 0;

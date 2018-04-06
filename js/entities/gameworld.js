@@ -173,8 +173,15 @@ class GameWorld extends Entity {
 
         // Move all portals back as well.
         this.children.forEach((child) => {
-          if (child.type == EntityType.ENTITY_PORTAL) {
-            child.transformComponent.absOrigin[Math.Z] -= this.zReset;
+          switch(child.type) {
+            case EntityType.ENTITY_PORTAL:
+              child.transformComponent.absOrigin[Math.Z] -= this.zReset;
+
+              console.log(child.eid + " new position: " + child.transformComponent.absOrigin);
+              break;
+            case EntityType.ENTITY_SPAWNER:
+              child.lastPortal[Math.Z] -= this.zReset;
+              break;
           }
         });
       }

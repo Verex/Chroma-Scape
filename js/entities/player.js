@@ -57,15 +57,16 @@ class Player extends Entity {
 
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
+        this.hasCrashed = false;
 
         var timer = Timer.getInstance();
 
         timer.createRelativeTimer("COLORCHECK", 150, () => {
-          this.color = WHITE;
-          if(this.mouseClicked[0]) this.color = RED;
-          if(this.mouseClicked[1]) this.color = BLUE;
+          this.color = COLORSET[0];
+          if(this.mouseClicked[0]) this.color = COLORSET[1];
+          if(this.mouseClicked[1]) this.color = COLORSET[2];
           if(this.mouseClicked[1] && this.mouseClicked[0]) {
-            this.color = GREEN;
+            this.color = COLORSET[3];
           }
         }, this, null, true);
 
@@ -156,6 +157,7 @@ class Player extends Entity {
     crash() {
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
+      this.hasCrashed = true;
     }
 
     moveCamera(dt) {

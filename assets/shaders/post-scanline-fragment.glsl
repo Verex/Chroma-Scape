@@ -1,5 +1,5 @@
 precision highp float;
- 
+
 // our texture
 uniform sampler2D u_image;
 uniform float Time;
@@ -14,7 +14,7 @@ vec2 radialDistortion(vec2 coord, vec2 pos) {
     return coord * (pos + cc * (1.0 + dist) * dist) / pos;
 }
 */
- 
+
 void main() {
    // Look up a color from the texture.
    vec2 texCoord = v_texCoord;

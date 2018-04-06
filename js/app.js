@@ -64,6 +64,7 @@ class App {
     assets.addModel(this.gl, ShipMesh(), "ship");
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
     assets.addModel(this.gl, PortalMesh(), "portal");
+    assets.addModel(this.gl, PillarMesh(), "pillar");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
@@ -87,11 +88,6 @@ class App {
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
     this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-
-    this.gameworld.testSpeaker = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
-    this.gameworld.testSpeaker.meshComponent.setModel(
-      assets.getModel("test")
-    );
 
     // Set model for our ship.
     this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
