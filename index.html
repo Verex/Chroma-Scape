@@ -29,6 +29,7 @@
     <script src="js/gamestate.js"></script>
 
     <!-- Include Post Processing Effects -->
+    <script src="js/post-fx/ui-pass.js"></script>
     <script src="js/post-fx/crt-pass.js"></script>
     <script src="js/post-fx/scanline-pass.js"></script>
     <script src="js/post-fx/copy-pass.js"></script>
@@ -47,6 +48,7 @@
     <!-- Include entities -->
     <script src="js/entities/entity.js"></script>
     <script src="js/entities/camera.js"></script>
+    <script src="js/entities/menucamera.js"></script>
     <script src="js/entities/gameworld.js"></script>
     <script src="js/entities/dummy.js"></script>
     <script src="js/entities/player.js"></script>
@@ -63,6 +65,7 @@
     <script src="js/meshes/portal.js"></script>
     <script src="js/meshes/pillar.js"></script>
 
+
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
   </head>
@@ -75,6 +78,7 @@
       var drawAABB = false;
       var postProcessing = true;
       $(document).ready(() => {
+        "use strict";
         // Setup initial AJAX settings.
         $.ajaxSetup({
           cache: true,
@@ -89,13 +93,7 @@
             if (err) {
                  alert('Font could not be loaded: ' + err);
             } else {
-              var canvas = document.getElementById('textcanvas');
-              canvas.width = 1024;
-              canvas.height = 1024;
-              var ctx = canvas.getContext('2d');
-              var path = font.getPath('Hello, World!', 0, 200, 32);
-              path.fill = "white";
-              path.draw(ctx);
+              testFont = font;
             }
         });
 

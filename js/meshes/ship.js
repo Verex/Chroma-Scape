@@ -20,7 +20,7 @@ class VertexColor {
 }
 
 var ShipMesh = () => {
-    const front = -5.5; // Z position of
+    const front = -7.5; // Z position of
     const back  = 1;
     const top = 0.3;
     const bottom = -0.8;

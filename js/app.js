@@ -31,9 +31,13 @@ class App {
   setup() {
     // Get Canvas DOM element.
     this.canvas = $('#glcanvas')[0];
+    this.textCanvas = $('#textcanvas')[0];
+    this.textCanvas.width = 2048;
+    this.textCanvas.height = 2048;
 
     // Get WebGL canvas context.
-    this.gl = this.canvas.getContext('webgl');
+    this.gl = this.canvas.getContext('webgl', {alpha: false});
+    this.textCtx = this.textCanvas.getContext('2d');
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -73,6 +77,12 @@ class App {
     this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
     this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
 
+    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
+    this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
+    this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
+    this.gameworld.player.menuCamera.yawBoom = 180;
+    
+
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
@@ -90,6 +100,8 @@ class App {
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
+
+    this.gameworld.scene.mainCameraID = 1;
 
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
@@ -211,11 +223,23 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
+    this.textCtx.globalAlpha = 0.0;
+    this.textCtx.fillStyle = '#F0F';
+    this.textCtx.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
+    this.textCtx.globalAlpha = 1.0;
+    this.textCtx.fillStyle = 'green';
+    this.textCtx.fillRect(0, 0, 150, 150);
+    if(testFont != null) {
+      var path = testFont.getPath('Hello, World!', 0, 200, 32);
+      path.fill = "white";
+      path.draw(this.textCtx);
+    }
     var gameworld = this.gameworld;
+    
     this.renderSystems.forEach((value, index, array) => {
       value.render(gameworld);
-      value.postProcessing()
+      //value.blitCanvasTexture(this.textCanvas);
+      value.postProcessing();
     });
-
   }
 }

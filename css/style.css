@@ -6,7 +6,9 @@ html, body {
 }
 
 #textcanvas {
-    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 #glcanvas {
