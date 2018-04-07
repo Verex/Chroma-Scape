@@ -27,7 +27,6 @@ class AudioComponent extends EntityComponent {
             return;
         }
         this.sound.pos(worldTranslation[Math.X], worldTranslation[Math.Y], worldTranslation[Math.Z], this.sID);
-        
     }
 
     setVolume(volume) {

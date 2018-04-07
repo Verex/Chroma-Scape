@@ -33,9 +33,10 @@ class Entity {
     }
 
     tick(dt) {
-        this.children.forEach((value, index, array) => {
-            value.tick(dt);
-        });
+        for(var i = 0; i < this.children.length; i++) {
+            var child = this.children[i];
+            child.tick(dt);
+        }
     }
 
     onEntityCreated(newEnt) {

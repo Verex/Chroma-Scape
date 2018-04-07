@@ -7,6 +7,7 @@ class GameWorld extends Entity {
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+      
 
       //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
       //and our renderer will be responsible for processing the gameworld and rendering it's scene
@@ -34,10 +35,30 @@ class GameWorld extends Entity {
         (event) => {
         }
       );
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyF',
+        (event) => {
+            postProcessing = !postProcessing;
+        }
+      );
+
+      this.inputComponent.registerEvent(
+          InputMethod.INPUT_KEYBOARD,
+          InputType.BTN_RELEASE,
+          'KeyM',
+          (event) => {
+              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+          }
+      )
+
+
     }
 
     onEntityCreated(newEnt) {
       switch(newEnt.type) {
+          case EntityType.ENTITY_MENUCAMERA:
           case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
               this.scene.cameras.push(newEnt);
               break;
@@ -51,6 +72,25 @@ class GameWorld extends Entity {
 
     tick(dt) {
       this.handleZReset();
+      this.gamestate.updateDifficultyCurve();
+      if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
+          //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
+          var boom = this.player.menuCamera.yawBoom;
+          this.player.menuCamera.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absOrigin[Math.X] = Math.sin(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
+          this.player.menuCamera.yawBoom -= 35 * dt;
+          if(this.player.menuCamera.yawBoom < 1) {
+              this.player.menuCamera.yawBoom = 0;
+              var timer = Timer.getInstance();
+              timer.createRelativeTimer("GAMESTART", 150, () => {
+                  console.log("GAMESTART!");
+                  this.gamestate.currentState = GameStates.GAMESTATE_GAME;
+                  this.spawner.enabled = true;
+                  this.scene.mainCameraID = 0;
+              }, this, null, false);
+          }
+      }
       super.tick(dt);
     }
 
