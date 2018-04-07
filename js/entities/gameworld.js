@@ -32,7 +32,6 @@ class GameWorld extends Entity {
         InputType.BTN_RELEASE,
         'KeyQ',
         (event) => {
-            this.spawner.spawnPortal(vec3.fromValues(0, 25, this.player.transformComponent.absOrigin[Math.Z] - 200));
         }
       );
     }
