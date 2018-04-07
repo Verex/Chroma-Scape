@@ -83,8 +83,11 @@ class GameWorld extends Entity {
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
-              timer.createRelativeTimer("GAMESTART", 150, () => {
-                  console.log("GAMESTART!");
+              timer.createRelativeTimer("GAMESTART", 1500, () => {
+                  vec3.copy(
+                      this.spawner.lastPortal,
+                      this.player.transformComponent.absOrigin
+                  );
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
                   this.spawner.enabled = true;
                   this.scene.mainCameraID = 0;
