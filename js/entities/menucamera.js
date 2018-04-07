@@ -1,7 +1,8 @@
-class Camera extends Entity {
+class MenuCamera extends Entity {
     constructor(width, height, eid, owner) {
-        super(eid, owner, EntityType.ENTITY_CAMERA);
+        super(eid, owner, EntityType.ENTITY_MENUCAMERA);
 
+        
         // Assign width and height values.
         this.width = width;
         this.height = height;
@@ -10,7 +11,6 @@ class Camera extends Entity {
         this.setupPerspective();
 
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
-
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
     }
 
@@ -64,9 +64,9 @@ class Camera extends Entity {
     }
 };
 
-EntityType.ENTITY_CAMERA.construction = (owner) => {
+EntityType.ENTITY_MENUCAMERA.construction = (owner) => {
     var globals = GlobalVars.getInstance();
-    return new Camera(
+    return new MenuCamera(
         globals.clientWidth,
         globals.clientHeight,
         newID++,

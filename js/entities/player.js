@@ -193,6 +193,7 @@ class Player extends Entity {
         upVector[Math.Z]
       );
       */
+     
       super.tick(dt);
     }
 };
