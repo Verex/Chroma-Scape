@@ -56,6 +56,7 @@
     <script src="js/entities/portal.js"></script>
     <script src="js/entities/spawner.js"></script>
     <script src="js/entities/speaker.js"></script>
+    <script src="js/entities/pillar.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -75,8 +76,8 @@
     <canvas id="textcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-      var drawAABB = false;
-      var postProcessing = true;
+      var drawAABB = true;
+      var postProcessing = false;
       var testFont = null;
       $(document).ready(() => {
         "use strict";

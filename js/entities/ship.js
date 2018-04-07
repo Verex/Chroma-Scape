@@ -112,6 +112,7 @@ class Ship extends Entity {
     }
 
     onCollisionOverlap(other) {
+      console.log(other.owner.type);
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
         if(this.owner.color === other.owner.color) {
           other.owner.disabled = true;
@@ -119,6 +120,8 @@ class Ship extends Entity {
         } else {
           this.owner.crash();
         }
+      } else if (other.owner.type == EntityType.ENTITY_PILLAR) {
+        this.owner.crash();
       }
     }
 

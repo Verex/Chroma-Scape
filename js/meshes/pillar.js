@@ -1,6 +1,7 @@
 var PillarMesh = () => {
-    const top = 4,
-          bottom = 0,
+    const top = 3,
+          point = 4,
+          bottom = -4,
           left = -1,
           right = 1,
           front = -1,
@@ -19,6 +20,10 @@ var PillarMesh = () => {
 
       12, 13, 14,   12, 14, 15,
 
+      16, 17, 18,
+      19, 20, 21,
+      22, 23, 24,
+      25, 26, 27,
     ];
     var vertices = [
       left, top, front,
@@ -39,7 +44,23 @@ var PillarMesh = () => {
       right, top, back,
       right, top, front,
       right, bottom, front,
-      right, bottom, back,
+      right, bottom, back, // 15
+
+      left, top, front, // 16
+      right, top, front,
+      0.0, point, 0.0,
+
+      left, top, back, // 19
+      right, top, back,
+      0.0, point, 0.0,
+
+      left, top, back, // 22
+      left, top, front,
+      0.0, point, 0.0,
+
+      right, top, back, // 25
+      right, top, front,
+      0.0, point, 0.0,
     ];
     return {
         indices: () => { return indices; },
