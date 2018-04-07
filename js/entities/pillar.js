@@ -13,6 +13,12 @@ class Pillar extends Entity {
 
         // Define entity's collision type.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
+
+        // Assign mesh.
+        var assets = Assets.getInstance();
+        this.meshComponent.setModel(
+          assets.getModel("pillar")
+        );
     }
 
     checkForMiss() {

@@ -7,7 +7,7 @@ class GameWorld extends Entity {
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
-      
+
 
       //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
       //and our renderer will be responsible for processing the gameworld and rendering it's scene
@@ -33,6 +33,7 @@ class GameWorld extends Entity {
         InputType.BTN_RELEASE,
         'KeyQ',
         (event) => {
+          this.gamestate.currentState = GameStates.GAMESTATE_GAME;
         }
       );
       this.inputComponent.registerEvent(
@@ -176,10 +177,9 @@ class GameWorld extends Entity {
         // Move all portals back as well.
         this.children.forEach((child) => {
           switch(child.type) {
+            case EntityType.ENTITY_PILLAR:
             case EntityType.ENTITY_PORTAL:
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;
-
-              console.log(child.eid + " new position: " + child.transformComponent.absOrigin);
               break;
             case EntityType.ENTITY_SPAWNER:
               child.lastPortal[Math.Z] -= this.zReset;

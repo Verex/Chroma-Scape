@@ -17,7 +17,7 @@ class Portal extends Entity {
         // Assign mesh.
         var assets = Assets.getInstance();
         this.meshComponent.setModel(
-          assets.getModel("pillar")
+          assets.getModel("portal")
         );
 
         var cidx = Math.randInt(0, 3);

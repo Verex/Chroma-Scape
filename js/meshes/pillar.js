@@ -1,7 +1,7 @@
 var PillarMesh = () => {
     const top = 3,
           point = 4,
-          bottom = -3,
+          bottom = -4,
           left = -1,
           right = 1,
           front = -1,
