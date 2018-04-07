@@ -1,8 +1,9 @@
 var GameStates = {
-    GAMESTATE_MENU: 0,
-    GAMESTATE_MENUPAN: 1,
-    GAMESTATE_GAME: 2,
-    GAMESTATE_GAMEOVER: 3
+    GAMESTATE_SPLASH: 0,
+    GAMESTATE_MENU: 1,
+    GAMESTATE_MENUPAN: 2,
+    GAMESTATE_GAME: 3,
+    GAMESTATE_GAMEOVER: 4
 }
 class Gamestate {
     constructor() {
