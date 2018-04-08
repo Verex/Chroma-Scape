@@ -53,10 +53,11 @@ class AABB  {
         var otherCenter = other.origin;
 
         var otherMin = [otherCenter[0] - other.offsetX, otherCenter[1] - other.offsetY, otherCenter[2] - other.offsetZ];
-        var otherMax = [otherCenter[0] + other.offsetX, otherCenter[1] + other.offsetX, otherCenter[2] + other.offsetZ];
+        var otherMax = [otherCenter[0] + other.offsetX, otherCenter[1] + other.offsetY, otherCenter[2] + other.offsetZ];
         var min = [center[0] - this.offsetX, center[1] - this.offsetY, center[2] - this.offsetZ];
         var max = [center[0] + this.offsetX, center[1] + this.offsetY, center[2] + this.offsetZ];
 
+        //console.log(this.owner.eid, " Minimum: " + min[Math.Y], " Other Maximum: " + otherMax[Math.Y]);
         return (min[0] <= otherMax[0] && max[0] >= otherMin[0]) &&
                (min[1] <= otherMax[1] && max[1] >= otherMin[1]) &&
                (min[2] <= otherMax[2] && max[2] >= otherMin[2]);
