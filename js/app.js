@@ -39,6 +39,8 @@ class App {
     this.gl = this.canvas.getContext('webgl', {alpha: false});
     this.textCtx = this.textCanvas.getContext('2d');
 
+    this.splash = new SplashScreen(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+
     // Ensure WebGL is working.
     if (!this.gl) {
       return AppStatus.STATUS_BAD_BROWSER;
@@ -208,9 +210,11 @@ class App {
     Purpose: Perform logical updates on all entities and components.
   */
   tick(dt) {
-    this.gameworld.tick(dt);
-    this.gameworld.queryCollision();
-    this.gameworld.updateSceneGraph();
+    if(this.gameworld.gamestate.currentState > GameStates.GAMESTATE_SPLASH) {
+      this.gameworld.tick(dt);
+      this.gameworld.queryCollision();
+      this.gameworld.updateSceneGraph();
+    }
   }
 
   /*
@@ -223,23 +227,30 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
-    this.textCtx.globalAlpha = 0.0;
-    this.textCtx.fillStyle = '#F0F';
-    this.textCtx.fillRect(0, 0, this.textCanvas.width, this.textCanvas.height);
-    this.textCtx.globalAlpha = 1.0;
-    this.textCtx.fillStyle = 'green';
-    this.textCtx.fillRect(0, 0, 150, 150);
-    if(testFont != null) {
-      var path = testFont.getPath('Hello, World!', 0, 200, 32);
-      path.fill = "white";
-      path.draw(this.textCtx);
-    }
     var gameworld = this.gameworld;
-    
-    this.renderSystems.forEach((value, index, array) => {
-      value.render(gameworld);
-      //value.blitCanvasTexture(this.textCanvas);
-      value.postProcessing();
-    });
+    if(this.gameworld.gamestate.currentState > GameStates.GAMESTATE_SPLASH) {
+      this.textCtx.globalAlpha = 1.0;
+      this.textCtx.fillStyle = 'green';
+      this.textCtx.fillRect(0, 0, 150, 150);
+      if(testFont != null) {
+        var path = testFont.getPath('Hello, World!', 0, 200, 32);
+        path.fill = "white";
+        path.draw(this.textCtx);
+      }
+      this.renderSystems.forEach((value, index, array) => {
+        value.render(gameworld);
+        //value.blitCanvasTexture(this.textCanvas);
+        value.postProcessing();
+      });
+    } else {
+      this.splash.process();
+      if(this.splash.state == SplashState.SPLASH_FINISHED) {
+        this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
+        this.textCtx.save();
+        this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
+        this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.textCtx.restore();
+      }
+    }
   }
 }

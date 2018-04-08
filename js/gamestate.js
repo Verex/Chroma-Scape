@@ -10,7 +10,7 @@ class Gamestate {
         this.localplayer = null;
         this.difficulty = 0.0;
         this.maxdifficulty = 15;
-        this.currentState = GameStates.GAMESTATE_MENU;
+        this.currentState = GameStates.GAMESTATE_SPLASH;
 
         this.difficultyCurve = (time) => {
             return Math.pow(1.000005, time) - 1;
