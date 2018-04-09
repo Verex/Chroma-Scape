@@ -14,6 +14,8 @@ var AppStatus = {
   STATUS_BAD_BROWSER: 3, //Browser sucks (probably an iPhone)
 };
 
+var once = false;
+
 class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
@@ -40,6 +42,7 @@ class App {
     this.textCtx = this.textCanvas.getContext('2d');
 
     this.splash = new SplashScreen(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.splash.state = SplashState.SPLASH_FADEIN;
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -51,7 +54,7 @@ class App {
     this.canvas.height = this.canvas.clientHeight;
 
     this.renderSystems.push(
-      new Renderer(this.gl)
+      new Renderer(this.gl, this.textCtx)
     );
 
     //TODO(Jake): Implement resize callback handler using Observer design pattern
@@ -68,48 +71,48 @@ class App {
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
 
-    // Create game world entity.
-    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-
-    // Create player entity.
-    this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
-
-    // Create camera entity.
-    this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
-    this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
-    this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
-
-    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
-    this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
-    this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
-    this.gameworld.player.menuCamera.yawBoom = 180;
-    
-
-    // Create ship entity.
-    this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
-    this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
-    this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
-    this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-
-    // Set model for our ship.
-    this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
-      assets.getModel("ship")
-    );
-
-    this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
-
-    this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    this.gameworld.meshComponent.setModel(
-      assets.getModel("grid")
-    );
-
-    this.gameworld.scene.mainCameraID = 1;
-
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
 
 
     return AppStatus.STATUS_OK;
+  }
+
+  newGame() {
+    var assets = Assets.getInstance();
+    newID = 0;
+    // Create game world entity.
+    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    // Create player entity.
+    this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
+    this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
+     // Create camera entity.
+    this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
+    this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
+    this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
+    this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
+    this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
+    this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
+    this.gameworld.player.menuCamera.yawBoom = 180;
+    // Create ship entity.
+    this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
+    this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
+    this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
+    this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
+   
+    // Set model for our ship.
+    this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
+      assets.getModel("ship")
+    );
+   
+    this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
+   
+    this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
+    this.gameworld.meshComponent.setModel(
+      assets.getModel("grid")
+    );
+   
+    this.gameworld.scene.mainCameraID = 1;
   }
 
   /*
@@ -210,11 +213,36 @@ class App {
     Purpose: Perform logical updates on all entities and components.
   */
   tick(dt) {
-    if(this.gameworld.gamestate.currentState > GameStates.GAMESTATE_SPLASH) {
-      this.gameworld.tick(dt);
-      this.gameworld.queryCollision();
-      this.gameworld.updateSceneGraph();
+    if(this.gameworld) {
+      var currentState = this.gameworld.gamestate.currentState;
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_GAMEOVER) {
+        this.gameworld.tick(dt);
+        this.gameworld.queryCollision();
+        this.gameworld.updateSceneGraph();
+      }
     }
+  }
+
+  processSplashScreen() {
+    this.splash.process();
+    if(this.splash.state == SplashState.SPLASH_FADEIN_FINISHED) {
+      this.newGame();
+      console.log("GAME SPAWNED LETS DO THIS");
+      this.splash.idleTime = GlobalVars.getInstance().curtime + 500;
+      this.splash.state = SplashState.SPLASH_IDLE;
+    }
+    if(this.splash.state == SplashState.SPLASH_FINISHED) {
+      console.log("DONE");
+      this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
+      this.textCtx.save();
+      this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
+      this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.textCtx.restore();
+    }
+  }
+
+  processHighScore() {
+
   }
 
   /*
@@ -228,28 +256,19 @@ class App {
       so we're gunna pass our gameworld to our render function
     */
     var gameworld = this.gameworld;
-    if(this.gameworld.gamestate.currentState > GameStates.GAMESTATE_SPLASH) {
-      this.textCtx.globalAlpha = 1.0;
-      this.textCtx.fillStyle = 'green';
-      this.textCtx.fillRect(0, 0, 150, 150);
-      if(testFont != null) {
-        var path = testFont.getPath('Hello, World!', 0, 200, 32);
-        path.fill = "white";
-        path.draw(this.textCtx);
-      }
-      this.renderSystems.forEach((value, index, array) => {
-        value.render(gameworld);
-        //value.blitCanvasTexture(this.textCanvas);
-        value.postProcessing();
-      });
-    } else {
-      this.splash.process();
-      if(this.splash.state == SplashState.SPLASH_FINISHED) {
-        this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
-        this.textCtx.save();
-        this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
+    if(gameworld) {
+      var currentState = gameworld.gamestate.currentState;
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_GAMEOVER) {        
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.textCtx.restore();
+        this.renderSystems.forEach((value, index, array) => {
+          value.render(gameworld);
+          value.postProcessing();
+        });
+      } else {
+        switch(currentState) {
+          case GameStates.GAMESTATE_SPLASH: this.processSplashScreen(); break;
+          case GameStates.GAMESTATE_HISCORE: this.processHighScore(); break;
+        }
       }
     }
   }

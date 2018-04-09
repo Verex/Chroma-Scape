@@ -5,8 +5,9 @@
 */
 
 class Renderer {
-    constructor(glContext) {
+    constructor(glContext, textCtx) {
         this.ctx = glContext;
+        this.textCtx = textCtx;
         this.program = new Program.Builder(glContext).
                withShader("assets/shaders/vertex.glsl", glContext.VERTEX_SHADER, "VERTEX").
                withShader("assets/shaders/fragment.glsl", glContext.FRAGMENT_SHADER, "FRAGMENT").
@@ -36,7 +37,7 @@ class Renderer {
     }
     clear(color = BLACK) {
         //this.ctx.colorMask(false, false, false, true);
-        this.ctx.clearColor(0, 0, 0, 1);
+        this.ctx.clearColor(color.r, color.g, color.b, color.a);
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
     }
@@ -45,6 +46,10 @@ class Renderer {
       // Render entity's mesh if it exists.
       if (ent.hasComponent(ComponentID.COMPONENT_MESH)) {
         ent.components[ComponentID.COMPONENT_MESH].render(this.program, this.ctx);
+      }
+
+      if(ent.hasComponent(ComponentID.COMPONENT_TEXT)) {
+          ent.components[ComponentID.COMPONENT_TEXT].render(this.textCtx);
       }
 
       if(ent.hasComponent(ComponentID.COMPONENT_PHYSICS) && drawAABB) {

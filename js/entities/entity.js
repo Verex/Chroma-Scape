@@ -11,6 +11,8 @@ var EntityType = {
     ENTITY_SPAWNER: {id: 8},
     ENTITY_SPEAKER: {id: 9},
     ENTITY_PILLAR: {id: 10},
+    ENTITY_MENUCONTROLLER: {id: 11},
+    ENTITY_SCOREBOARDCONTROLLER: {id: 12}
 };
 
 var newID = 0;
@@ -42,6 +44,13 @@ class Entity {
     onEntityCreated(newEnt) {
         if(this.owner) {
             this.owner.onEntityCreated(newEnt);
+        }
+    }
+
+    destroy() {
+        var cidx = this.owner.children.indexOf(this);
+        if(cidx >= 0) {
+            this.owner.children.splice(cidx, 1);
         }
     }
 
