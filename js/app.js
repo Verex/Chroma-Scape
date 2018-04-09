@@ -14,6 +14,8 @@ var AppStatus = {
   STATUS_BAD_BROWSER: 3, //Browser sucks (probably an iPhone)
 };
 
+var once = false;
+
 class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
@@ -40,6 +42,7 @@ class App {
     this.textCtx = this.textCanvas.getContext('2d');
 
     this.splash = new SplashScreen(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.splash.state = SplashState.SPLASH_FADEIN;
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -51,7 +54,7 @@ class App {
     this.canvas.height = this.canvas.clientHeight;
 
     this.renderSystems.push(
-      new Renderer(this.gl)
+      new Renderer(this.gl, this.textCtx)
     );
 
     //TODO(Jake): Implement resize callback handler using Observer design pattern
@@ -73,6 +76,8 @@ class App {
 
     // Create player entity.
     this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
+
+    this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
 
     // Create camera entity.
     this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
@@ -229,14 +234,7 @@ class App {
     */
     var gameworld = this.gameworld;
     if(this.gameworld.gamestate.currentState > GameStates.GAMESTATE_SPLASH) {
-      this.textCtx.globalAlpha = 1.0;
-      this.textCtx.fillStyle = 'green';
-      this.textCtx.fillRect(0, 0, 150, 150);
-      if(testFont != null) {
-        var path = testFont.getPath('Hello, World!', 0, 200, 32);
-        path.fill = "white";
-        path.draw(this.textCtx);
-      }
+      this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.renderSystems.forEach((value, index, array) => {
         value.render(gameworld);
         //value.blitCanvasTexture(this.textCanvas);

@@ -1,31 +1,14 @@
 {
     "Assets":
     {
-        "PressStart2P":
+        "Fonts":
         {
-            "type":"font",
-            "glypheset":"regular",
-            "ext":".ttf"
-        },
-        "Shaders":
-        {
-            "type":"font",
-            "glypheset":"regular",
-            "ext":".ttf"
-        },
-        "PressStart2P":
-        {
-            "type":"font",
-            "glypheset":"regular",
-            "ext":".ttf"
-        },
-        "PressStart2P":
-        {
-            "type":"font",
-            "glypheset":"regular",
-            "ext":".ttf"
+            "MenuFont":
+            {
+                "name":"PressStart2P-Regular",
+                "ext":".ttf"
+            }
         }
-
     }
 
 }

@@ -50,7 +50,10 @@ class GameWorld extends Entity {
           InputType.BTN_RELEASE,
           'KeyM',
           (event) => {
-              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
+                  this.menucontroller.destroy();
+                  this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+              }
           }
       )
 

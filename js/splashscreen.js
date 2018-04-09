@@ -36,7 +36,7 @@ class SplashScreen {
     draw() {
         if(this.state == SplashState.SPLASH_IDLE) {
             if(this.idleTime === undefined) {
-                this.idleTime = GlobalVars.getInstance().curtime + 500;
+                this.idleTime = GlobalVars.getInstance().curtime + 5000;
             }
             if(GlobalVars.getInstance().curtime > this.idleTime) {
                 this.state = SplashState.SPLASH_FADEOUT;
@@ -66,9 +66,9 @@ class SplashScreen {
 
     process() {
         switch(this.state) {
-            case SplashState.SPLASH_FADEIN: this.draw(); this.fadeIn(1000); break;
+            case SplashState.SPLASH_FADEIN: this.draw(); this.fadeIn(250); break;
             case SplashState.SPLASH_IDLE: this.draw(); break;
-            case SplashState.SPLASH_FADEOUT: this.draw(); this.fadeOut(1000); break;
+            case SplashState.SPLASH_FADEOUT: this.draw(); this.fadeOut(250); break;
             case SplashState.SPLASH_FINISHED: break;
             
         }
