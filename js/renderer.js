@@ -37,7 +37,7 @@ class Renderer {
     }
     clear(color = BLACK) {
         //this.ctx.colorMask(false, false, false, true);
-        this.ctx.clearColor(0, 0, 0, 1);
+        this.ctx.clearColor(color.r, color.g, color.b, color.a);
         this.ctx.enable(this.ctx.DEPTH_TEST);
         this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
     }

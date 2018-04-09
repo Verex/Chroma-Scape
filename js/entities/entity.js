@@ -11,7 +11,8 @@ var EntityType = {
     ENTITY_SPAWNER: {id: 8},
     ENTITY_SPEAKER: {id: 9},
     ENTITY_PILLAR: {id: 10},
-    ENTITY_MENUCONTROLLER: {id: 11}
+    ENTITY_MENUCONTROLLER: {id: 11},
+    ENTITY_SCOREBOARDCONTROLLER: {id: 12}
 };
 
 var newID = 0;
