@@ -35,7 +35,9 @@ class Player extends Entity {
           keyUp: 'KeyW',
           keyDown: 'KeyS',
           color0: 'KeyJ',
-          color1: 'KeyL'
+          color1: 'KeyL',
+          gpColor0: 6,
+          gpColor1: 7,
         };
 
         // Add components.
@@ -61,10 +63,13 @@ class Player extends Entity {
         var timer = Timer.getInstance();
 
         timer.createRelativeTimer("COLORCHECK", 150, () => {
+          var c1 = this.mouseClicked[0] || this.inputComponent.gpButton(this.controls.gpColor0).pressed,
+              c2 = this.mouseClicked[1] || this.inputComponent.gpButton(this.controls.gpColor1).pressed;
+
           this.color = COLORSET[0];
-          if(this.mouseClicked[0]) this.color = COLORSET[1];
-          if(this.mouseClicked[1]) this.color = COLORSET[2];
-          if(this.mouseClicked[1] && this.mouseClicked[0]) {
+          if(c1) this.color = COLORSET[1];
+          if(c2) this.color = COLORSET[2];
+          if(c1 && c2) {
             this.color = COLORSET[3];
           }
         }, this, null, true);
@@ -161,6 +166,8 @@ class Player extends Entity {
     }
 
     moveCamera(dt) {
+      if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
+
       var cameraPosition = this.camera.transformComponent.absOrigin,
           shipPosition = this.ship.transformComponent.absOrigin;
 
@@ -171,7 +178,9 @@ class Player extends Entity {
 
     tick(dt) {
       if(this.getGameWorld().gamestate.currentState >= GameStates.GAMESTATE_GAMEOVER) return;
+
       this.moveCamera(dt);
+      this.inputComponent.updateGamepads();
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();
 

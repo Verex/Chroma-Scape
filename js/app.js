@@ -93,6 +93,8 @@ class App {
     this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
     this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
     this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
+
+    // Create menu camera entity.
     this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
     this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
     this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);

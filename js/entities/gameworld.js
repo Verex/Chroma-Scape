@@ -80,10 +80,13 @@ class GameWorld extends Entity {
       if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
           //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
           var boom = this.player.menuCamera.yawBoom;
+
           this.player.menuCamera.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(boom)) * 50;
           this.player.menuCamera.transformComponent.absOrigin[Math.X] = Math.sin(Math.radians(boom)) * 50;
           this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
+
           this.player.menuCamera.yawBoom -= 35 * dt;
+          
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
