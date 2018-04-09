@@ -4,7 +4,8 @@ var ComponentID = {
     COMPONENT_INPUT: 2,
     COMPONENT_PHYSICS: 3,
     COMPONENT_AUDIO: 4,
-    COMPONENT_MAX: 5 //This is the number of components that we recognize as a thing
+    COMPONENT_TEXT: 5,
+    COMPONENT_MAX: 6 //This is the number of components that we recognize as a thing
 }
 
 class EntityComponent {
@@ -35,6 +36,8 @@ class EntityComponent {
                     case ComponentID.COMPONENT_AUDIO:
                         this.ent.components[cid] = new AudioComponent(this.ent);
                         return this;
+                    case ComponentID.COMPONENT_TEXT:
+                        this.ent.components[cid] = new TextComponent(this.ent);
                     default:
                         return this;
                 }

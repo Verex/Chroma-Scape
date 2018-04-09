@@ -14,6 +14,12 @@ class Portal extends Entity {
         // Define entity's collision type.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
 
+        // Assign mesh.
+        var assets = Assets.getInstance();
+        this.meshComponent.setModel(
+          assets.getModel("portal")
+        );
+
         var cidx = Math.randInt(0, 3);
         this.color = COLORSET[cidx];
 

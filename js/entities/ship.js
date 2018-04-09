@@ -119,6 +119,8 @@ class Ship extends Entity {
         } else {
           this.owner.crash();
         }
+      } else if (other.owner.type == EntityType.ENTITY_PILLAR) {
+        this.owner.crash();
       }
     }
 

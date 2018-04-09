@@ -7,7 +7,7 @@ class GameWorld extends Entity {
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
-      
+
 
       //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
       //and our renderer will be responsible for processing the gameworld and rendering it's scene
@@ -33,7 +33,7 @@ class GameWorld extends Entity {
         InputType.BTN_RELEASE,
         'KeyQ',
         (event) => {
-            this.spawner.spawnPortal(vec3.fromValues(0, 25, this.player.transformComponent.absOrigin[Math.Z] - 200));
+          this.gamestate.currentState = GameStates.GAMESTATE_GAME;
         }
       );
       this.inputComponent.registerEvent(
@@ -50,7 +50,10 @@ class GameWorld extends Entity {
           InputType.BTN_RELEASE,
           'KeyM',
           (event) => {
-              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
+                  this.menucontroller.destroy();
+                  this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+              }
           }
       )
 
@@ -84,8 +87,11 @@ class GameWorld extends Entity {
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
-              timer.createRelativeTimer("GAMESTART", 150, () => {
-                  console.log("GAMESTART!");
+              timer.createRelativeTimer("GAMESTART", 1500, () => {
+                  vec3.copy(
+                      this.spawner.lastPortal,
+                      this.player.transformComponent.absOrigin
+                  );
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
                   this.spawner.enabled = true;
                   this.scene.mainCameraID = 0;
@@ -174,10 +180,9 @@ class GameWorld extends Entity {
         // Move all portals back as well.
         this.children.forEach((child) => {
           switch(child.type) {
+            case EntityType.ENTITY_PILLAR:
             case EntityType.ENTITY_PORTAL:
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;
-
-              console.log(child.eid + " new position: " + child.transformComponent.absOrigin);
               break;
             case EntityType.ENTITY_SPAWNER:
               child.lastPortal[Math.Z] -= this.zReset;

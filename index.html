@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>TBD</title>
+    <title>Chroma Scape</title>
 
     <!-- Include external libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -27,6 +27,7 @@
     <script src="js/aabb.js"></script>
     <script src="js/assets.js"></script>
     <script src="js/gamestate.js"></script>
+    <script src="js/splashscreen.js"></script>
 
     <!-- Include Post Processing Effects -->
     <script src="js/post-fx/ui-pass.js"></script>
@@ -44,11 +45,11 @@
     <script src="js/components/inputcomponent.js"></script>
     <script src="js/components/physicscomponent.js"></script>
     <script src="js/components/audiocomponent.js"></script>
+    <script src="js/components/textcomponent.js"></script>
 
     <!-- Include entities -->
     <script src="js/entities/entity.js"></script>
     <script src="js/entities/camera.js"></script>
-    <script src="js/entities/menucamera.js"></script>
     <script src="js/entities/gameworld.js"></script>
     <script src="js/entities/dummy.js"></script>
     <script src="js/entities/player.js"></script>
@@ -56,6 +57,8 @@
     <script src="js/entities/portal.js"></script>
     <script src="js/entities/spawner.js"></script>
     <script src="js/entities/speaker.js"></script>
+    <script src="js/entities/pillar.js"></script>
+    <script src="js/entities/menucontroller.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -77,6 +80,8 @@
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
       var drawAABB = false;
       var postProcessing = true;
+      
+      var fonts = ['PressStart2P-Regular'];
       $(document).ready(() => {
         "use strict";
         // Setup initial AJAX settings.
@@ -89,26 +94,44 @@
           $('#glcanvas')[0].requestPointerLock();
         });
 
-        opentype.load('assets/fonts/PressStart2P-Regular.ttf', function(err, font) {
-            if (err) {
-                 alert('Font could not be loaded: ' + err);
-            } else {
-              testFont = font;
+        var startGame = () => {
+          // Instantiate the application.
+          var app = new App();
+
+          // Setup debug reference to app.
+          debug = app;
+          // Setup app and handle response.
+          switch(app.setup()) {
+            case AppStatus.STATUS_OK: app.exec(); break;
+            case AppStatus.STATUS_BAD_BROWSER: alert("Your web browser does not support WebGL!"); break;
+            default: break;
+          }
+        };
+        var onFontLoaded = (fontname) => {
+          console.log("[FONT]:" + fontname + " has been loaded!");
+          var cidx = fonts.indexOf(fontname);
+          if(cidx >= 0) {
+            fonts.splice(cidx, 1);
+            if(fonts.length == 0) {
+              startGame();
             }
+          }
+        };
+        var loadfont = (fontname) => {
+          opentype.load('assets/fonts/' + fontname + '.ttf', (err, font) => {
+            if(err) {
+              alert('Font could not be loaded: ' + err);
+            } else {
+              Assets.getInstance().addFont(fontname, font);
+              onFontLoaded(fontname);
+            }
+          });
+        };
+
+        fonts.forEach((value, index, array) => {
+          loadfont(value);
         });
 
-        // Instantiate the application.
-        var app = new App();
-
-        // Setup debug reference to app.
-        debug = app;
-
-        // Setup app and handle response.
-        switch(app.setup()) {
-          case AppStatus.STATUS_OK: app.exec(); break;
-          case AppStatus.STATUS_BAD_BROWSER: alert("Your web browser does not support WebGL!"); break;
-          default: break;
-        }
       });
     </script>
   </body>

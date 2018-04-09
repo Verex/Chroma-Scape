@@ -1,0 +1,14 @@
+{
+    "Assets":
+    {
+        "Fonts":
+        {
+            "MenuFont":
+            {
+                "name":"PressStart2P-Regular",
+                "ext":".ttf"
+            }
+        }
+    }
+
+}
