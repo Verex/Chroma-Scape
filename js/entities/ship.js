@@ -127,6 +127,11 @@ class Ship extends Entity {
     }
 
     canSway(direction) {
+      // Ensure correct gamestate.
+      if (this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) {
+        return false;
+      }
+
       var opposite = null,
           positionAxis = null,
           rotationAxis = null,

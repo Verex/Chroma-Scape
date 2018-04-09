@@ -50,7 +50,6 @@ class Player extends Entity {
         // Set initial physics parameters.
         this.physicsComponent.maxVelocity = 900;
         this.physicsComponent.velocity[Math.Z] = -80;
-        this.physicsComponent.acceleration[Math.Z] = -1.15;
 
         // Translate player position.
         this.transformComponent.absOrigin[Math.Y] = 10;
@@ -158,6 +157,7 @@ class Player extends Entity {
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
       this.hasCrashed = true;
+      this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_HISCORE;
     }
 
     moveCamera(dt) {
@@ -170,6 +170,7 @@ class Player extends Entity {
     }
 
     tick(dt) {
+      if(this.getGameWorld().gamestate.currentState >= GameStates.GAMESTATE_GAMEOVER) return;
       this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();
@@ -193,7 +194,7 @@ class Player extends Entity {
         upVector[Math.Z]
       );
       */
-     
+
       super.tick(dt);
     }
 };
