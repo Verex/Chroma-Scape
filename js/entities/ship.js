@@ -85,6 +85,8 @@ class Ship extends Entity {
     }
 
     move(dt) {
+      this.handleMovement(dt);
+
       var hScale = this.getSwayScale(Math.ROLL),
           vScale = this.getSwayScale(Math.PITCH);
 
@@ -112,7 +114,6 @@ class Ship extends Entity {
     }
 
     onCollisionOverlap(other) {
-      console.log(other.owner.type);
       if(other.owner.type == EntityType.ENTITY_PORTAL) {
         if(this.owner.color === other.owner.color) {
           other.owner.disabled = true;
@@ -177,12 +178,9 @@ class Ship extends Entity {
     }
 
     tick(dt) {
-        this.handleMovement(dt);
         this.move(dt);
-
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
-
         this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
         super.tick(dt);
     }
