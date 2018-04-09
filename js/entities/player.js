@@ -50,7 +50,6 @@ class Player extends Entity {
         // Set initial physics parameters.
         this.physicsComponent.maxVelocity = 900;
         this.physicsComponent.velocity[Math.Z] = -80;
-        this.physicsComponent.acceleration[Math.Z] = -1.15;
 
         // Translate player position.
         this.transformComponent.absOrigin[Math.Y] = 10;
@@ -195,7 +194,7 @@ class Player extends Entity {
         upVector[Math.Z]
       );
       */
-     
+
       super.tick(dt);
     }
 };
