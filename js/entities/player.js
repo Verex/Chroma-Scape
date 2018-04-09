@@ -171,6 +171,7 @@ class Player extends Entity {
     }
 
     tick(dt) {
+      if(this.getGameWorld().gamestate.currentState >= GameStates.GAMESTATE_GAMEOVER) return;
       this.moveCamera(dt);
       this.physicsComponent.physicsSimulate(dt);
       this.transformComponent.updateTransform();

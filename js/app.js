@@ -70,19 +70,19 @@ class App {
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
+    
+    // Create game world entity.
+    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
 
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
-
 
     return AppStatus.STATUS_OK;
   }
 
   newGame() {
     var assets = Assets.getInstance();
-    newID = 0;
-    // Create game world entity.
-    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    newID = 1;
     // Create player entity.
     this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
@@ -111,6 +111,11 @@ class App {
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
+
+    if(this.gameworld.scoreboardcontroller !== undefined) {
+      this.gameworld.scoreboardcontroller.destroy();
+      this.gameworld.scoreboardcontroller = undefined;
+    }
    
     this.gameworld.scene.mainCameraID = 1;
   }
@@ -215,7 +220,7 @@ class App {
   tick(dt) {
     if(this.gameworld) {
       var currentState = this.gameworld.gamestate.currentState;
-      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_GAMEOVER) {
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_NEWGAME) {
         this.gameworld.tick(dt);
         this.gameworld.queryCollision();
         this.gameworld.updateSceneGraph();
@@ -242,7 +247,7 @@ class App {
   }
 
   processHighScore() {
-
+    
   }
 
   /*
@@ -258,7 +263,7 @@ class App {
     var gameworld = this.gameworld;
     if(gameworld) {
       var currentState = gameworld.gamestate.currentState;
-      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_GAMEOVER) {        
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_HISCORE) {        
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.renderSystems.forEach((value, index, array) => {
           value.render(gameworld);
