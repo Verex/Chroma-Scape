@@ -27,24 +27,48 @@ function parseMIME(request) {
 
 var server = http.createServer(function (request, response) {
   if(request.method == 'POST') {
-    console.log("post");
-    var body = ''; 
-    request.on('data', (data) => {
-      console.log(data)
-      body += data;
-    });
-
-    request.on('end', () => {
-      console.log("Body: " + body);
-      var post = qs.parse(body);
-      response.end();
-    });
+    var body = '';
+    if(request.url === '/score') {
+      request.on('data', (chunk) => {
+        body += chunk;
+      });
+      request.on('end', () =>{
+        var options = {
+          hostname: '173.230.153.123',
+          port: 59798,
+          path: '',
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          }
+        };
+        var req = http.request(options, (res) => {
+          var dat = '';
+          res.on('data', (chunk) => {
+            dat += chunk;
+          });
+          res.on('end', (chunk) => {
+            console.log("FINISHED: " + dat);
+          });
+          res.on('error', (error) => {});
+        });
+        console.log(body);
+        req.write(body);
+        req.end();
+        response.end();
+      });
+    }
   } else if(request.method == 'GET') {
     if(request.url === '/score') {
-      var options = {
-        host: ''
-      }
-      response.end();
+      var body = '';
+      http.get('http://173.230.153.123:59798/', (res) => {
+        res.on('data', (chunk) => {
+          body += chunk;
+        });
+        res.on('end', () => {
+          response.end(body);
+        });
+      });
     } else {
       var file = request.url == '/' ? '../index.html' : '../' + request.url;
       fs.readFile(file, function(error, data) {

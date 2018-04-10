@@ -22,6 +22,24 @@ class App {
 
     this.renderSystems = [];
     this.postRenderSystems = [];
+
+    $.ajax({
+      url: "173.230.153.123:8181",
+      data: {
+        player: "jake",
+        score: "500",
+        scope: "game-expo"
+      },
+      dataType: 'json',
+      type: 'POST',
+      crossDomain: true,
+      success: (data) => {
+        console.log("SUCC");
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   /*
@@ -43,6 +61,9 @@ class App {
 
     this.splash = new SplashScreen(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
     this.splash.state = SplashState.SPLASH_FADEIN;
+
+    this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.scoreboard.state = SplashState.SPLASH_IDLE;
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -247,7 +268,7 @@ class App {
   }
 
   processHighScore() {
-    
+    this.scoreboard.process();
   }
 
   /*
