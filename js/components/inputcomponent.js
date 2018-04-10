@@ -134,6 +134,7 @@ class InputComponent extends EntityComponent {
       for (var i = 0; i < gamepads.length; i++) {
         if (gamepads[i]) {
           this.controllers[gamepads[i].index] = gamepads[i];
+          this.gamepad = gamepads[i].index;
         }
       }
     }

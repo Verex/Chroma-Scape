@@ -40,6 +40,9 @@ class Player extends Entity {
           gpColor1: 7,
         };
 
+        this.gpSensitivity = 0.82;
+        this.gpInvertedY = true;
+
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
         this.componentFactory.construct(ComponentID.COMPONENT_INPUT);

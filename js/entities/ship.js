@@ -40,12 +40,56 @@ class Ship extends Entity {
       if (this.owner.inputComponent.hasGamepad) {
         // Gamepad control method.
 
+        // Disable gamepad controls for main menu.
+        if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
+
         // Get left joystick axes.
         var joystick = [
           this.owner.inputComponent.gpAxis(0),
           this.owner.inputComponent.gpAxis(1)
         ];
 
+        var horizontalDirection = MoveDirection.LEFT,
+            verticalDirection = (this.owner.gpInvertedY ? MoveDirection.DOWN : MoveDirection.UP);
+
+        if (joystick[0] > 0) {
+          horizontalDirection = MoveDirection.RIGHT;
+        }
+
+        if (joystick[1] > 0) {
+          verticalDirection = (this.owner.gpInvertedY ? MoveDirection.UP : MoveDirection.DOWN);
+        }
+
+        if (Math.abs(joystick[0]) > 0.2 && this.canSway(horizontalDirection)) {
+          this.physicsComponent.angularVelocity[Math.ROLL] =
+            (this.physicsComponent.maxAngularVelocity * this.owner.gpSensitivity) * -joystick[0];
+        } else {
+          this.physicsComponent.angularVelocity[Math.ROLL] = 0;
+
+          // Return roll to origin.
+          this.transformComponent.absRotation[Math.ROLL] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.ROLL],
+              0,
+              8 * dt
+            );
+        }
+
+        if (Math.abs(joystick[1]) > 0.2 && this.canSway(verticalDirection)) {
+          this.physicsComponent.angularVelocity[Math.PITCH] =
+            (this.physicsComponent.maxAngularVelocity * this.owner.gpSensitivity)
+            * (this.owner.gpInvertedY ? 1 : -1) * joystick[1];
+        } else {
+          this.physicsComponent.angularVelocity[Math.PITCH] = 0;
+
+          // Return roll to origin.
+          this.transformComponent.absRotation[Math.PITCH] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.PITCH],
+              0,
+              8 * dt
+            );
+        }
       } else {
         // Default keyboard control method.
 
