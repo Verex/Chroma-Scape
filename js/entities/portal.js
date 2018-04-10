@@ -14,6 +14,12 @@ class Portal extends Entity {
         // Define entity's collision type.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
 
+        // Define entity's AABB.
+        this.physicsComponent.aabb = new AABB(this, 20 ,20, 10);
+
+        // Scale the entity.
+        this.transformComponent.absScale = vec3.fromValues(10, 10, 4);
+
         // Assign mesh.
         var assets = Assets.getInstance();
         this.meshComponent.setModel(

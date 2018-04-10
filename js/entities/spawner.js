@@ -19,16 +19,7 @@ class Spawner extends Entity {
     // Assign position of entity.
     entity.transformComponent.absOrigin = vec3.clone(position);
 
-    switch (entityType) {
-      case EntityType.ENTITY_PORTAL:
-        entity.transformComponent.absScale = vec3.fromValues(10, 10, 4);
-        entity.physicsComponent.aabb = new AABB(entity, 20 ,20, 10);
-        break;
-      case EntityType.ENTITY_PILLAR:
-        entity.transformComponent.absScale = vec3.fromValues(10, 5, 10);
-        entity.physicsComponent.aabb = new AABB(entity, 20, 40, 20);
-        break;
-    }
+    return entity;
   }
 
   spawnRandomPortal() {
@@ -44,11 +35,16 @@ class Spawner extends Entity {
   spawnPillarSet() {
     var position = vec3.fromValues(
       Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
-      20,
+      40,
       this.lastPortal[Math.Z] - Math.randInt(200, 700)
     );
-    this.lastPortal = position;
-    this.spawn(EntityType.ENTITY_PILLAR, position);
+
+    //this.lastPortal = position;
+
+    var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+
+    pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
+    pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
   }
 
   getNextSpawn() {
@@ -78,7 +74,7 @@ class Spawner extends Entity {
       this.nextSpawnTime = this.getNextSpawn();
     } else if (this.shouldSpawn()) {
       // Spawn a random portal in front of player.
-      //this.spawnRandomPortal();
+      this.spawnRandomPortal();
       this.spawnPillarSet();
 
       // Set the next portal spawn time.
