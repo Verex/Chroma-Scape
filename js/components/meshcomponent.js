@@ -30,16 +30,10 @@ class MeshComponent extends EntityComponent {
             );
 
             // HACK HACK: Thruster color based on time? Must be better way to do this.
-            var time = Timer.getInstance();
-            var cTime = time.getCurrentTime(),
-                f = (cTime % 5000) / 5000;
+            var cTime = Timer.getInstance().getCurrentTime(),
+                f = (cTime % 2000) / 2000;
 
-            var add = 0.2;
-            if (f <= 0.5) {
-              add *= (f/0.5);
-            } else {
-              add -= add * (f - 0.5/0.5);
-            }
+            var add = 0.2 * (Math.sin(f) * 0.5 + 1);
 
             gl.uniform4f(
                 program.uniformLocation("u_thrusterColor"),

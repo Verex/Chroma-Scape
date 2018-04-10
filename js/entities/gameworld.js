@@ -80,10 +80,13 @@ class GameWorld extends Entity {
       if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
           //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
           var boom = this.player.menuCamera.yawBoom;
+
           this.player.menuCamera.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(boom)) * 50;
           this.player.menuCamera.transformComponent.absOrigin[Math.X] = Math.sin(Math.radians(boom)) * 50;
           this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
+
           this.player.menuCamera.yawBoom -= 35 * dt;
+          
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
@@ -92,8 +95,17 @@ class GameWorld extends Entity {
                       this.spawner.lastPortal,
                       this.player.transformComponent.absOrigin
                   );
+
+                  // Change current game state.
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
+
+                  // Enable spawner.
                   this.spawner.enabled = true;
+
+                  // Set initial acceleration for the player.
+                  this.player.physicsComponent.acceleration[Math.Z] = -1.15;
+
+                  // Change camera ID.
                   this.scene.mainCameraID = 0;
               }, this, null, false);
           }

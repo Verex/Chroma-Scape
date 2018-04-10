@@ -19,7 +19,7 @@ void main() {
    // Look up a color from the texture.
    vec2 texCoord = v_texCoord;
    vec4 color = texture2D(u_image, texCoord);
-   color += abs(sin(texCoord.y * 100.0 + Time * 5.0)) * 0.04; // (1)
-   color -= abs(sin(texCoord.y * 300.0 - Time * 15.0)) * 0.05; // (2)
+   color += abs(sin(texCoord.y * 100.0 + Time * 5.0)) * 0.025; // (1)
+   color += abs(sin(texCoord.y * 300.0 - Time * 15.0)) * 0.025; // (2)
    gl_FragColor = color;
 }

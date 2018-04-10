@@ -70,7 +70,7 @@ class App {
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
-    
+
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
 
@@ -82,31 +82,38 @@ class App {
 
   newGame() {
     var assets = Assets.getInstance();
+
     newID = 1;
+
     // Create player entity.
     this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
-     // Create camera entity.
+
+    // Create camera entity.
     this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
     this.gameworld.player.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
     this.gameworld.player.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
+
+    // Create menu camera entity.
     this.gameworld.player.menuCamera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
     this.gameworld.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
     this.gameworld.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
     this.gameworld.player.menuCamera.yawBoom = 180;
+
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
     this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-   
+
     // Set model for our ship.
     this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
       assets.getModel("ship")
     );
-   
+
+    //  Create spawner object.
     this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
-   
+
     this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
@@ -116,7 +123,7 @@ class App {
       this.gameworld.scoreboardcontroller.destroy();
       this.gameworld.scoreboardcontroller = undefined;
     }
-   
+
     this.gameworld.scene.mainCameraID = 1;
   }
 
@@ -247,7 +254,7 @@ class App {
   }
 
   processHighScore() {
-    
+
   }
 
   /*
@@ -263,7 +270,7 @@ class App {
     var gameworld = this.gameworld;
     if(gameworld) {
       var currentState = gameworld.gamestate.currentState;
-      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_HISCORE) {        
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_HISCORE) {
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.renderSystems.forEach((value, index, array) => {
           value.render(gameworld);
