@@ -119,10 +119,7 @@ class PhysicsComponent extends EntityComponent {
             );
         }
         if(this.aabb) {
-            vec3.copy(
-                this.aabb.origin,
-                transformComponent.absOrigin
-            );
+            vec3.copy(this.aabb.origin, transformComponent.getWorldTranslation());
         }
 
         vec3.scaleAndAdd(

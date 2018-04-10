@@ -37,54 +37,113 @@ class Ship extends Entity {
     }
 
     handleMovement(dt) {
-      // Get move conditions.
-      var move = {
-        up: this.owner.movement[MoveDirection.UP] && this.canSway(MoveDirection.UP),
-        down: this.owner.movement[MoveDirection.DOWN] && this.canSway(MoveDirection.DOWN),
-        left: this.owner.movement[MoveDirection.LEFT] && this.canSway(MoveDirection.LEFT),
-        right: this.owner.movement[MoveDirection.RIGHT] && this.canSway(MoveDirection.RIGHT)
-      };
+      if (this.owner.inputComponent.hasGamepad) {
+        // Gamepad control method.
 
-      /*
-        Check for horizontal movement.
-      */
-      if (move.left && this.canSway(MoveDirection.LEFT)) {
-        this.physicsComponent.angularVelocity[Math.ROLL] = this.physicsComponent.maxAngularVelocity;
-      } else if (move.right && this.canSway(MoveDirection.RIGHT)) {
-        this.physicsComponent.angularVelocity[Math.ROLL] = -this.physicsComponent.maxAngularVelocity;
+        // Disable gamepad controls for main menu.
+        if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
+
+        // Get left joystick axes.
+        var joystick = [
+          this.owner.inputComponent.gpAxis(0),
+          this.owner.inputComponent.gpAxis(1)
+        ];
+
+        var horizontalDirection = MoveDirection.LEFT,
+            verticalDirection = (this.owner.gpInvertedY ? MoveDirection.DOWN : MoveDirection.UP);
+
+        if (joystick[0] > 0) {
+          horizontalDirection = MoveDirection.RIGHT;
+        }
+
+        if (joystick[1] > 0) {
+          verticalDirection = (this.owner.gpInvertedY ? MoveDirection.UP : MoveDirection.DOWN);
+        }
+
+        if (Math.abs(joystick[0]) > 0.2 && this.canSway(horizontalDirection)) {
+          this.physicsComponent.angularVelocity[Math.ROLL] =
+            (this.physicsComponent.maxAngularVelocity * this.owner.gpSensitivity) * -joystick[0];
+        } else {
+          this.physicsComponent.angularVelocity[Math.ROLL] = 0;
+
+          // Return roll to origin.
+          this.transformComponent.absRotation[Math.ROLL] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.ROLL],
+              0,
+              8 * dt
+            );
+        }
+
+        if (Math.abs(joystick[1]) > 0.2 && this.canSway(verticalDirection)) {
+          this.physicsComponent.angularVelocity[Math.PITCH] =
+            (this.physicsComponent.maxAngularVelocity * this.owner.gpSensitivity)
+            * (this.owner.gpInvertedY ? 1 : -1) * joystick[1];
+        } else {
+          this.physicsComponent.angularVelocity[Math.PITCH] = 0;
+
+          // Return roll to origin.
+          this.transformComponent.absRotation[Math.PITCH] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.PITCH],
+              0,
+              8 * dt
+            );
+        }
       } else {
-        this.physicsComponent.angularVelocity[Math.ROLL] = 0;
+        // Default keyboard control method.
 
-        // Return roll to origin.
-        this.transformComponent.absRotation[Math.ROLL] =
-          Math.lerp(
-            this.transformComponent.absRotation[Math.ROLL],
-            0,
-            8 * dt
-          );
-      }
+        // Get move conditions.
+        var move = {
+          up: this.owner.movement[MoveDirection.UP] && this.canSway(MoveDirection.UP),
+          down: this.owner.movement[MoveDirection.DOWN] && this.canSway(MoveDirection.DOWN),
+          left: this.owner.movement[MoveDirection.LEFT] && this.canSway(MoveDirection.LEFT),
+          right: this.owner.movement[MoveDirection.RIGHT] && this.canSway(MoveDirection.RIGHT)
+        };
 
-      /*
-        Check for vertical movement.
-      */
-      if (move.up) {
-        this.physicsComponent.angularVelocity[Math.PITCH] = this.physicsComponent.maxAngularVelocity;
-      } else if (move.down) {
-        this.physicsComponent.angularVelocity[Math.PITCH] = -this.physicsComponent.maxAngularVelocity
-      } else {
-        this.physicsComponent.angularVelocity[Math.PITCH] = 0;
+        /*
+          Check for horizontal movement.
+        */
+        if (move.left) {
+          this.physicsComponent.angularVelocity[Math.ROLL] = this.physicsComponent.maxAngularVelocity;
+        } else if (move.right) {
+          this.physicsComponent.angularVelocity[Math.ROLL] = -this.physicsComponent.maxAngularVelocity;
+        } else {
+          this.physicsComponent.angularVelocity[Math.ROLL] = 0;
 
-        // Return pitch to origin.
-        this.transformComponent.absRotation[Math.PITCH] =
-          Math.lerp(
-            this.transformComponent.absRotation[Math.PITCH],
-            0,
-            8 * dt
-          );
+          // Return roll to origin.
+          this.transformComponent.absRotation[Math.ROLL] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.ROLL],
+              0,
+              8 * dt
+            );
+        }
+
+        /*
+          Check for vertical movement.
+        */
+        if (move.up) {
+          this.physicsComponent.angularVelocity[Math.PITCH] = this.physicsComponent.maxAngularVelocity;
+        } else if (move.down) {
+          this.physicsComponent.angularVelocity[Math.PITCH] = -this.physicsComponent.maxAngularVelocity;
+        } else {
+          this.physicsComponent.angularVelocity[Math.PITCH] = 0;
+
+          // Return pitch to origin.
+          this.transformComponent.absRotation[Math.PITCH] =
+            Math.lerp(
+              this.transformComponent.absRotation[Math.PITCH],
+              0,
+              8 * dt
+            );
+        }
       }
     }
 
     move(dt) {
+      this.handleMovement(dt);
+
       var hScale = this.getSwayScale(Math.ROLL),
           vScale = this.getSwayScale(Math.PITCH);
 
@@ -125,6 +184,9 @@ class Ship extends Entity {
     }
 
     canSway(direction) {
+      // Ensure correct gamestate.
+      if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return false;
+
       var opposite = null,
           positionAxis = null,
           rotationAxis = null,
@@ -158,30 +220,28 @@ class Ship extends Entity {
           break;
       }
 
-      var withinBounds =
-        Math.between(
-          this.angularBounds[rotationAxis].min,
-          this.angularBounds[rotationAxis].max,
-          this.transformComponent.absRotation[rotationAxis],
-          minInclude, maxInclude
-        ) &&
-        Math.between(
-          this.linearBounds[positionAxis].min,
-          this.linearBounds[positionAxis].max,
-          this.transformComponent.absOrigin[positionAxis],
-          minInclude, maxInclude
-        );
+      var usingGamepad = this.owner.inputComponent.gamepad != -1,
+          withinBounds =
+            Math.between(
+              this.angularBounds[rotationAxis].min,
+              this.angularBounds[rotationAxis].max,
+              this.transformComponent.absRotation[rotationAxis],
+              minInclude, maxInclude
+            ) &&
+            Math.between(
+              this.linearBounds[positionAxis].min,
+              this.linearBounds[positionAxis].max,
+              this.transformComponent.absOrigin[positionAxis],
+              minInclude, maxInclude
+            );
 
-      return !this.owner.movement[opposite] && withinBounds;
+      return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
     }
 
     tick(dt) {
-        this.handleMovement(dt);
         this.move(dt);
-
         this.physicsComponent.physicsSimulate(dt);
         this.transformComponent.updateTransform();
-
         this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
         super.tick(dt);
     }

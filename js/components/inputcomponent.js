@@ -1,6 +1,7 @@
 var InputMethod = {
     INPUT_MOUSE: 0,
-    INPUT_KEYBOARD: 1
+    INPUT_KEYBOARD: 1,
+    INPUT_GAMEPAD: 2,
 };
 
 var InputType = {
@@ -8,7 +9,7 @@ var InputType = {
     BTN_RELEASE: 1,
     MSE_MOVE: 2,
     MSE_PRESS: 3,
-    MSE_RELEASE: 4
+    MSE_RELEASE: 4,
 };
 
 var MouseClick = {
@@ -26,12 +27,27 @@ class InputComponent extends EntityComponent {
         this.events.keyboard[InputType.BTN_PRESS] = {};
         this.events.keyboard[InputType.BTN_RELEASE] = {};
 
+        // Create gamepad
+        this.controllers = {};
+
+        // Set current gamepad controller.
+        this.gamepad = -1;
+
         // Add event listeners.
-        document.addEventListener('keydown', (event) => { this.handleEvent(event); });
-        document.addEventListener('keyup', (event) => { this.handleEvent(event); });
-        document.addEventListener('mousedown', (event) => { this.handleEvent(event); });
-        document.addEventListener('mouseup', (event) => { this.handleEvent(event); });
-        document.addEventListener('mousemove', (event) => { this.handleEvent(event);});
+        window.addEventListener('keydown', (event) => { this.handleEvent(event); });
+        window.addEventListener('keyup', (event) => { this.handleEvent(event); });
+        window.addEventListener('mousedown', (event) => { this.handleEvent(event); });
+        window.addEventListener('mouseup', (event) => { this.handleEvent(event); });
+        window.addEventListener('mousemove', (event) => { this.handleEvent(event);});
+
+        // Add gamepad connected event handlers.
+        if ('GamepadEvent' in window) {
+          window.addEventListener('gamepadconnected', (event) => { this.handleEvent(event);});
+          window.addEventListener('gamepaddisconnected', (event) => { this.handleEvent(event);});
+        } else if ('WebKitGamepadEvent' in window) {
+          window.addEventListener('webkitgamepadconnected', (event) => { this.handleEvent(event);});
+          window.addEventListener('webkitgamepaddisconnected', (event) => { this.handleEvent(event);});
+        }
     }
 
     getEventType(type) {
@@ -77,6 +93,20 @@ class InputComponent extends EntityComponent {
       }
     }
 
+    get hasGamepad() {
+      return this.gamepad != -1;
+    }
+
+    gpAxis(axis) {
+      if (!this.hasGamepad) return 0;
+      return this.controllers[this.gamepad].axes[axis];
+    }
+
+    gpButton(button) {
+      if (!this.hasGamepad) return false;
+      return this.controllers[this.gamepad].buttons[button];
+    }
+
     handleEvent(event) {
       if (event instanceof KeyboardEvent) {
         if (this.events.keyboard[this.getEventType(event.type)][event.code] != undefined) {
@@ -86,6 +116,25 @@ class InputComponent extends EntityComponent {
         var e = this.events.mouse[this.getEventType(event.type)];
         if(e !== undefined) {
           e.callback(event);
+        }
+      } else if (event instanceof GamepadEvent) {
+        if (event.type == "gamepadconnected") {
+          this.controllers[event.gamepad.index] = event.gamepad;
+          this.gamepad = event.gamepad.index;
+        } else {
+          delete this.controllers[event.gamepad.index];
+          this.gamepad = -1;
+        }
+        console.log(event);
+      }
+    }
+
+    updateGamepads() {
+      var gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      for (var i = 0; i < gamepads.length; i++) {
+        if (gamepads[i]) {
+          this.controllers[gamepads[i].index] = gamepads[i];
+          this.gamepad = gamepads[i].index;
         }
       }
     }

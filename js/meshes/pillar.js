@@ -8,8 +8,12 @@ var PillarMesh = () => {
           back = 1;
 
     const faceColors = [
-        VertexColor.new([1.0,  0.0,  1.0,  1.0], 16),
-        VertexColor.new([1.0,  0.2,  1.0,  1.0], 12),
+        VertexColor.new([0.137, 0.133, 0.133, 1.0], 4),
+        VertexColor.new([0.137, 0.133, 0.133, 1.0], 4),
+        VertexColor.new([0.094, 0.09, 0.086, 1.0], 4),
+        VertexColor.new([0.094, 0.09, 0.086, 1.0], 4),
+
+        VertexColor.new([1.0,  0.0,  1.0,  1.0], 12),
     ];
     var indices = [
       0, 1, 2,   0, 2, 3,
