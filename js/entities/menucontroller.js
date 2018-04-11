@@ -14,7 +14,7 @@ class MenuController extends Entity {
         this.textIdx = 0;
 
         this.textPos = vec2.fromValues(
-            GlobalVars.getInstance().clientWidth * 0.20,
+            GlobalVars.getInstance().clientWidth * 0.5,
             GlobalVars.getInstance().clientHeight * 0.85
         );
 
