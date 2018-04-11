@@ -13,15 +13,34 @@ class MenuController extends Entity {
         this.textColors = ['white', 'white', 'red', 'red'];
         this.textIdx = 0;
 
+        this.textPos = vec2.fromValues(
+            GlobalVars.getInstance().clientWidth * 0.20,
+            GlobalVars.getInstance().clientHeight * 0.85
+        );
+
         this.textComponent.addText(
             this.text[this.textIdx],
-            vec2.fromValues(450, 800),
+            this.textPos,
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.menuText,
             45
         );
     }
 
+    onResize(nw, nh) {
+        var pos = vec2.fromValues(
+            nw * 0.5,
+            nh * 0.8
+        );
+        
+        this.textComponent.addText(
+            this.text[this.textIdx],
+            pos,
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            this.menuText,
+            45
+        );
+    }
 
     tick(dt) {
         if(this.timer > 0) {
@@ -32,7 +51,7 @@ class MenuController extends Entity {
             this.textIdx = (this.textIdx + 1) % this.text.length;
             this.textComponent.addText(
                 this.text[this.textIdx],
-                vec2.fromValues(450, 800),
+                this.textPos,
                 Assets.getInstance().getFont("PressStart2P-Regular"),
                 this.menuText,
                 45

@@ -16,6 +16,30 @@ var AppStatus = {
 
 var once = false;
 
+function makeGetRequest(url, reverse, options) {
+  var scope = null,
+      limit = 10,
+      cb;
+  $.each(options, function(i, val) {
+    if (typeof val === 'string') {
+      scope = val;
+    } else if (typeof val === 'number') {
+      limit = val;
+    } else if (typeof val === 'function') {
+      cb = val;
+    }
+  });
+  $.getJSON(url + '?callback=?', {
+    reverse: reverse
+  }, function(data) {
+    cb(data.items);
+  });
+}    
+var getLowest = function(limit, scope, cb) {
+  makeGetRequest('/score', true, arguments);
+};
+
+
 class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
@@ -34,8 +58,16 @@ class App {
     // Get Canvas DOM element.
     this.canvas = $('#glcanvas')[0];
     this.textCanvas = $('#textcanvas')[0];
-    this.textCanvas.width = 2048;
-    this.textCanvas.height = 2048;
+    this.textCanvas.width = this.canvas.clientWidth * 1;
+    this.textCanvas.height = this.canvas.clientHeight * 1;
+
+    //TODO(Jake): Implement resize callback handler using Observer design pattern
+    var globals = GlobalVars.getInstance();
+
+    // Store width and heigth in globals.
+    globals.clientWidth = this.canvas.clientWidth;
+    globals.clientHeight = this.canvas.clientHeight;
+    
 
     // Get WebGL canvas context.
     this.gl = this.canvas.getContext('webgl', {alpha: false});
@@ -43,6 +75,9 @@ class App {
 
     this.splash = new SplashScreen(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
     this.splash.state = SplashState.SPLASH_FADEIN;
+
+    this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+    this.scoreboard.state = SplashState.SPLASH_IDLE;
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -56,13 +91,6 @@ class App {
     this.renderSystems.push(
       new Renderer(this.gl, this.textCtx)
     );
-
-    //TODO(Jake): Implement resize callback handler using Observer design pattern
-    var globals = GlobalVars.getInstance();
-
-    // Store width and heigth in globals.
-    globals.clientWidth = this.canvas.clientWidth;
-    globals.clientHeight = this.canvas.clientHeight;
 
     var assets = Assets.getInstance();
     assets.addModel(this.gl, TestMesh(), "test");
@@ -79,6 +107,9 @@ class App {
       assets.getModel("grid")
     );
 
+    this.gameworld.gamestate.onGamestateChanged.push(
+      {owner:this, cb:this.onGameStateChanged}
+    );
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
 
@@ -93,6 +124,8 @@ class App {
     // Create player entity.
     this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
     this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
+
+    this.gameworld.gamestate.localplayer = this.gameworld.player;
 
     // Create camera entity.
     this.gameworld.player.camera = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_CAMERA);
@@ -192,6 +225,9 @@ class App {
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
 
+        this.textCanvas.width = this.canvas.width * 1;
+        this.textCanvas.height = this.canvas.height * 1;
+
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
@@ -200,8 +236,15 @@ class App {
           value.onResize(0, 0);
         });
 
-        // Update gl with viewport change.
-        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.splash.onResize(this.textCanvas.width, this.textCanvas.height);
+        this.scoreboard.onResize(this.textCanvas.width, this.textCanvas.height);
+
+        if(this.gameworld.hudcontroller !== undefined) {
+          this.gameworld.hudcontroller.onResize(this.textCanvas.width, this.textCanvas.height);
+        }
+        if(this.gameworld.menucontroller !== undefined) {
+          this.gameworld.menucontroller.onResize(this.textCanvas.width, this.textCanvas.height);
+        }
     }
 
     /*
@@ -241,6 +284,21 @@ class App {
       }
     }
   }
+  
+  onGameStateChanged(oldState, newState) {
+    if(newState == GameStates.GAMESTATE_GAME) {
+      console.log(this);
+      this.gameworld.hudcontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_HUDCONTROLLER);
+    }
+    if(newState == GameStates.GAMESTATE_HISCORE) {
+      this.scoreboard.processScores(this.gameworld.gamestate.score);
+      if(this.gameworld.hudcontroller !== undefined) {
+        this.gameworld.hudcontroller.destroy();
+        this.gameworld.hudcontroller = undefined;
+      }
+    }
+  }
+
 
   processSplashScreen() {
     this.splash.process();
@@ -261,7 +319,7 @@ class App {
   }
 
   processHighScore() {
-
+    this.scoreboard.process();
   }
 
   /*

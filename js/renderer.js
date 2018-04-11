@@ -28,9 +28,8 @@ class Renderer {
             new CopyPass(glContext),
             new CurvedPass(glContext),
             //new ScalePass(glContext),
-            //new BarrelPass(glContext),
             new CRTPass(glContext),
-            new ScanlinePass(glContext)
+            new ScanlinePass(glContext),
         ];
 
         this.uiPass = new UIPass(glContext);
@@ -93,23 +92,6 @@ class Renderer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.viewport.bind();
         this.viewport.render();
-    }
-
-    blitCanvasTexture(textureCanvas) {
-        var gl = this.ctx;
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-        gl.bindTexture(gl.TEXTURE_2D, this.textCanvasTexture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureCanvas); // This is the important line!
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);
-        gl.generateMipmap(gl.TEXTURE_2D); 
-
-        this.textRenderTarget.bind();
-        this.uiPass.sceneTexture = this.renderTargets[0].texture;
-        this.uiPass.doPass(this.viewport);
-        this.textRenderTarget.bindTexture();
-        
-
     }
 
     onResize(nw, nh) {
