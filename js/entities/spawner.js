@@ -140,7 +140,7 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
         difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
-    return time + (this.firstPortal ? 4000 - (3500 * difficulty) : 0);
+    return time + (this.firstPortal ? 4000 - (3700 * difficulty) : 0);
   }
 
   shouldSpawn() {
