@@ -11,7 +11,7 @@ class RenderText {
 
     generate() {
         var pos = this.pos;
-        var size = this.measureText(this.text, this.font, this.size);xx
+        var size = this.measureText(this.text, this.font, this.size);
         this.path = this.font.getPath(
             this.text, 
             pos[Math.X] - size.width / 2,
