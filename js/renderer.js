@@ -28,9 +28,8 @@ class Renderer {
             new CopyPass(glContext),
             new CurvedPass(glContext),
             //new ScalePass(glContext),
-            //new BarrelPass(glContext),
             new CRTPass(glContext),
-            new ScanlinePass(glContext)
+            new ScanlinePass(glContext),
         ];
 
         this.uiPass = new UIPass(glContext);

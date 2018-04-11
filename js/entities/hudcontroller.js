@@ -45,7 +45,7 @@ class HUDController extends Entity {
         var scoreText = Math.round(this.score).toString();
         this.textComponent.addText(
             scoreText,
-            vec2.fromValues(GlobalVars.getInstance().clientWidth / 2 + 100, 50),
+            vec2.fromValues(GlobalVars.getInstance().clientWidth * 0.5 + 100, GlobalVars.getInstance().clientHeight * 0.1),
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.scoreTag,
             15
