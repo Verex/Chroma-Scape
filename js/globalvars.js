@@ -9,7 +9,7 @@ class _GlobalVars_ //Internal class
         this.tickcount = 0; //The total number of game world updates
         this.curtime = 0; //The cumulative time SINCE the beginning of execution
         this.lasttime = 0; //Previous time stamp
-        this.maxtimeskip = 200;
+        this.maxtimeskip = 400;
         this.framecount = 0; //Number of frames being pushed to renderer
         this.framedelay = 0; //Number of seconds it takes to push one frame used for FPS calculation
         this.timescale = 1.0; //Scalar that affects how fast or slow time flows useful for debugging.
@@ -45,10 +45,10 @@ var GlobalVars = (function(){
     return {
         getInstance: function(){
             if (null == instance) {
-                instance = new _GlobalVars_();            
-                instance.constructor = null; 
+                instance = new _GlobalVars_();
+                instance.constructor = null;
             }
-            return instance; 
+            return instance;
         }
    };
 })();

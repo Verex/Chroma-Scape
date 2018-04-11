@@ -41,11 +41,12 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
         difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
-    var position = vec3.fromValues(
-      Math.randInt(-40, 40),
-      Math.randInt(20, 60),
-      this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty))
+    var zVal = Math.min(
+      this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty)),
+      this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 200
     );
+
+    var position = vec3.fromValues(Math.randInt(-40, 40), Math.randInt(20, 60), zVal);
 
     this.history.portals.push(position);
 
@@ -69,6 +70,8 @@ class Spawner extends Entity {
       var near = false,
           position = vec3.create();
       do {
+        near = false;
+
         position = vec3.fromValues(
           this.lastPortal[Math.X] + Math.randInt(-100, 100),
           40,
@@ -79,9 +82,9 @@ class Spawner extends Entity {
         for (var m = 1; m < 10; m++) {
           if (this.history.portals.length - m < 0) continue;
           var p = this.history.portals[this.history.portals.length - m];
-          if (vec3.dist(position, p) < 50) {
+          if (vec3.dist(position, p) < 75 ||
+            Math.between(position[Math.Z], p[Math.Z] - 50, p[Math.Z] + 50)) {
             near = true;
-            return;
           }
         }
       } while (near);

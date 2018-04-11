@@ -193,7 +193,10 @@ class GameWorld extends Entity {
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;
               break;
             case EntityType.ENTITY_SPAWNER:
-              child.lastPortal[Math.Z] -= this.zReset;
+              // Apply history change.
+              for (var i = 0; i < child.history.portals.length; i++) {
+                child.history.portals[i][Math.Z] -= this.zReset;
+              }
               break;
           }
         });
