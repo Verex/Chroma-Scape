@@ -35,8 +35,8 @@ var server = http.createServer(function (request, response) {
       request.on('end', () =>{
         var options = {
           hostname: '173.230.153.123',
-          port: 59798,
-          path: '',
+          port: 8181,
+          path: '/0',
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -49,19 +49,28 @@ var server = http.createServer(function (request, response) {
           });
           res.on('end', (chunk) => {
             console.log("FINISHED: " + dat);
+            response.end(dat);
           });
           res.on('error', (error) => {});
         });
         console.log(body);
         req.write(body);
         req.end();
-        response.end();
       });
     }
   } else if(request.method == 'GET') {
     if(request.url === '/score') {
       var body = '';
-      http.get('http://173.230.153.123:59798/', (res) => {
+      var options = {
+        hostname: '173.230.153.123',
+        port: 8181,
+        path: '/0',
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+      };
+      http.get(options, (res) => {
         res.on('data', (chunk) => {
           body += chunk;
         });

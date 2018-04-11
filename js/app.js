@@ -16,30 +16,36 @@ var AppStatus = {
 
 var once = false;
 
+function makeGetRequest(url, reverse, options) {
+  var scope = null,
+      limit = 10,
+      cb;
+  $.each(options, function(i, val) {
+    if (typeof val === 'string') {
+      scope = val;
+    } else if (typeof val === 'number') {
+      limit = val;
+    } else if (typeof val === 'function') {
+      cb = val;
+    }
+  });
+  $.getJSON(url + '?callback=?', {
+    reverse: reverse
+  }, function(data) {
+    cb(data.items);
+  });
+}    
+var getLowest = function(limit, scope, cb) {
+  makeGetRequest('/score', true, arguments);
+};
+
+
 class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
 
     this.renderSystems = [];
     this.postRenderSystems = [];
-
-    $.ajax({
-      url: "173.230.153.123:8181",
-      data: {
-        player: "jake",
-        score: "500",
-        scope: "game-expo"
-      },
-      dataType: 'json',
-      type: 'POST',
-      crossDomain: true,
-      success: (data) => {
-        console.log("SUCC");
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    });
   }
 
   /*
@@ -64,6 +70,9 @@ class App {
 
     this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
     this.scoreboard.state = SplashState.SPLASH_IDLE;
+
+    this.scoreboard.postScore("test", "550");
+    this.scoreboard.getScores();
 
     // Ensure WebGL is working.
     if (!this.gl) {
