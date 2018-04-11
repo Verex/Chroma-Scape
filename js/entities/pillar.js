@@ -27,11 +27,7 @@ class Pillar extends Entity {
 
       // Check if behind player, and remove.
       if (position[Math.Z] - 50 > playerPosition[Math.Z]) {
-        for (var i = 0; i < this.owner.children.length; i++ ) {
-          if (this.owner.children[i].eid == this.eid) {
-            this.owner.children.splice(i, 1);
-          }
-        }
+        this.destroy();
       }
     }
 

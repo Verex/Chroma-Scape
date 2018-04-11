@@ -86,7 +86,7 @@ class GameWorld extends Entity {
           this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
 
           this.player.menuCamera.yawBoom -= 35 * dt;
-          
+
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
@@ -192,6 +192,7 @@ class GameWorld extends Entity {
         // Move all portals back as well.
         this.children.forEach((child) => {
           switch(child.type) {
+            case EntityType.ENTITY_WALL:
             case EntityType.ENTITY_PILLAR:
             case EntityType.ENTITY_PORTAL:
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;

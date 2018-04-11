@@ -1,6 +1,7 @@
 class MeshComponent extends EntityComponent {
     constructor(owner) {
         super(ComponentID.COMPONENT_MESH, owner);
+        this.shouldRender = true;
     }
 
     setModel(model) {
@@ -16,6 +17,7 @@ class MeshComponent extends EntityComponent {
     uniform mat4 u_projectionMatrix;
     */
     render(program, gl) {
+        if (!this.shouldRender) return;
         if(!this.model) return;
         if(this.owner.type == EntityType.ENTITY_SHIP) {
             var color = this.owner.owner.color.serialize(); // Get our player
@@ -31,9 +33,9 @@ class MeshComponent extends EntityComponent {
 
             // HACK HACK: Thruster color based on time? Must be better way to do this.
             var cTime = Timer.getInstance().getCurrentTime(),
-                f = (cTime % 2000) / 2000;
+                f = cTime / 500;
 
-            var add = 0.2 * (Math.sin(f) * 0.5 + 1);
+            var add = 0.2 * (Math.sin(f) * 0.5 + 0.5);
 
             gl.uniform4f(
                 program.uniformLocation("u_thrusterColor"),
@@ -53,6 +55,36 @@ class MeshComponent extends EntityComponent {
                 color[2],
                 color[3]
             );
+        } else if (this.owner.type == EntityType.ENTITY_PILLAR) {
+          var cTime = Timer.getInstance().getCurrentTime() - this.owner.spawnTime,
+              red = (Math.sin(cTime / 500) * 0.5 + 0.5);
+
+          gl.uniform4f(
+              program.uniformLocation("u_selectionColor"),
+              red,
+              0.0,
+              0.0,
+              0.0
+          );
+        } else if (this.owner.type == EntityType.ENTITY_WALL) {
+          var cTime = Timer.getInstance().getCurrentTime() - this.owner.spawnTime,
+              red = (Math.sin(cTime / 500) * 0.5 + 0.5);
+
+          gl.uniform4f(
+              program.uniformLocation("u_selectionColor"),
+              red,
+              0.0,
+              0.0,
+              0.0
+          );
+
+          gl.uniform4f(
+              program.uniformLocation("u_thrusterColor"),
+              1.0 - red,
+              0.0,
+              0.0,
+              0.0
+          );
         }
         this.model.render(program);
         gl.uniformMatrix4fv(

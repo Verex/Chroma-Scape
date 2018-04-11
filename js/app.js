@@ -68,6 +68,7 @@ class App {
     assets.addModel(this.gl, TestMesh(), "test");
     assets.addModel(this.gl, ShipMesh(), "ship");
     assets.addModel(this.gl, GridMesh(50000, 1500), "grid");
+    assets.addModel(this.gl, WallMesh(50000, 5500), "wall");
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
 
