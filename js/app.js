@@ -120,7 +120,7 @@ class App {
     this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
 
     this.gameworld.floor = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    this.gameworld.floor.transformComponent.absOrigin = vec3.fromValues(0, -4, 0);
+    this.gameworld.floor.transformComponent.absOrigin = vec3.fromValues(0, -5, 0);
     this.gameworld.floor.meshComponent.setModel(
       assets.getModel("floor")
     );

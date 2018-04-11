@@ -11,7 +11,7 @@ var WallMesh = (size, divisions) => {
 
     var center = [0, 0, 0];
     var r = 1500;
-    var it = 15;
+    var it = 12;
     //vertices = vertices.concat(center);
 
     for (var i = 0; i <= it; i++) {
