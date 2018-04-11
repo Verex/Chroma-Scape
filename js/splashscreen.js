@@ -44,8 +44,11 @@ class SplashScreen {
         }
 
         this.ctx.globalAlpha = 1.0;
-        this.ctx.fillStyle = '#F0F';
+        this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.width, this.height);
+        var img = document.getElementById("hiddenSplash");
+        console.log(img);
+        this.ctx.drawImage(img, 0, GlobalVars.getInstance().clientHeight * 0.2);
     }
 
     fadeOut(time = 500) {

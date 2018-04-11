@@ -5,6 +5,11 @@ html, body {
   background-color:black;
 }
 
+
+#hiddenSplash {
+  display: none;
+}
+
 #textcanvas {
     position: absolute;
     top: 0;
