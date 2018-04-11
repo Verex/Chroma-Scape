@@ -71,9 +71,13 @@ class App {
     assets.addModel(this.gl, WallMesh(50000, 5500), "wall");
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
+    assets.addModel(this.gl, FloorMesh(), "floor");
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    this.gameworld.meshComponent.setModel(
+      assets.getModel("grid")
+    );
 
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
@@ -115,10 +119,12 @@ class App {
     //  Create spawner object.
     this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
 
-    this.testgrid = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
-    this.gameworld.meshComponent.setModel(
-      assets.getModel("grid")
+    this.gameworld.floor = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
+    this.gameworld.floor.transformComponent.absOrigin = vec3.fromValues(0, -4, 0);
+    this.gameworld.floor.meshComponent.setModel(
+      assets.getModel("floor")
     );
+
 
     if(this.gameworld.scoreboardcontroller !== undefined) {
       this.gameworld.scoreboardcontroller.destroy();
