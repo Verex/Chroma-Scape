@@ -10,6 +10,7 @@ class Spawner extends Entity {
     this.nextSpawnTime = 0;
     this.lastPortal = vec3.fromValues(0, 30, -150);
     this.enabled = false;
+    this.firstPortal = false;
   }
 
   spawn(entityType, position) {
@@ -23,16 +24,31 @@ class Spawner extends Entity {
   }
 
   spawnRandomPortal() {
+    var time = Timer.getInstance().getCurrentTime();
+
     var position = vec3.fromValues(
       Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
       Math.min(Math.max(this.lastPortal[Math.Y] + Math.randInt(-20, 20), 20), 60),
       this.lastPortal[Math.Z] - Math.randInt(250, 700)
     );
     this.lastPortal = position;
-    this.spawn(EntityType.ENTITY_PORTAL, position);
+
+    // Spawn portal.
+    var portal = this.spawn(EntityType.ENTITY_PORTAL, position);
+
+    // Create wall entity.
+    portal.wall = this.spawn(EntityType.ENTITY_WALL, position);
+    portal.wall.spawnTime = time;
+
+    if (!this.firstPortal) {
+      portal.wall.enable();
+      this.firstPortal = true;
+    }
   }
 
   spawnPillarSet() {
+    var time = Timer.getInstance().getCurrentTime();
+
     var position = vec3.fromValues(
       Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
       40,
@@ -42,7 +58,7 @@ class Spawner extends Entity {
     //this.lastPortal = position;
 
     var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
-
+    pillar.spawnTime = time;
     pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
     pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
   }

@@ -12,6 +12,7 @@ var EntityType = {
     ENTITY_SPEAKER: {id: 9},
     ENTITY_PILLAR: {id: 10},
     ENTITY_MENUCONTROLLER: {id: 11},
+    ENTITY_WALL: {id: 12},
 };
 
 var newID = 0;
@@ -76,6 +77,18 @@ class Entity {
             Console.error("INVALID COMPONENT ID: " + cid);
             return undefined;
         }
+    }
+
+    getChildren(entityType) {
+      var children = [];
+
+      for (var i = 0; i < this.children.length; i++) {
+        if (this.children[i].type == entityType) {
+          children.push(this.children[i]);
+        }
+      }
+
+      return children;
     }
 
     static get Factory() {
