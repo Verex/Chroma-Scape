@@ -70,11 +70,13 @@ class Spawner extends Entity {
   }
 
   spawnPillarSet() {
-    var time = Timer.getInstance().getCurrentTime();
+    var time = Timer.getInstance().getCurrentTime(),
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
     var tot = 0;
     for (var r = 0; r < 10; r++) {
-      var count = Math.randInt(0, 6);
+      var r1 = Math.floor(10 * difficulty), r2 = Math.floor(20 * difficulty),
+          count = Math.randInt(0 + r1, 6 + r2);
 
       var zStart = this.lastPortal[Math.Z] + (150 * r);
 
@@ -94,7 +96,7 @@ class Spawner extends Entity {
           position = vec3.fromValues(
             Math.randInt(-400, 400),
             40.5,
-            zStart + Math.randInt(-100, 100)
+            zStart + Math.randInt(-150, 150)
           );
 
           // Check if too close to portal spawn.
@@ -109,11 +111,12 @@ class Spawner extends Entity {
             }
           }
 
+          var distance = 25 + 100 * (1 - difficulty);
           for (var m = 1; m < tot; m++) {
             if (this.history.pillars.length - m < 0) continue;
             var p = this.history.pillars[this.history.pillars.length - m];
 
-            if (vec3.dist(position, p) < 100) {
+            if (vec3.dist(position, p) < distance) {
               near = true;
               break;
             }
@@ -137,7 +140,7 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
         difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
-    return time + (this.firstPortal ? 4000 - (1500 * difficulty) : 0);
+    return time + (this.firstPortal ? 4000 - (3500 * difficulty) : 0);
   }
 
   shouldSpawn() {
