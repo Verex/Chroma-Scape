@@ -107,6 +107,7 @@ class App {
       assets.getModel("grid")
     );
 
+    this.gameworld.gamestate.onGamestateChanged = this.onGameStateChanged;
     //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
     //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
 
@@ -272,6 +273,21 @@ class App {
       }
     }
   }
+  
+  onGameStateChanged(oldState, newState) {
+    if(newState == GameStates.GAMESTATE_GAME) {
+      console.log(this);
+      this.gameworld.hudcontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_HUDCONTROLLER);
+    }
+    if(newState == GameStates.GAMESTATE_HISCORE) {
+      this.scoreboard.processScores(this.gameworld.gamestate.score);
+      if(this.gameworld.hudcontroller !== undefined) {
+        this.gameworld.hudcontroller.destroy();
+        this.gameworld.hudcontroller = undefined;
+      }
+    }
+  }
+
 
   processSplashScreen() {
     this.splash.process();

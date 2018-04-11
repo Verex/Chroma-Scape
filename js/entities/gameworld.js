@@ -77,6 +77,7 @@ class GameWorld extends Entity {
     tick(dt) {
       this.handleZReset();
       this.gamestate.updateDifficultyCurve();
+      this.gamestate.updateScore();
       if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
           //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
           var boom = this.player.menuCamera.yawBoom;

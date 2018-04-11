@@ -15,10 +15,10 @@ class Scoreboard extends SplashScreen {
             }
         }
 
-        var scores = this.getScores();
+        var scores = this.scores();
         this.ctx.globalAlpha = 1.0;
         this.ctx.fillStyle = '#000';
-        this.ctx.fillRect(0, 0, this.width, this.height);
+        this.ctx.fillRect(0, 0, GlobalVars.getInstance().clientWidth, GlobalVars.getInstance().clientHeight);
         this.text.render(this.ctx);
         this.scoreText = [];
         for(var i = 0; i < 10; i++) {
@@ -33,8 +33,15 @@ class Scoreboard extends SplashScreen {
         }
     }
 
+    processScores(score) {
+        this.scores = this.getScores();
+        if(this.isHighScore(score)) {
+            this.postScore("JIT", score);
+        }
+    }
+
     isHighScore(score) {
-        var scores = this.getScores();
+        var scores = this.scores;
         for(var i = 0; i < 10; i++) {
             if(score > scores[i].score) {
                 return true;

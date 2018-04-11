@@ -13,6 +13,7 @@ var EntityType = {
     ENTITY_PILLAR: {id: 10},
     ENTITY_MENUCONTROLLER: {id: 11},
     ENTITY_WALL: {id: 12},
+    ENTITY_HUDCONTROLLER: {id: 13}
 };
 
 var newID = 0;

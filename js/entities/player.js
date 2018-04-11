@@ -59,6 +59,8 @@ class Player extends Entity {
         // Translate player position.
         this.transformComponent.absOrigin[Math.Y] = 10;
 
+        this.getGameWorld().gamestate.localPlayer = this;
+
         this.cursorPosition = vec2.fromValues(-1, -1);
         this.color = WHITE;
         this.hasCrashed = false;
