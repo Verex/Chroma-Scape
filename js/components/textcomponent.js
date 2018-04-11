@@ -13,7 +13,7 @@ class RenderText {
         var pos = this.pos;
         var size = this.measureText(this.text, this.font, this.size);
         this.path = this.font.getPath(
-            this.text, 
+            this.text,
             pos[Math.X] - size.width / 2,
             pos[Math.Y],
             this.size
@@ -31,7 +31,7 @@ class RenderText {
         var width = 0;
         var scale = 1 / font.unitsPerEm * fontSize;
         var glyphs = font.stringToGlyphs(text);
-    
+
         for (var i = 0; i < glyphs.length; i++) {
             var glyph = glyphs[i];
             if (glyph.advanceWidth) {
@@ -44,7 +44,7 @@ class RenderText {
             ascent = Math.max(ascent, glyph.yMax);
             descent = Math.min(descent, glyph.yMin);
         }
-    
+
         return {
             width: width,
             actualBoundingBoxAscent: ascent * scale,
