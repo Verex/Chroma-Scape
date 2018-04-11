@@ -10,10 +10,12 @@ class RenderText {
     }
 
     generate() {
+        var pos = this.pos;
+        var size = this.measureText(this.text, this.font, this.size);xx
         this.path = this.font.getPath(
             this.text, 
-            this.pos[Math.X],
-            this.pos[Math.Y],
+            pos[Math.X] - size.width / 2,
+            pos[Math.Y],
             this.size
         );
     }
@@ -21,6 +23,35 @@ class RenderText {
     render(ctx) {
         this.path.fill = this.color;
         this.path.draw(ctx);
+    }
+
+    measureText(text, font, fontSize) {
+        var ascent = 0;
+        var descent = 0;
+        var width = 0;
+        var scale = 1 / font.unitsPerEm * fontSize;
+        var glyphs = font.stringToGlyphs(text);
+    
+        for (var i = 0; i < glyphs.length; i++) {
+            var glyph = glyphs[i];
+            if (glyph.advanceWidth) {
+                width += glyph.advanceWidth * scale;
+            }
+            if (i < glyphs.length - 1) {
+                var kerningValue = font.getKerningValue(glyph, glyphs[i + 1]);
+                width += kerningValue * scale;
+            }
+            ascent = Math.max(ascent, glyph.yMax);
+            descent = Math.min(descent, glyph.yMin);
+        }
+    
+        return {
+            width: width,
+            actualBoundingBoxAscent: ascent * scale,
+            actualBoundingBoxDescent: descent * scale,
+            fontBoundingBoxAscent: font.ascender * scale,
+            fontBoundingBoxDescent: font.descender * scale
+        };
     }
 }
 
