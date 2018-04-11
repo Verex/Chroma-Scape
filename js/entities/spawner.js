@@ -41,11 +41,18 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
         difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
-    var position = vec3.fromValues(
-      Math.randInt(-40, 40),
-      Math.randInt(20, 60),
-      this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty))
-    );
+    var z = 0;
+
+    if (!this.firstPortal) {
+      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 2200;
+    } else {
+      z = Math.min(
+        this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty)),
+        this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 200
+      );
+    }
+
+    var position = vec3.fromValues(Math.randInt(-40, 40), Math.randInt(20, 60), z);
 
     this.history.portals.push(position);
 
@@ -65,47 +72,85 @@ class Spawner extends Entity {
   spawnPillarSet() {
     var time = Timer.getInstance().getCurrentTime();
 
-    for (var n = 0; n < 10; n++) {
-      var near = false,
-          position = vec3.create();
-      do {
-        position = vec3.fromValues(
-          this.lastPortal[Math.X] + Math.randInt(-100, 100),
-          40,
-          this.lastPortal[Math.Z] + (150 * n)
-        );
+    var tot = 0;
+    for (var r = 0; r < 10; r++) {
+      var count = Math.randInt(0, 6);
 
-        // Check all nearby portals.
-        for (var m = 1; m < 10; m++) {
-          if (this.history.portals.length - m < 0) continue;
-          var p = this.history.portals[this.history.portals.length - m];
-          if (vec3.dist(position, p) < 50) {
-            near = true;
-            return;
-          }
+      var zStart = this.lastPortal[Math.Z] + (150 * r);
+
+      if (this.history.portals.length > 1) {
+        var maxZ = this.history.portals[this.history.portals.length - 2][Math.Z];
+        if (Math.abs((zStart + 100) - maxZ) < 100) {
+          break;
         }
-      } while (near);
+      }
 
-      var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
-      pillar.spawnTime = time;
-      pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
-      pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+      for (var c = 0; c < count; c++) {
+        var near = false,
+            position = vec3.create();
+
+        do {
+          near = false;
+          position = vec3.fromValues(
+            Math.randInt(-400, 400),
+            40.5,
+            zStart + Math.randInt(-100, 100)
+          );
+
+          // Check if too close to portal spawn.
+          for (var m = 1; m < 10; m++) {
+            if (this.history.portals.length - m < 0) continue;
+            var p = this.history.portals[this.history.portals.length - m];
+
+            if (vec3.dist(position, p) < 75 ||
+              Math.abs(position[Math.Z] - p[Math.Z]) < 30) {
+              near = true;
+              break;
+            }
+          }
+
+          for (var m = 1; m < tot; m++) {
+            if (this.history.pillars.length - m < 0) continue;
+            var p = this.history.pillars[this.history.pillars.length - m];
+
+            if (vec3.dist(position, p) < 100) {
+              near = true;
+              break;
+            }
+          }
+
+        } while (near);
+
+        this.history.pillars.push(position);
+
+        var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+        pillar.spawnTime = time - (Math.randInt(100, 1200));
+        pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
+        pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+        tot += 1;
+      }
     }
   }
 
   getNextSpawn() {
     // Get instance of timer.
-    var timer = Timer.getInstance();
+    var time = Timer.getInstance().getCurrentTime(),
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
-    return timer.getCurrentTime() + 5000;
+    return time + (this.firstPortal ? 4000 - (1500 * difficulty) : 0);
   }
 
   shouldSpawn() {
     // Get current time.
-    var time = Timer.getInstance().getCurrentTime();
+    var time = Timer.getInstance().getCurrentTime(),
+        player = this.owner.player;
 
     // Check if we are past next spawn time.
-    if (time >= this.nextSpawnTime && !this.owner.player.hasCrashed) {
+    if (time >= this.nextSpawnTime && !player.hasCrashed) {
+      if (Math.abs(player.transformComponent.absOrigin[Math.Z] - this.lastPortal[Math.Z]) > 5000) {
+        this.nextSpawnTime = this.getNextSpawn();
+        return false;
+      }
       return true;
     }
 
