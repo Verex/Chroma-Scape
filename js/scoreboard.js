@@ -2,9 +2,9 @@ class Scoreboard extends SplashScreen {
     constructor(ctx, width, height) {
         super(ctx, width, height);
 
-        this.scoreMap = [];
         this.font = Assets.getInstance().getFont("PressStart2P-Regular");
-        this.text = new RenderText("Scoreboard", 45, vec2.fromValues(0, 300), "white", this.font);
+        this.text = new RenderText("Scoreboard", 45, vec2.fromValues(540, 150), "white", this.font);
+        this.scoreText = [];
     }
     draw() {
         if(this.state == SplashState.SPLASH_IDLE) {
@@ -15,15 +15,36 @@ class Scoreboard extends SplashScreen {
             }
         }
 
+        var scores = this.getScores();
         this.ctx.globalAlpha = 1.0;
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.width, this.height);
         this.text.render(this.ctx);
+        this.scoreText = [];
+        for(var i = 0; i < 10; i++) {
+            this.scoreText[i] = new RenderText(
+                scores[i].player + "..." + scores[i].score,
+                20,
+                vec2.fromValues(680, (i * 50) + 250), 
+                "white", 
+                this.font
+            );
+            this.scoreText[i].render(this.ctx);
+        }
+    }
+
+    isHighScore(score) {
+        var scores = this.getScores();
+        for(var i = 0; i < 10; i++) {
+            if(score > scores[i].score) {
+                return true;
+            }
+        }
+        return false;
     }
 
     getScores() {
-        this.scoreMap = [];
-        var map = this.scoreMap;
+        var map = [];
         $.ajax({
             url: "/score",
             type: 'GET',
@@ -39,9 +60,9 @@ class Scoreboard extends SplashScreen {
             }
         });
         map.sort((a, b) => {
-            return a.score - b.score
+            return b.score - a.score
         });
-        console.log(map);
+        return map;
     }
 
     postScore(name, score) {

@@ -15,7 +15,7 @@ class MenuController extends Entity {
 
         this.textComponent.addText(
             this.text[this.textIdx],
-            vec2.fromValues(0, 250),
+            vec2.fromValues(250, GlobalVars.getInstance().clientHeight - 80),
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.menuText,
             45
@@ -32,7 +32,7 @@ class MenuController extends Entity {
             this.textIdx = (this.textIdx + 1) % this.text.length;
             this.textComponent.addText(
                 this.text[this.textIdx],
-                vec2.fromValues(0, 250),
+                vec2.fromValues(250, GlobalVars.getInstance().clientHeight - 80),
                 Assets.getInstance().getFont("PressStart2P-Regular"),
                 this.menuText,
                 45

@@ -58,8 +58,8 @@ class App {
     // Get Canvas DOM element.
     this.canvas = $('#glcanvas')[0];
     this.textCanvas = $('#textcanvas')[0];
-    this.textCanvas.width = 2048;
-    this.textCanvas.height = 2048;
+    this.textCanvas.width = this.canvas.clientWidth * 1;
+    this.textCanvas.height = this.canvas.clientHeight * 1;
 
     // Get WebGL canvas context.
     this.gl = this.canvas.getContext('webgl', {alpha: false});
@@ -70,9 +70,7 @@ class App {
 
     this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
     this.scoreboard.state = SplashState.SPLASH_IDLE;
-
-    this.scoreboard.postScore("test", "550");
-    this.scoreboard.getScores();
+    this.scoreboard.postScore("JIT", Math.randInt(0, 500));
 
     // Ensure WebGL is working.
     if (!this.gl) {
@@ -214,6 +212,9 @@ class App {
         // Change canvas size.
         this.canvas.width = this.canvas.clientWidth;
         this.canvas.height = this.canvas.clientHeight;
+
+        this.textCanvas.width = this.canvas.width * 1;
+        this.textCanvas.height = this.canvas.height * 1;
 
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;

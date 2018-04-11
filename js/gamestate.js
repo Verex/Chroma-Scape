@@ -10,7 +10,7 @@ var GameStates = {
 class Gamestate {
     constructor() {
         this.localplayer = null;
-        this.difficulty = 0.0;
+        this.difficulty = 0.0;m
         this.maxdifficulty = 15;
         this.currentState = GameStates.GAMESTATE_SPLASH;
         this.score;
