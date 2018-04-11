@@ -60,6 +60,7 @@
     <script src="js/entities/speaker.js"></script>
     <script src="js/entities/pillar.js"></script>
     <script src="js/entities/menucontroller.js"></script>
+    <script src="js/entities/wall.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -68,7 +69,8 @@
     <script src="js/meshes/aabb.js"></script>
     <script src="js/meshes/portal.js"></script>
     <script src="js/meshes/pillar.js"></script>
-
+    <script src="js/meshes/wall.js"></script>
+    <script src="js/meshes/floor.js"></script>
 
     <!-- Include stylesheets -->
     <link rel="stylesheet" href="css/style.css">
@@ -81,7 +83,7 @@
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
       var drawAABB = false;
       var postProcessing = true;
-      
+
       var fonts = ['PressStart2P-Regular'];
       $(document).ready(() => {
         "use strict";

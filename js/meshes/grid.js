@@ -5,7 +5,7 @@ var GridMesh = (size, divisions) => {
     var vertices = [], colors = [], indices = [];
 
     var faceColors = [
-        [1.0,  1.0,  1.0,  1.0],    // Front face: white
+        [0.09,  0.75,  0.91,  1.0],    // Front face: white
         [0.09,  0.75,  0.91,  1.0],    // Back face: red
     ];
 

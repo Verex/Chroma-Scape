@@ -86,16 +86,11 @@ class GameWorld extends Entity {
           this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
 
           this.player.menuCamera.yawBoom -= 35 * dt;
-          
+
           if(this.player.menuCamera.yawBoom < 1) {
               this.player.menuCamera.yawBoom = 0;
               var timer = Timer.getInstance();
               timer.createRelativeTimer("GAMESTART", 1500, () => {
-                  vec3.copy(
-                      this.spawner.lastPortal,
-                      this.player.transformComponent.absOrigin
-                  );
-
                   // Change current game state.
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
 
@@ -103,7 +98,7 @@ class GameWorld extends Entity {
                   this.spawner.enabled = true;
 
                   // Set initial acceleration for the player.
-                  this.player.physicsComponent.acceleration[Math.Z] = -1.15;
+                  this.player.physicsComponent.acceleration[Math.Z] = -1.1;
 
                   // Change camera ID.
                   this.scene.mainCameraID = 0;
@@ -192,6 +187,7 @@ class GameWorld extends Entity {
         // Move all portals back as well.
         this.children.forEach((child) => {
           switch(child.type) {
+            case EntityType.ENTITY_WALL:
             case EntityType.ENTITY_PILLAR:
             case EntityType.ENTITY_PORTAL:
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;

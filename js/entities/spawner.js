@@ -8,8 +8,23 @@ class Spawner extends Entity {
     this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
 
     this.nextSpawnTime = 0;
-    this.lastPortal = vec3.fromValues(0, 30, -150);
     this.enabled = false;
+
+    // Define position history arrays.
+    this.history = {
+      portals: [],
+      pillars: []
+    };
+
+    this.firstPortal = false;
+  }
+
+  get lastPortal() {
+    if (this.history.portals.length > 0) {
+      return this.history.portals[this.history.portals.length - 1];
+    } else {
+      return this.getGameWorld().player.transformComponent.absOrigin;
+    }
   }
 
   spawn(entityType, position) {
@@ -23,35 +38,66 @@ class Spawner extends Entity {
   }
 
   spawnRandomPortal() {
+    var time = Timer.getInstance().getCurrentTime(),
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+
     var position = vec3.fromValues(
-      Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
-      Math.min(Math.max(this.lastPortal[Math.Y] + Math.randInt(-20, 20), 20), 60),
-      this.lastPortal[Math.Z] - Math.randInt(250, 700)
+      Math.randInt(-40, 40),
+      Math.randInt(20, 60),
+      this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty))
     );
-    this.lastPortal = position;
-    this.spawn(EntityType.ENTITY_PORTAL, position);
+
+    this.history.portals.push(position);
+
+    // Spawn portal.
+    var portal = this.spawn(EntityType.ENTITY_PORTAL, position);
+
+    // Create wall entity.
+    portal.wall = this.spawn(EntityType.ENTITY_WALL, position);
+    portal.wall.spawnTime = time;
+
+    if (!this.firstPortal) {
+      portal.wall.enable();
+      this.firstPortal = true;
+    }
   }
 
   spawnPillarSet() {
-    var position = vec3.fromValues(
-      Math.min(Math.max(this.lastPortal[Math.X] + Math.randInt(-20, 20), -40), 40),
-      40,
-      this.lastPortal[Math.Z] - Math.randInt(200, 700)
-    );
+    var time = Timer.getInstance().getCurrentTime();
 
-    //this.lastPortal = position;
+    for (var n = 0; n < 10; n++) {
+      var near = false,
+          position = vec3.create();
+      do {
+        position = vec3.fromValues(
+          this.lastPortal[Math.X] + Math.randInt(-100, 100),
+          40,
+          this.lastPortal[Math.Z] + (150 * n)
+        );
 
-    var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+        // Check all nearby portals.
+        for (var m = 1; m < 10; m++) {
+          if (this.history.portals.length - m < 0) continue;
+          var p = this.history.portals[this.history.portals.length - m];
+          if (vec3.dist(position, p) < 50) {
+            near = true;
+            return;
+          }
+        }
+      } while (near);
 
-    pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
-    pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+      var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+      pillar.spawnTime = time;
+      pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
+      pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+    }
   }
 
   getNextSpawn() {
     // Get instance of timer.
     var timer = Timer.getInstance();
 
-    return timer.getCurrentTime() + 2000;
+    return timer.getCurrentTime() + 5000;
   }
 
   shouldSpawn() {
@@ -65,8 +111,6 @@ class Spawner extends Entity {
 
     return false;
   }
-
-
 
   tick(dt) {
     // Check if we should spawn a portal.
