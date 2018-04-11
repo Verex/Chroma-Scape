@@ -3,8 +3,19 @@ class Scoreboard extends SplashScreen {
         super(ctx, width, height);
 
         this.font = Assets.getInstance().getFont("PressStart2P-Regular");
-        this.text = new RenderText("Scoreboard", 45, vec2.fromValues(540, 150), "white", this.font);
+        var pos = vec2.fromValues(
+            GlobalVars.getInstance().clientWidth * 0.3,
+            GlobalVars.getInstance().clientHeight * 0.2
+        );
+        this.text = new RenderText(
+            "Scoreboard",
+            45,
+            pos,
+            "white", 
+            this.font
+        );
         this.scoreText = [];
+        this.lastID = "";
     }
     draw() {
         if(this.state == SplashState.SPLASH_IDLE) {
@@ -15,7 +26,8 @@ class Scoreboard extends SplashScreen {
             }
         }
 
-        var scores = this.scores();
+        var scores = this.scores;
+        if(scores.length == 0) return;
         this.ctx.globalAlpha = 1.0;
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, GlobalVars.getInstance().clientWidth, GlobalVars.getInstance().clientHeight);
@@ -25,19 +37,38 @@ class Scoreboard extends SplashScreen {
             this.scoreText[i] = new RenderText(
                 scores[i].player + "..." + scores[i].score,
                 20,
-                vec2.fromValues(680, (i * 50) + 250), 
-                "white", 
+                vec2.fromValues(
+                    GlobalVars.getInstance().clientWidth * 0.39,
+                    (i * 50) + GlobalVars.getInstance().clientHeight * 0.25
+                ), 
+                (scores[i].id === this.lastID) ? "yellow" : "white", 
                 this.font
             );
             this.scoreText[i].render(this.ctx);
         }
     }
 
+    onResize(nw, nh) {
+        var pos = vec2.fromValues(
+            nw * 0.3,
+            nh * 0.2
+        );
+        this.text = new RenderText(
+            "Scoreboard",
+            45,
+            pos,
+            "white", 
+            this.font
+        );
+    }
+
     processScores(score) {
+        this.score = score;
         this.scores = this.getScores();
         if(this.isHighScore(score)) {
-            this.postScore("JIT", score);
+            this.postScore("JIT", Math.round(score));
         }
+        this.scores = this.getScores();
     }
 
     isHighScore(score) {
@@ -61,7 +92,7 @@ class Scoreboard extends SplashScreen {
                     var player = data.items[k].player;
                     var score = data.items[k].score;
                     map.push(
-                        {player: player, score: score}
+                        {player: player, score: score, id: data.items[k]._id}
                     );
                 }
             }
@@ -78,12 +109,17 @@ class Scoreboard extends SplashScreen {
             score: score,
             scope: "game-expo"
           };
+          var id = "";
           $.ajax({
             url: "/score",
             data: JSON.stringify(data),
             dataType: 'json',
             type: 'POST',
-            crossDomain: true
+            crossDomain: true,
+            success: (data) => {
+                id = data._id;
+            }
           });
+          this.lastID = id;
     }
 };

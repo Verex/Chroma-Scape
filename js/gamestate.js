@@ -18,9 +18,7 @@ class Gamestate {
         this.lastZ = 0;
         this.diffToScore = 1.0;
 
-        this.onGamestateChanged = (oldstate, newstate) => {
-            console.log("GAMESTATE CHANGED!");
-        }
+        this.onGamestateChanged = [];
         //TODO(Jake): This needs to start accounting for the time elapsed since THE GAME STARTED!!!
         this.difficultyCurve = (time) => {
             return Math.pow(1.000005, time) - 1;
@@ -28,7 +26,10 @@ class Gamestate {
     }
     set currentState(state) {
         //Call our ongamestatechanged cb and then update our gamestate
-        this.onGamestateChanged(this._currentState, state); 
+        for(var i = 0; i < this.onGamestateChanged.length; i++) {
+            var cb = this.onGamestateChanged[i];
+            cb.cb.call(cb.owner, this._currentState, state);
+        }
         this._currentState = state;
     }
 
@@ -47,15 +48,13 @@ class Gamestate {
         dist = (curentZ > lastZ) ? (currentZ - lastZ) : (currentZ == lastZ) ? 0 : (1000 - lastZ + currentZ)
         Score  = score + ((dist * scoreMultiplier) * (difficulty) / diffToScore)
     */
-    updateScore() {
+    updateScore(dt) {
         if(this.localplayer === null) {
+            console.log(this.localplayer);
             this.score = 0;
-            return;p
+            return;
         }
-        var currentZ = this.localplayer.transformComponent.getWorldTranslation(Math.Z);
-        var lastZ = this.lastZ;
-        var dist = (currentZ > lastZ) ? (currentZ - lastZ) : (currentZ == lastZ) ? 0 : (1000 - lastZ + currentZ);
-        this.lastZ = currentZ;
-        this.score += (dist * this.scoreMultiplier) * (this.difficulty / this.diffToScore);
+        if(this.currentState !== GameStates.GAMESTATE_GAME) return;
+        this.score += (dt * this.scoreMultiplier) * ((this.difficulty > 1) ? this.difficulty : 1.0 / this.diffToScore);
     }
 };

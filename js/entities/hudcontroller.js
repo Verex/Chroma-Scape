@@ -5,39 +5,51 @@ class HUDController extends Entity {
         this.componentFactory.construct(ComponentID.COMPONENT_TEXT);
 
         this.textComponent = this.getComponent(ComponentID.COMPONENT_TEXT);
-        this.menuText = "MENU";
+        this.scoreText = "SCORE";
+        this.scoreTag = "SCORE_TAG";
 
-        this.timer = 1;
-        this.text = ['Press enter to play!!!', '', 'Press enter to play!!!', ''];
-        this.textColors = ['blue', 'blue', 'red', 'red'];
-        this.textIdx = 0;
-
-        this.textComponent.addText(
-            this.text[this.textIdx],
-            vec2.fromValues(250, GlobalVars.getInstance().clientHeight - 80),
-            Assets.getInstance().getFont("PressStart2P-Regular"),
-            this.menuText,
-            45
+        var pos = vec2.fromValues(
+            GlobalVars.getInstance().clientWidth * 0.5,
+            GlobalVars.getInstance().clientHeight * 0.1
         );
+        this.textComponent.addText(
+            "Score:",
+            pos,
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            this.scoreText,
+            15
+        );
+
+        this.score = 0;
     }
 
+    updateScore(score) {
+        this.score = score;
+    }
+
+    onResize(nw, nh) {
+        var pos = vec2.fromValues(
+            nw * 0.5,
+            nh * 0.1
+        );
+        this.textComponent.addText(
+            "Score:",
+            pos,
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            this.scoreText,
+            15
+        );   
+    }
 
     tick(dt) {
-        if(this.timer > 0) {
-            this.timer -= dt;
-        }
-        if(this.timer <= 0) {
-            this.timer = 1;
-            this.textIdx = (this.textIdx + 1) % this.text.length;
-            this.textComponent.addText(
-                this.text[this.textIdx],
-                vec2.fromValues(250, GlobalVars.getInstance().clientHeight - 80),
-                Assets.getInstance().getFont("PressStart2P-Regular"),
-                this.menuText,
-                45
-            );
-            this.textComponent.setTextColor(this.menuText, this.textColors[this.textIdx]);
-        }
+        var scoreText = Math.round(this.score).toString();
+        this.textComponent.addText(
+            scoreText,
+            vec2.fromValues(GlobalVars.getInstance().clientWidth / 2 + 100, 50),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            this.scoreTag,
+            15
+        );
     }
 };
 

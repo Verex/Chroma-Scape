@@ -64,6 +64,10 @@ class SplashScreen {
         this.ctx.fillRect(0, 0, this.width, this.height);
     }
 
+    onResize(nw, nh) {
+        
+    }
+
     process() {
         switch(this.state) {
             case SplashState.SPLASH_FADEIN: this.draw(); this.fadeIn(250); break;
