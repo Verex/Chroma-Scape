@@ -128,7 +128,7 @@ class GameWorld extends Entity {
 
     onPlayerCrashed() {
         this.children.forEach((value, index, array) => {
-            if(value.type == EntityType.ENTITY_PORTAL) { 
+            if(value.type == EntityType.ENTITY_PORTAL && value.speaker) {
                 console.log("STOPPING");
                 value.speaker.stop();
             }

@@ -125,7 +125,6 @@ class InputComponent extends EntityComponent {
           delete this.controllers[event.gamepad.index];
           this.gamepad = -1;
         }
-        console.log(event);
       }
     }
 

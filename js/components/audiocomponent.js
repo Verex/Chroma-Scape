@@ -8,7 +8,6 @@ class AudioComponent extends EntityComponent {
     }
 
     playSound(sprite) {
-        console.log(this.sound);
         if(sprite !== undefined) {
             this.sID = this.sound.play(sprite);
         } else {
@@ -18,7 +17,7 @@ class AudioComponent extends EntityComponent {
 
     updateSoundPos() {
         var transformComponent = this.owner.getComponent(ComponentID.COMPONENT_TRANSFORM);
-        var worldTranslation = transformComponent.getWorldTranslation();   
+        var worldTranslation = transformComponent.getWorldTranslation();
         this.sound.pos(worldTranslation[Math.X], worldTranslation[Math.Y], worldTranslation[Math.Z], this.sID);
     }
 

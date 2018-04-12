@@ -100,7 +100,7 @@ class App {
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
     assets.addModel(this.gl, FloorMesh(), "floor");
-    
+
 
     assets.addSound(
       "effects",
@@ -294,12 +294,11 @@ class App {
   tick(dt) {
     if(this.gameworld) {
       var currentState = this.gameworld.gamestate.currentState;
-      if(currentState > GameStates.GAMESTATE_SPLASHFINISHED && currentState < GameStates.GAMESTATE_NEWGAME) {
+      if(currentState > GameStates.GAMESTATE_SPLASHFINISHED && currentState < GameStates.GAMESTATE_HISCORE) {
         this.gameworld.tick(dt);
         this.gameworld.queryCollision();
         this.gameworld.updateSceneGraph();
       } else if(currentState == GameStates.GAMESTATE_HISCORE) {
-        console.log("????");
         this.scoreboard.update();
       }
     }
@@ -313,7 +312,6 @@ class App {
       this.gameworld.menucontroller.destroy();
     }
     if(newState == GameStates.GAMESTATE_GAME) {
-      console.log(this);
       this.gameworld.hudcontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_HUDCONTROLLER);
     }
     if(newState == GameStates.GAMESTATE_HISCORE) {
@@ -352,7 +350,6 @@ class App {
     if (this.scoreboard.state == SplashState.SPLASH_FADEOUT) {
       this.scoreboard.state == SplashState.SPLASH_FINISHED;
       var timer = Timer.getInstance();
-      console.log("whomst");
       timer.createRelativeTimer("GAMESTART", 2500, () => {
         this.gameworld.cleanupEntities();
         this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;

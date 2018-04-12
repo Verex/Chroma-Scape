@@ -44,7 +44,7 @@ class Spawner extends Entity {
     var z = 0;
 
     if (!this.firstPortal) {
-      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 200;
+      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 2200;
     } else {
       z = Math.min(
         this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty)),
@@ -58,9 +58,7 @@ class Spawner extends Entity {
 
     // Spawn portal.
     var portal = this.spawn(EntityType.ENTITY_PORTAL, position);
-    portal.speaker = new Entity.Factory(portal).ofType(EntityType.ENTITY_SPEAKER);
-    portal.speaker.falloff = true;
-    portal.speaker.setSound("effects", "portal");
+
     // Create wall entity.
     portal.wall = this.spawn(EntityType.ENTITY_WALL, position);
     portal.wall.spawnTime = time;
