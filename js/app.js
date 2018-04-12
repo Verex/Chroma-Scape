@@ -305,16 +305,20 @@ class App {
     if(this.splash.state == SplashState.SPLASH_FADEIN_FINISHED) {
       this.newGame();
       console.log("GAME SPAWNED LETS DO THIS");
-      this.splash.idleTime = GlobalVars.getInstance().curtime + 500;
+      this.splash.idleTime = GlobalVars.getInstance().curtime + 2000;
       this.splash.state = SplashState.SPLASH_IDLE;
     }
     if(this.splash.state == SplashState.SPLASH_FINISHED) {
       console.log("DONE");
-      this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
-      this.textCtx.save();
-      this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
-      this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.textCtx.restore();
+      var timer = Timer.getInstance();
+
+      timer.createRelativeTimer("MENUTRANSITION", 750, () => {
+        this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
+        this.textCtx.save();
+        this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
+        this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.textCtx.restore();
+      }, this, null, true);
     }
   }
 

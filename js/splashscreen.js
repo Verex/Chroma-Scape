@@ -76,7 +76,7 @@ class SplashScreen {
             case SplashState.SPLASH_FADEIN: this.draw(); this.fadeIn(250); break;
             case SplashState.SPLASH_FADEIN_FINISHED:
             case SplashState.SPLASH_IDLE: this.draw(); break;
-            case SplashState.SPLASH_FADEOUT: this.draw(); this.fadeOut(250); break;
+            case SplashState.SPLASH_FADEOUT: this.draw(); this.fadeOut(750); break;
             case SplashState.SPLASH_FINISHED: break;
             
         }
