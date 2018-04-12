@@ -79,12 +79,14 @@
   <body>
     <!-- Define our gl canvas. -->
     <img src="assets/splashscreen/splash.png" id="hiddenSplash">
+    <img id="hidden">
+    <img id="hidden2">
     <canvas id="glcanvas"></canvas>
     <canvas id="textcanvas"></canvas>
     <script>
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
-      var drawAABB = true;
-      var postProcessing = true;
+      var drawAABB = false;
+      var postProcessing = postProcessing;
 
       var fonts = ['PressStart2P-Regular'];
       $(document).ready(() => {
