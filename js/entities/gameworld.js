@@ -116,8 +116,10 @@ class GameWorld extends Entity {
 
       this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
       this.player.physicsComponent.velocity[Math.Z] = -80;
-      this.player.ship.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
+      this.player.ship.transformComponent.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
       this.player.hasCrashed = false;
+      this.player.ship.transformComponent.updateTransform();
+      this.player.transformComponent.updateTransform();
 
       this.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
       this.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);

@@ -347,12 +347,15 @@ class App {
 
   processHighScore() {
     this.scoreboard.process();
-    if (this.scoreboard.state == SplashState.SPLASH_FADEOUT) {
-      this.scoreboard.state == SplashState.SPLASH_FINISHED;
+    if (this.scoreboard.state == SplashState.SPLASH_FINISHED) {
       var timer = Timer.getInstance();
       timer.createRelativeTimer("GAMESTART", 2500, () => {
         this.gameworld.cleanupEntities();
+        console.log(this.gameworld.player);
+        this.gameworld.gamestate.score = 0;
         this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
+        this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
+        this.scoreboard.state = SplashState.SPLASH_IDLE;
         this.textCtx.save();
         this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);

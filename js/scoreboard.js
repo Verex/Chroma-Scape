@@ -87,6 +87,7 @@ class Scoreboard extends SplashScreen {
                     }
                 } else if(this.scoreState == ScoreState.SS_SCOREBOARD) {
                     Timer.getInstance().createRelativeTimer("SCORECLOSE", 1000, () => {
+                        this.scoreState = ScoreState.SS_INACTIVE;
                         this.state = SplashState.SPLASH_FADEOUT;
                     }, this, null, false);
                 }
@@ -179,6 +180,16 @@ class Scoreboard extends SplashScreen {
 
     displayScore() {
         this.clearDisplay();
+        new RenderText(
+            "Your score: " + Math.round(this.score),
+            45, 
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 50,
+                GlobalVars.getInstance().clientHeight * 50
+            ),
+            "white",
+            this.fond
+        ).render(this.ctx);
     }
 
     clearDisplay() {
@@ -214,6 +225,7 @@ class Scoreboard extends SplashScreen {
                 }
             }
         }
+        console.log(this.scoreState);
         switch(this.scoreState) {
             case ScoreState.SS_KEYBOARD: this.displayOnScreenKeyboard(); break;
             case ScoreState.SS_DISPLAY: this.displayScore(); break;
