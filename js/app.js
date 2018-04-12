@@ -315,7 +315,6 @@ class App {
       this.splash.state = SplashState.SPLASH_IDLE;
     }
     if(this.splash.state == SplashState.SPLASH_FINISHED) {
-      console.log("DONE");
       var timer = Timer.getInstance();
       timer.createRelativeTimer("GAMESTART", 2500, () => {
         this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
