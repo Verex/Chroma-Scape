@@ -9,7 +9,13 @@ class Ship extends Entity {
 
         this.transformComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
         this.physicsComponent = this.getComponent(ComponentID.COMPONENT_PHYSICS);
-        this.meshComponent = this.getComponent(ComponentID.COMPONENT_TRANSFORM);
+        this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+
+        // Set model for our ship.
+        this.meshComponent.setModel(
+          Assets.getInstance().getModel("ship")
+        );
+
 
         // Assign physics component parameters.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;

@@ -141,13 +141,11 @@ class App {
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
+    var shipaabbmax = this.gameworld.player.ship.meshComponent.model.max;
+    var shipaabbmin = this.gameworld.player.ship.meshComponent.model.min;
+    console.log(shipaabbmax, shipaabbmin);
     this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-
-    // Set model for our ship.
-    this.gameworld.player.ship.components[ComponentID.COMPONENT_MESH].setModel(
-      assets.getModel("ship")
-    );
 
     //  Create spawner object.
     this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
@@ -185,7 +183,6 @@ class App {
     /*
       Setup input listeners here
     */
-
     //TODO(Jake): Add platform level input listening code
     requestAnimationFrame(() => this.loop());
   }
@@ -281,15 +278,20 @@ class App {
   tick(dt) {
     if(this.gameworld) {
       var currentState = this.gameworld.gamestate.currentState;
-      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_NEWGAME) {
+      if(currentState > GameStates.GAMESTATE_SPLASHFINISHED && currentState < GameStates.GAMESTATE_NEWGAME) {
         this.gameworld.tick(dt);
         this.gameworld.queryCollision();
         this.gameworld.updateSceneGraph();
+      } else if(currentState == GameStates.GAMESTATE_HISCORE) {
+        this.scoreboard.update();
       }
     }
   }
 
   onGameStateChanged(oldState, newState) {
+    if(newState == GameStates.GAMESTATE_MENUPAN) {
+      this.gameworld.menucontroller.destroy();
+    }
     if(newState == GameStates.GAMESTATE_GAME) {
       console.log(this);
       this.gameworld.hudcontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_HUDCONTROLLER);
@@ -315,14 +317,13 @@ class App {
     if(this.splash.state == SplashState.SPLASH_FINISHED) {
       console.log("DONE");
       var timer = Timer.getInstance();
-
-      timer.createRelativeTimer("MENUTRANSITION", 750, () => {
+      timer.createRelativeTimer("GAMESTART", 2500, () => {
         this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
         this.textCtx.save();
         this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.textCtx.restore();
-      }, this, null, true);
+    }, this, null, false);
     }
   }
 
