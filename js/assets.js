@@ -35,10 +35,8 @@ class _Assets_ {
     getFont(name) {
         return this.fonts[name];
     }
-    addSound(name, filepath) {
-        this.sounds[name] = new Howl({
-            src: [filepath]
-        });
+    addSound(name, sound) {
+        this.sounds[name] = sound;
     }
 
     getSound(name) {

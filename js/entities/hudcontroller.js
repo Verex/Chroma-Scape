@@ -17,7 +17,7 @@ class HUDController extends Entity {
             pos,
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.scoreText,
-            15
+            30
         );
 
         this.score = 0;
@@ -37,7 +37,7 @@ class HUDController extends Entity {
             pos,
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.scoreText,
-            15
+            30
         );   
     }
 
@@ -45,10 +45,10 @@ class HUDController extends Entity {
         var scoreText = Math.round(this.score).toString();
         this.textComponent.addText(
             scoreText,
-            vec2.fromValues(GlobalVars.getInstance().clientWidth * 0.5 + 100, GlobalVars.getInstance().clientHeight * 0.1),
+            vec2.fromValues(GlobalVars.getInstance().clientWidth * 0.5 + 130, GlobalVars.getInstance().clientHeight * 0.1),
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.scoreTag,
-            15
+            30
         );
     }
 };

@@ -15,6 +15,12 @@ class AudioComponent extends EntityComponent {
         }
     }
 
+    updateSoundPos() {
+        var transformComponent = this.owner.getComponent(ComponentID.COMPONENT_TRANSFORM);
+        var worldTranslation = transformComponent.getWorldTranslation();
+        this.sound.pos(worldTranslation[Math.X], worldTranslation[Math.Y], worldTranslation[Math.Z], this.sID);
+    }
+
     playSpatial(sprite) {
         if(!this.owner || !this.owner.hasComponent(ComponentID.COMPONENT_TRANSFORM)) return;
         var transformComponent = this.owner.getComponent(ComponentID.COMPONENT_TRANSFORM);

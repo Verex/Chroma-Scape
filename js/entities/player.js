@@ -155,6 +155,7 @@ class Player extends Entity {
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
       this.hasCrashed = true;
+      this.getGameWorld().onPlayerCrashed();
       this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_HISCORE;
     }
 

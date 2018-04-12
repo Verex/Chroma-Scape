@@ -17,7 +17,7 @@ class Scoreboard extends SplashScreen {
             "Scoreboard",
             45,
             pos,
-            "white", 
+            "white",
             this.font
         );
         this.initials = [" ", " ", " "];
@@ -34,9 +34,7 @@ class Scoreboard extends SplashScreen {
         this.cursor = vec2.fromValues(0, 0);
         this.components = [];
         var factory = new EntityComponent.ComponentFactory(this).construct(ComponentID.COMPONENT_INPUT);
-        this.inputComponent = this.components[ComponentID.COMPONENT_INPUT]; 
-        console.log(this.inputComponent);
-
+        this.inputComponent = this.components[ComponentID.COMPONENT_INPUT];
         this.inputComponent.registerEvent(
             InputMethod.INPUT_KEYBOARD,
             InputType.BTN_RELEASE,
@@ -60,7 +58,7 @@ class Scoreboard extends SplashScreen {
             InputType.BTN_RELEASE,
             'ArrowLeft',
             (event) => {
-                this.moveCursor(1, 0);
+                this.moveCursor(-1, 0);
             }
         );
 
@@ -69,7 +67,7 @@ class Scoreboard extends SplashScreen {
             InputType.BTN_RELEASE,
             'ArrowRight',
             (event) => {
-                this.moveCursor(-1, 0);
+                this.moveCursor(1, 0);
             }
         );
 
@@ -89,6 +87,7 @@ class Scoreboard extends SplashScreen {
                     }
                 } else if(this.scoreState == ScoreState.SS_SCOREBOARD) {
                     Timer.getInstance().createRelativeTimer("SCORECLOSE", 1000, () => {
+                        this.scoreState = ScoreState.SS_INACTIVE;
                         this.state = SplashState.SPLASH_FADEOUT;
                     }, this, null, false);
                 }
@@ -99,18 +98,11 @@ class Scoreboard extends SplashScreen {
         this.blinkTimer = Timer.getInstance().createRelativeTimer("CURSORBLINK", 250, () => {
             this.blink = !this.blink;
         }, this, null, true);
-        console.log(this.blinkTimer);
     }
 
     moveCursor(xDir, yDir) {
         this.cursor[Math.X] += xDir;
         this.cursor[Math.Y] += yDir;
-        console.log(this.cursor);
-        if(this.cursor[Math.X] > this.keyboardMatrix[this.cursor[Math.Y]].length - 1) {
-            this.cursor[Math.X] = 0;
-        } if(this.cursor[Math.X] < 0) {
-            this.cursor[Math.X] = this.keyboardMatrix[this.cursor[Math.Y]].length - 1;
-        }
 
         if(this.cursor[Math.Y] > this.keyboardMatrix.length - 1) {
             this.cursor[Math.Y] = 0;
@@ -118,8 +110,11 @@ class Scoreboard extends SplashScreen {
             this.cursor[Math.Y] = this.keyboardMatrix.length - 1;
         }
 
-        console.log(this.cursor);
-
+        if(this.cursor[Math.X] > this.keyboardMatrix[this.cursor[Math.Y]].length - 1) {
+            this.cursor[Math.X] = 0;
+        } if(this.cursor[Math.X] < 0) {
+            this.cursor[Math.X] = this.keyboardMatrix[this.cursor[Math.Y]].length - 1;
+        }
     }
     selectCharacter() {
         return this.keyboardMatrix[this.cursor[Math.Y]][this.cursor[Math.X]];
@@ -185,6 +180,16 @@ class Scoreboard extends SplashScreen {
 
     displayScore() {
         this.clearDisplay();
+        new RenderText(
+            "Your score: " + Math.round(this.score),
+            45, 
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 50,
+                GlobalVars.getInstance().clientHeight * 50
+            ),
+            "white",
+            this.fond
+        ).render(this.ctx);
     }
 
     clearDisplay() {
@@ -205,8 +210,8 @@ class Scoreboard extends SplashScreen {
                 vec2.fromValues(
                     GlobalVars.getInstance().clientWidth * 0.5,
                     (i * 50) + GlobalVars.getInstance().clientHeight * 0.25
-                ), 
-                (scores[i].id === this.lastID) ? "yellow" : "white", 
+                ),
+                (scores[i].id === this.lastID) ? "yellow" : "white",
                 this.font
             );
             this.scoreText[i].render(this.ctx);
@@ -220,6 +225,7 @@ class Scoreboard extends SplashScreen {
                 }
             }
         }
+        console.log(this.scoreState);
         switch(this.scoreState) {
             case ScoreState.SS_KEYBOARD: this.displayOnScreenKeyboard(); break;
             case ScoreState.SS_DISPLAY: this.displayScore(); break;
@@ -237,17 +243,54 @@ class Scoreboard extends SplashScreen {
             "Scoreboard",
             45,
             pos,
-            "white", 
+            "white",
             this.font
         );
     }
 
     update() {
+      if (this.inputComponent.hasGamepad) {
+        var time = Timer.getInstance().getCurrentTime();
 
+        if (!this.lastgpMove) this.lastgpMove = time;
+        if (!this.selectPressed) this.selectPressed = false;
+
+        if (this.lastgpMove + 250 < time) {
+          var x = Math.round(this.inputComponent.gpAxis(0)),
+              y = Math.round(this.inputComponent.gpAxis(1));
+
+          this.moveCursor(x, y);
+
+          this.lastgpMove = time;
+        }
+
+        var pressed = this.inputComponent.gpButton(0).pressed;
+
+        if (pressed && !this.selectPressed) {
+          this.selectPressed = true;
+        } else if (!pressed && this.selectPressed) {
+          if(this.scoreState == ScoreState.SS_KEYBOARD) {
+              this.initials[this.initialsIdx++] = this.selectCharacter();
+              if(this.initialsIdx == 3) {
+                  var initial = "";
+                  this.initials.forEach((value) => {initial += value;});
+                  this.postScore(initial, Math.round(this.score));
+                  this.scores = this.getScores();
+                  this.scoreState = ScoreState.SS_SCOREBOARD;
+              }
+          } else if(this.scoreState == ScoreState.SS_SCOREBOARD) {
+              Timer.getInstance().createRelativeTimer("SCORECLOSE", 1000, () => {
+                  this.state = SplashState.SPLASH_FADEOUT;
+              }, this, null, false);
+          }
+          this.selectPressed = false;
+        }
+      }
     }
 
     processScores(score) {
         if(this.scoreState == ScoreState.SS_INACTIVE) {
+            this.scoreState = ScoreState.SS_SCOREBOARD;
             this.score = score;
             this.scores = this.getScores();
             if(this.isHighScore(score)) {
@@ -266,6 +309,7 @@ class Scoreboard extends SplashScreen {
     }
 
     getScores() {
+        console.log("getting");
         var map = [];
         $.ajax({
             url: "/score",
@@ -288,6 +332,7 @@ class Scoreboard extends SplashScreen {
     }
 
     postScore(name, score) {
+      console.log("posting");
         var data = {
             player: name,
             score: score,
