@@ -14,18 +14,18 @@ class Speaker extends Entity {
 
 
         this.audioComponent.sound = new Howl({
-            src: ['./assets/sounds/sprite.webm', './assets/sounds/sprite.mp3'],
+            src: ['./assets/sounds/sprites/effects.mp3'],
             sprite: {
-              lightning: [2000, 4147],
-              rain: [8000, 9962, true],
-              thunder: [19000, 13858],
-              music: [34000, 31994, true]
+              portal: [0, 6852, true],
+              pass1: [6852, 7758],
+              pass2: [7758, 8626],
+              pass3: [8626, 9507]
             },
             volume: 0
         });
 
-        
-        this.audioComponent.playSpatial('music');
+
+        this.audioComponent.playSpatial('portal');
         this.audioComponent.sound.once('play', () => {
             this.audioComponent.sound.pannerAttr({
                 panningModel: 'HRTF',
@@ -34,7 +34,7 @@ class Speaker extends Entity {
                 distanceModel: 'exponential'
               }, this.audioComponent.sID);
         });
-        this.audioComponent.setVolume(0.0);
+        this.audioComponent.setVolume(1.0);
     }
 
 }
