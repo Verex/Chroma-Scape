@@ -12,6 +12,10 @@ class Model {
 
         this.numVertices = this.vertices.length / 3;
 
+
+        this.max = vec3.fromValues(-9999, -9999, -9999);
+        this.min = vec3.fromValues(9999, 9999, 9999);
+
         this.reload();
     }
 
@@ -26,6 +30,24 @@ class Model {
             this.idxBuffer = this.ctx.createBuffer();
             this.ctx.bindBuffer(this.ctx.ELEMENT_ARRAY_BUFFER, this.idxBuffer);
             this.ctx.bufferData(this.ctx.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices), this.ctx.STATIC_DRAW);
+        }
+        
+        for(var i = 0; i < this.vertices.length / 3; i++) {
+            var vtx = [
+                this.vertices[i],
+                this.vertices[i + 1],
+                this.vertices[i + 2]
+            ];
+            if(vtx[Math.X] < this.min[Math.X] && vtx[Math.Y] < this.min[Math.Y] && vtx[Math.Z] < this.min[Math.Z]) {
+                this.min = vec3.fromValues(
+                    vtx[0], vtx[1], vtx[2]
+                );
+            }
+            if(vtx[Math.X] > this.max[Math.X] && vtx[Math.Y] > this.max[Math.Y] && vtx[Math.Z] > this.max[Math.Z]) {
+                this.max = vec3.fromValues(
+                    vtx[0], vtx[1], vtx[2]
+                );
+            }
         }
     }
 

@@ -21,12 +21,25 @@ class TimerEntry
         this.args = args; //Arguments if any
         this.paused = false; //TODO(any): Deal with this later
         this.repeat = repeat;
+        this.relative = false;
+    }
+
+    pause(time) {
+        this.paused = true;
+        this.addTime = (this.time - time);
+    }
+
+    resume() {
+        this.paused = false;
     }
 
     tick(time) {
         if(this.paused) {
             //TODO(Jake): If relative, timer needs to be adjusted otherwise when timer is unpaused the callback will be
             // triggered on the next cycle if the current time has exceeded the timer time.
+            if(this.addTime !== undefined && this.addTime > 0) {
+                this.time += this.addTime;
+            }
             return TimerStatus.TIMER_PAUSED;
         }
         if(time >= this.time) {
@@ -92,6 +105,17 @@ class _StepTimer_ //Internal class
             );
             this.timers[name].relativeTime = time;
         }
+        return this.timers[name];
+
+    }
+
+
+    pauseTimer(name) {
+        this.timers[name].pause(this.getCurrentTime());
+    }
+
+    resumeTimer(name) {
+        this.timers[name].resume();
     }
 };
 

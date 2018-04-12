@@ -29,19 +29,9 @@ class Player extends Entity {
         this.mouseClicked[1] = false;
 
         // Assign movement control key codes.
-        this.controls = {
-          keyLeft: 'KeyA',
-          keyRight: 'KeyD',
-          keyUp: 'KeyW',
-          keyDown: 'KeyS',
-          color0: 'KeyJ',
-          color1: 'KeyL',
-          gpColor0: 6,
-          gpColor1: 7,
-        };
 
         this.gpSensitivity = 0.82;
-        this.gpInvertedY = true;
+        this.gpInvertedY = false;
 
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
@@ -66,8 +56,8 @@ class Player extends Entity {
         var timer = Timer.getInstance();
 
         timer.createRelativeTimer("COLORCHECK", 150, () => {
-          var c1 = this.mouseClicked[0] || this.inputComponent.gpButton(this.controls.gpColor0).pressed,
-              c2 = this.mouseClicked[1] || this.inputComponent.gpButton(this.controls.gpColor1).pressed;
+          var c1 = this.mouseClicked[0] || this.inputComponent.gpButton(gameControls.gpColor0).pressed,
+              c2 = this.mouseClicked[1] || this.inputComponent.gpButton(gameControls.gpColor1).pressed;
 
           this.color = COLORSET[0];
           if(c1) this.color = COLORSET[1];
@@ -79,32 +69,32 @@ class Player extends Entity {
 
         // Register movement callbacks.
         this.inputComponent.registerKeyboardEvent(
-          this.controls.keyRight,
+          gameControls.keyRight,
           () => {this.movement[MoveDirection.RIGHT] = true;},
           () => {this.movement[MoveDirection.RIGHT] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.keyLeft,
+          gameControls.keyLeft,
           () => {this.movement[MoveDirection.LEFT] = true;},
           () => {this.movement[MoveDirection.LEFT] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.keyUp,
+          gameControls.keyUp,
           () => {this.movement[MoveDirection.UP] = true;},
           () => {this.movement[MoveDirection.UP] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.keyDown,
+          gameControls.keyDown,
           () => {this.movement[MoveDirection.DOWN] = true;},
           () => {this.movement[MoveDirection.DOWN] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.color0,
+          gameControls.color0,
           () => {this.mouseClicked[0] = true;},
           () => {this.mouseClicked[0] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.color1,
+          gameControls.color1,
           () => {this.mouseClicked[1] = true;},
           () => {this.mouseClicked[1] = false;}
         );
@@ -131,12 +121,12 @@ class Player extends Entity {
         );
 
         this.inputComponent.registerKeyboardEvent(
-          this.controls.color0,
+          gameControls.color0,
           () => {this.mouseClicked[0] = true;},
           () => {this.mouseClicked[0] = false;}
         );
         this.inputComponent.registerKeyboardEvent(
-          this.controls.color1,
+          gameControls.color1,
           () => {this.mouseClicked[1] = true;},
           () => {this.mouseClicked[1] = false;}
         );

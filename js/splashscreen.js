@@ -42,13 +42,21 @@ class SplashScreen {
                 }
             }
         }
-
+        var globals = GlobalVars.getInstance();
         this.ctx.globalAlpha = 1.0;
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.width, this.height);
+
         var img = document.getElementById("hiddenSplash");
-        console.log(img);
-        this.ctx.drawImage(img, 0, GlobalVars.getInstance().clientHeight * 0.2);
+
+        // Calculate rendered size of splash image.
+        var height = this.height * 0.6,
+            width = height * 3,
+            x = (this.width * 0.5) - (width * 0.5),
+            y = (this.height * 0.5) - (height * 0.5);
+
+        // Draw splash image.
+        this.ctx.drawImage(img, x, y, width, height);
     }
 
     fadeOut(time = 500) {
@@ -68,7 +76,7 @@ class SplashScreen {
     }
 
     onResize(nw, nh) {
-        
+
     }
 
     process() {
@@ -78,7 +86,7 @@ class SplashScreen {
             case SplashState.SPLASH_IDLE: this.draw(); break;
             case SplashState.SPLASH_FADEOUT: this.draw(); this.fadeOut(750); break;
             case SplashState.SPLASH_FINISHED: break;
-            
+
         }
     }
 };

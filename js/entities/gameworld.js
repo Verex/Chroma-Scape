@@ -1,12 +1,26 @@
+var gameControls = {
+    keyLeft: 'KeyA',
+    keyRight: 'KeyD',
+    keyUp: 'KeyW',
+    keyDown: 'KeyS',
+    color0: 'KeyJ',
+    color1: 'KeyL',
+    
+    gpColor0: 6,
+    gpColor1: 7,
+  };
 class GameWorld extends Entity {
     constructor() {
       super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
       this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
       this.componentFactory.construct(ComponentID.COMPONENT_INPUT);
-      this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+      this.componentFactory.construct(ComponentID.COMPONENT_MESH);
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+
+
+      this.startPressed = false;
 
 
       //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
@@ -48,14 +62,15 @@ class GameWorld extends Entity {
       this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_RELEASE,
-          'KeyM',
+          'Enter',
           (event) => {
               if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
-                  this.menucontroller.destroy();
                   this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
               }
           }
       )
+
+      
 
 
     }
@@ -80,6 +95,15 @@ class GameWorld extends Entity {
       this.gamestate.updateScore(dt);
       if(this.hudcontroller !== undefined) {
           this.hudcontroller.updateScore(this.gamestate.score);
+      }
+      if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
+          if(this.inputComponent.gpButton(0).pressed && !this.startPressed) {
+              this.startPressed = true;
+          }
+          if(!this.inputComponent.gpButton(0).pressed && this.startPressed) {
+              this.startPressed = false;
+              this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+          }
       }
       if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
           //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
