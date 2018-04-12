@@ -50,7 +50,7 @@ class SplashScreen {
         var img = document.getElementById("hiddenSplash");
 
         // Calculate rendered size of splash image.
-        var height = this.height * 0.6,
+        var height = Math.min(this.height * 0.6, img.height),
             width = height * 3,
             x = (this.width * 0.5) - (width * 0.5),
             y = (this.height * 0.5) - (height * 0.5);

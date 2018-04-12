@@ -44,7 +44,7 @@ class Spawner extends Entity {
     var z = 0;
 
     if (!this.firstPortal) {
-      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 2200;
+      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 200;
     } else {
       z = Math.min(
         this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty)),

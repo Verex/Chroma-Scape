@@ -110,8 +110,6 @@ class App {
     this.gameworld.gamestate.onGamestateChanged.push(
       {owner:this, cb:this.onGameStateChanged}
     );
-    //this.testgrid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
-    //this.testgrid.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
 
     return AppStatus.STATUS_OK;
   }
@@ -120,6 +118,7 @@ class App {
     var assets = Assets.getInstance();
 
     newID = 1;
+    this.gameworld.children = [];
 
     // Create player entity.
     this.gameworld.player = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_PLAYER);
@@ -141,20 +140,16 @@ class App {
     // Create ship entity.
     this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
-    var shipaabbmax = this.gameworld.player.ship.meshComponent.model.max;
-    var shipaabbmin = this.gameworld.player.ship.meshComponent.model.min;
-    console.log(shipaabbmax, shipaabbmin);
     this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-
-    //  Create spawner object.
-    this.gameworld.spawner = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPAWNER);
 
     this.gameworld.floor = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_DUMMY);
     this.gameworld.floor.transformComponent.absOrigin = vec3.fromValues(0, -5, 0);
     this.gameworld.floor.meshComponent.setModel(
       assets.getModel("floor")
     );
+
+    this.gameworld.cleanupEntities();
 
 
     //  Create spawner object.
@@ -283,12 +278,16 @@ class App {
         this.gameworld.queryCollision();
         this.gameworld.updateSceneGraph();
       } else if(currentState == GameStates.GAMESTATE_HISCORE) {
+        console.log("????");
         this.scoreboard.update();
       }
     }
   }
 
   onGameStateChanged(oldState, newState) {
+    if (newState == GameStates.GAMESTATE_MENU && oldState == GameStates.GAMESTATE_HISCORE) {
+      this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
+    }
     if(newState == GameStates.GAMESTATE_MENUPAN) {
       this.gameworld.menucontroller.destroy();
     }
@@ -297,6 +296,7 @@ class App {
       this.gameworld.hudcontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_HUDCONTROLLER);
     }
     if(newState == GameStates.GAMESTATE_HISCORE) {
+      this.scoreboard.scoreState = ScoreState.SS_INACTIVE;
       this.scoreboard.processScores(this.gameworld.gamestate.score);
       if(this.gameworld.hudcontroller !== undefined) {
         this.gameworld.hudcontroller.destroy();
@@ -328,6 +328,19 @@ class App {
 
   processHighScore() {
     this.scoreboard.process();
+    if (this.scoreboard.state == SplashState.SPLASH_FADEOUT) {
+      this.scoreboard.state == SplashState.SPLASH_FINISHED;
+      var timer = Timer.getInstance();
+      console.log("whomst");
+      timer.createRelativeTimer("GAMESTART", 2500, () => {
+        this.gameworld.cleanupEntities();
+        this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
+        this.textCtx.save();
+        this.textCtx.setTransform(1, 0, 0, 1, 0, 0)
+        this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.textCtx.restore();
+      }, this, null, false);
+    }
   }
 
   /*

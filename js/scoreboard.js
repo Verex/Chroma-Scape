@@ -17,7 +17,7 @@ class Scoreboard extends SplashScreen {
             "Scoreboard",
             45,
             pos,
-            "white", 
+            "white",
             this.font
         );
         this.initials = [" ", " ", " "];
@@ -34,9 +34,7 @@ class Scoreboard extends SplashScreen {
         this.cursor = vec2.fromValues(0, 0);
         this.components = [];
         var factory = new EntityComponent.ComponentFactory(this).construct(ComponentID.COMPONENT_INPUT);
-        this.inputComponent = this.components[ComponentID.COMPONENT_INPUT]; 
-        console.log(this.inputComponent);
-
+        this.inputComponent = this.components[ComponentID.COMPONENT_INPUT];
         this.inputComponent.registerEvent(
             InputMethod.INPUT_KEYBOARD,
             InputType.BTN_RELEASE,
@@ -205,8 +203,8 @@ class Scoreboard extends SplashScreen {
                 vec2.fromValues(
                     GlobalVars.getInstance().clientWidth * 0.5,
                     (i * 50) + GlobalVars.getInstance().clientHeight * 0.25
-                ), 
-                (scores[i].id === this.lastID) ? "yellow" : "white", 
+                ),
+                (scores[i].id === this.lastID) ? "yellow" : "white",
                 this.font
             );
             this.scoreText[i].render(this.ctx);
@@ -237,17 +235,22 @@ class Scoreboard extends SplashScreen {
             "Scoreboard",
             45,
             pos,
-            "white", 
+            "white",
             this.font
         );
     }
 
     update() {
+      var x = Math.round(this.inputComponent.gpAxis(0)),
+          y = Math.round(this.inputComponent.gpAxis(1));
 
+      this.moveCursor(x, y);
+      console.log(x, y);
     }
 
     processScores(score) {
         if(this.scoreState == ScoreState.SS_INACTIVE) {
+            this.scoreState = ScoreState.SS_SCOREBOARD;
             this.score = score;
             this.scores = this.getScores();
             if(this.isHighScore(score)) {
@@ -266,6 +269,7 @@ class Scoreboard extends SplashScreen {
     }
 
     getScores() {
+        console.log("getting");
         var map = [];
         $.ajax({
             url: "/score",
@@ -288,6 +292,7 @@ class Scoreboard extends SplashScreen {
     }
 
     postScore(name, score) {
+      console.log("posting");
         var data = {
             player: name,
             score: score,

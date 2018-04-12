@@ -5,7 +5,7 @@ var gameControls = {
     keyDown: 'KeyS',
     color0: 'KeyJ',
     color1: 'KeyL',
-    
+
     gpColor0: 6,
     gpColor1: 7,
   };
@@ -69,10 +69,40 @@ class GameWorld extends Entity {
               }
           }
       )
+    }
 
-      
+    cleanupEntities() {
+      var found = false;
 
+      // Remove entities.
+      do {
+        found = false;
+        for (var i = 0; i < this.children.length; i++) {
+          switch(this.children[i].type) {
+            case EntityType.ENTITY_SPAWNER:
+            case EntityType.ENTITY_PORTAL:
+            case EntityType.ENTITY_WALL:
+            case EntityType.ENTITY_PILLAR:
+            this.children.splice(i, 1);
+            found = true;
+            break;
+          }
+        }
+      } while (found);
 
+      //  Create spawner object.
+      this.spawner = new Entity.Factory(this).ofType(EntityType.ENTITY_SPAWNER);
+
+      this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
+      this.player.physicsComponent.velocity[Math.Z] = -80;
+      this.player.ship.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
+      this.player.hasCrashed = false;
+
+      this.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
+      this.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
+      this.player.menuCamera.yawBoom = 180;
+
+      this.scene.mainCameraID = 1;
     }
 
     onEntityCreated(newEnt) {
