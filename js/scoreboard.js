@@ -10,7 +10,7 @@ class Scoreboard extends SplashScreen {
 
         this.font = Assets.getInstance().getFont("PressStart2P-Regular");
         var pos = vec2.fromValues(
-            GlobalVars.getInstance().clientWidth * 0.3,
+            GlobalVars.getInstance().clientWidth * 0.5,
             GlobalVars.getInstance().clientHeight * 0.2
         );
         this.text = new RenderText(
@@ -20,9 +20,11 @@ class Scoreboard extends SplashScreen {
             "white", 
             this.font
         );
+        this.initials = [" ", " ", " "];
+        this.initialsIdx = 0;
         this.scoreText = [];
         this.lastID = "";
-        this.scoreState = ScoreState.SS_KEYBOARD;
+        this.scoreState = ScoreState.SS_INACTIVE;
         this.keyboardMatrix = [
             ["Q", "W", "E", "R", "T", "Y", "U", "I", "P"],
             ["A", "S" , "D", "F", "G", "H", "J", "K", "L"],
@@ -33,78 +35,139 @@ class Scoreboard extends SplashScreen {
         this.components = [];
         var factory = new EntityComponent.ComponentFactory(this).construct(ComponentID.COMPONENT_INPUT);
         this.inputComponent = this.components[ComponentID.COMPONENT_INPUT]; 
-        this.inputComponent.registerEvent(
-            InputMethod.INPUT_KEYBOARD,
-            InputType.BTN_RELEASE,
-            'KeyE',
-            (event) => {
+        console.log(this.inputComponent);
 
-            }
-        );
         this.inputComponent.registerEvent(
             InputMethod.INPUT_KEYBOARD,
             InputType.BTN_RELEASE,
-            'KeyE',
+            'ArrowUp',
             (event) => {
-                
+                this.moveCursor(0, -1);
             }
         );
+
         this.inputComponent.registerEvent(
             InputMethod.INPUT_KEYBOARD,
             InputType.BTN_RELEASE,
-            'KeyE',
+            'ArrowDown',
             (event) => {
-                
+                this.moveCursor(0, 1);
             }
         );
+
         this.inputComponent.registerEvent(
             InputMethod.INPUT_KEYBOARD,
             InputType.BTN_RELEASE,
-            'KeyE',
+            'ArrowLeft',
             (event) => {
-                
+                this.moveCursor(1, 0);
+            }
+        );
+
+        this.inputComponent.registerEvent(
+            InputMethod.INPUT_KEYBOARD,
+            InputType.BTN_RELEASE,
+            'ArrowRight',
+            (event) => {
+                this.moveCursor(-1, 0);
+            }
+        );
+
+        this.inputComponent.registerEvent(
+            InputMethod.INPUT_KEYBOARD,
+            InputType.BTN_RELEASE,
+            'Enter',
+            (event) => {
+                if(this.scoreState == ScoreState.SS_KEYBOARD) {
+                    this.initials[this.initialsIdx++] = this.selectCharacter();
+                    if(this.initialsIdx == 3) {
+                        var initial = "";
+                        this.initials.forEach((value) => {initial += value;});
+                        this.postScore(initial, Math.round(this.score));
+                        this.scores = this.getScores();
+                        this.scoreState = ScoreState.SS_SCOREBOARD;
+                    }
+                } else if(this.scoreState == ScoreState.SS_SCOREBOARD) {
+                    Timer.getInstance().createRelativeTimer("SCORECLOSE", 1000, () => {
+                        this.state = SplashState.SPLASH_FADEOUT;
+                    }, this, null, false);
+                }
             }
         );
 
         this.blink = true;
-        this.blinkTimer = Timer.getInstance().createRelativeTimer("CURSORBLINK", 150, () => {
+        this.blinkTimer = Timer.getInstance().createRelativeTimer("CURSORBLINK", 250, () => {
             this.blink = !this.blink;
         }, this, null, true);
-        this.blinkTimer.pause(GlobalVars.getInstance().curtime);
+        console.log(this.blinkTimer);
     }
 
     moveCursor(xDir, yDir) {
         this.cursor[Math.X] += xDir;
-        if(this.cursor[Math.X] > this.keyboardMatrix[this.cursor[Math.Y]].length) {
+        this.cursor[Math.Y] += yDir;
+        console.log(this.cursor);
+        if(this.cursor[Math.X] > this.keyboardMatrix[this.cursor[Math.Y]].length - 1) {
             this.cursor[Math.X] = 0;
         } if(this.cursor[Math.X] < 0) {
-            this.cursor[Math.X] = this.keyboardMatrix[this.cursor[Math.Y]].length;
+            this.cursor[Math.X] = this.keyboardMatrix[this.cursor[Math.Y]].length - 1;
         }
 
-        this.cursor[Math.X] += yDir;
-        if(this.cursor[Math.Y] > this.keyboardMatrix.length) {
+        if(this.cursor[Math.Y] > this.keyboardMatrix.length - 1) {
             this.cursor[Math.Y] = 0;
         } if(this.cursor[Math.Y] < 0) {
-            this.cursor[Math.X] = this.keyboardMatrix.length;
+            this.cursor[Math.Y] = this.keyboardMatrix.length - 1;
         }
+
+        console.log(this.cursor);
 
     }
     selectCharacter() {
         return this.keyboardMatrix[this.cursor[Math.Y]][this.cursor[Math.X]];
     }
     displayOnScreenKeyboard() {
+        if(this.blinkTimer.paused) this.blinkTimer.resume();
         this.clearDisplay();
+        var w = GlobalVars.getInstance().clientWidth;
+        var h = GlobalVars.getInstance().clientHeight;
+        new RenderText("New highscore:" + Math.round(this.score) + "!", 45, vec2.fromValues(w * 0.5, h * 0.1), "white", this.font).render(this.ctx);
+        for(var i = 0; i < 3; i++) {
+            var base = vec2.fromValues(
+                w * 0.45,
+                h * 0.35
+            );
+            var text = new RenderText(
+                this.initials[i],
+                80,
+                vec2.fromValues(
+                    base[Math.X] + (i * 85),
+                    base[Math.Y]
+                ),
+                "white",
+                this.font
+            );
+            text.render(this.ctx);
+            text = new RenderText(
+                "_",
+                80,
+                vec2.fromValues(
+                    base[Math.X] + (i * 85),
+                    base[Math.Y] + 5
+                ),
+                "white",
+                this.font
+            );
+            text.render(this.ctx);
+        }
         for(var i = 0; i < this.keyboardMatrix.length; i++) {
             var base = vec2.fromValues(
-                GlobalVars.getInstance().clientWidth * 0.50,
-                (i * 100) + GlobalVars.getInstance().clientHeight * 0.25
+                w * 0.35,
+                (i * 100) + h * 0.45
             );
             var counter = 0;
             for(var key in this.keyboardMatrix[i]) {
                 var letter = this.keyboardMatrix[i][key];
-                var color = (this.cursor[Math.X] == i && this.cursor[Math.X] == counter) ? "yellow" : "white";
-                console.log(this.cursor[Math.X], this.cursor[Math.X], i, counter);
-                console.log(letter, color);
+                var color = (this.cursor[Math.Y] == i && this.cursor[Math.X] == counter) ? "yellow" : "white";
+                color = (this.blink) ? color : "white";
                 var text = new RenderText(
                     letter,
                     80,
@@ -140,7 +203,7 @@ class Scoreboard extends SplashScreen {
                 scores[i].player + "..." + scores[i].score,
                 20,
                 vec2.fromValues(
-                    GlobalVars.getInstance().clientWidth * 0.39,
+                    GlobalVars.getInstance().clientWidth * 0.5,
                     (i * 50) + GlobalVars.getInstance().clientHeight * 0.25
                 ), 
                 (scores[i].id === this.lastID) ? "yellow" : "white", 
@@ -157,7 +220,6 @@ class Scoreboard extends SplashScreen {
                 }
             }
         }
-        console.log(this.scoreState);
         switch(this.scoreState) {
             case ScoreState.SS_KEYBOARD: this.displayOnScreenKeyboard(); break;
             case ScoreState.SS_DISPLAY: this.displayScore(); break;
@@ -168,7 +230,7 @@ class Scoreboard extends SplashScreen {
 
     onResize(nw, nh) {
         var pos = vec2.fromValues(
-            nw * 0.3,
+            nw * 0.5,
             nh * 0.2
         );
         this.text = new RenderText(

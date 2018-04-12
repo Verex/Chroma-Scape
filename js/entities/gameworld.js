@@ -62,7 +62,7 @@ class GameWorld extends Entity {
       this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_RELEASE,
-          'KeyM',
+          'Enter',
           (event) => {
               if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
                   this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
