@@ -34,7 +34,7 @@ function makeGetRequest(url, reverse, options) {
   }, function(data) {
     cb(data.items);
   });
-}    
+}
 var getLowest = function(limit, scope, cb) {
   makeGetRequest('/score', true, arguments);
 };
@@ -67,7 +67,7 @@ class App {
     // Store width and heigth in globals.
     globals.clientWidth = this.canvas.clientWidth;
     globals.clientHeight = this.canvas.clientHeight;
-    
+
 
     // Get WebGL canvas context.
     this.gl = this.canvas.getContext('webgl', {alpha: false});
@@ -158,6 +158,10 @@ class App {
       assets.getModel("floor")
     );
 
+
+    //  Create spawner object.
+    this.test = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
+    this.test.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
 
     if(this.gameworld.scoreboardcontroller !== undefined) {
       this.gameworld.scoreboardcontroller.destroy();
@@ -284,7 +288,7 @@ class App {
       }
     }
   }
-  
+
   onGameStateChanged(oldState, newState) {
     if(newState == GameStates.GAMESTATE_GAME) {
       console.log(this);
