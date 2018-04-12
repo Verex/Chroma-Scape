@@ -351,7 +351,6 @@ class App {
       var timer = Timer.getInstance();
       timer.createRelativeTimer("GAMESTART", 2500, () => {
         this.gameworld.cleanupEntities();
-        console.log(this.gameworld.player);
         this.gameworld.gamestate.score = 0;
         this.gameworld.gamestate.currentState = GameStates.GAMESTATE_MENU;
         this.scoreboard = new Scoreboard(this.textCtx, this.canvas.clientWidth, this.canvas.clientHeight);
