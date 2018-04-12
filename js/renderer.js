@@ -12,7 +12,6 @@ class Renderer {
                withShader("assets/shaders/vertex.glsl", glContext.VERTEX_SHADER, "VERTEX").
                withShader("assets/shaders/fragment.glsl", glContext.FRAGMENT_SHADER, "FRAGMENT").
                build();
-
         this.renderTargets = [];
         this.renderTargets[0] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, true, true); //This is our render target
         this.renderTargets[1] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, false, true);
@@ -22,7 +21,6 @@ class Renderer {
         this.viewport = new Viewport(glContext, 50, 50, glContext.canvas.width - 100, glContext.canvas.height - 100);
 
         this.textCanvasTexture = glContext.createTexture();
-
 
         this.renderPasses = [
             new CopyPass(glContext),

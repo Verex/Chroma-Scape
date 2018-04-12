@@ -18,6 +18,18 @@ class GameWorld extends Entity {
 
       this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
       this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+      this.audioComponent = this.getComponent(ComponentID.COMPONENT_AUDIO);
+
+      this.audioComponent.sound = new Howl({
+        src: ['./assets/sounds/sprites/effects.mp3'],
+        sprite: {
+          portal: [0, 6852, true],
+          pass1: [6852, 7758],
+          pass2: [7758, 8626],
+          pass3: [8626, 9507]
+        },
+        volume: 0.25
+      });
 
 
       this.startPressed = false;
@@ -60,6 +72,15 @@ class GameWorld extends Entity {
       );
 
       this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyG',
+        (event) => {
+            console.log(this.audioComponent);
+        }
+      );
+
+      this.inputComponent.registerEvent(
           InputMethod.INPUT_KEYBOARD,
           InputType.BTN_RELEASE,
           'Enter',
@@ -73,6 +94,20 @@ class GameWorld extends Entity {
       
 
 
+    }
+
+    onPlayerCrashed() {
+        this.children.forEach((value, index, array) => {
+            if(value.type == EntityType.ENTITY_PORTAL) { 
+                console.log("STOPPING");
+                value.speaker.stop();
+            }
+        })
+
+    }
+    onPortalClosed() {
+        this.audioComponent.playSound("pass3");
+        this.audioComponent.setVolume(0.05);
     }
 
     onEntityCreated(newEnt) {
@@ -211,6 +246,9 @@ class GameWorld extends Entity {
       if (position[Math.Z] <= this.zReset) {
         // Subtract our zReset from origin.
         this.player.transformComponent.absOrigin[Math.Z] -= this.zReset;
+        this.player.transformComponent.updateTransform();
+        var worldTranslation = this.player.transformComponent.getWorldTranslation();
+        Howler.pos(worldTranslation[Math.X], worldTranslation[Math.Y], worldTranslation[Math.Z]);
 
         // Move all portals back as well.
         this.children.forEach((child) => {
@@ -218,7 +256,17 @@ class GameWorld extends Entity {
             case EntityType.ENTITY_WALL:
             case EntityType.ENTITY_PILLAR:
             case EntityType.ENTITY_PORTAL:
+              if(child.children !== undefined) {
+                  for(var i = 0; i < child.children.length; i++) {
+                    child.children[i].transformComponent.absOrigin[Math.Z] -= this.zReset;
+                    child.children[i].transformComponent.updateTransform();
+                    if(child.children[i].type == EntityType.ENTITY_SPEAKER) {
+                        child.children[i].updateSoundPos();
+                    }
+                  }
+              }
               child.transformComponent.absOrigin[Math.Z] -= this.zReset;
+              child.transformComponent.updateTransform();
               break;
             case EntityType.ENTITY_SPAWNER:
               // Apply history change.

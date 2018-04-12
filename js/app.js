@@ -100,6 +100,21 @@ class App {
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
     assets.addModel(this.gl, FloorMesh(), "floor");
+    
+
+    assets.addSound(
+      "effects",
+      new Howl({
+        src: ['./assets/sounds/sprites/effects.mp3'],
+        sprite: {
+          portal: [0, 6852, true],
+          pass1: [6852, 7758],
+          pass2: [7758, 8626],
+          pass3: [8626, 9507]
+        },
+        volume: 0
+      })
+    );
 
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
@@ -158,13 +173,19 @@ class App {
 
 
     //  Create spawner object.
-    this.test = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
-    this.test.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
+    //this.test = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
+    //this.test.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
 
     if(this.gameworld.scoreboardcontroller !== undefined) {
       this.gameworld.scoreboardcontroller.destroy();
       this.gameworld.scoreboardcontroller = undefined;
     }
+
+    /*
+    this.gameworld.speakerTwo = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
+    this.gameworld.speakerTwo.transformComponent.absOrigin[Math.Z] = 1000;
+    this.gameworld.speakerTwo.setSound("effects", "portal");
+    */
 
     this.gameworld.scene.mainCameraID = 1;
   }

@@ -58,7 +58,9 @@ class Spawner extends Entity {
 
     // Spawn portal.
     var portal = this.spawn(EntityType.ENTITY_PORTAL, position);
-
+    portal.speaker = new Entity.Factory(portal).ofType(EntityType.ENTITY_SPEAKER);
+    portal.speaker.falloff = true;
+    portal.speaker.setSound("effects", "portal");
     // Create wall entity.
     portal.wall = this.spawn(EntityType.ENTITY_WALL, position);
     portal.wall.spawnTime = time;

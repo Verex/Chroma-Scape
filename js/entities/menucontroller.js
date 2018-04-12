@@ -25,6 +25,17 @@ class MenuController extends Entity {
             this.menuText,
             45
         );
+
+        this.textComponent.addText(
+            "Chroma Scape",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.5,
+                GlobalVars.getInstance().clientHeight * 0.15
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "GAMETITLE",
+            65
+        );
     }
 
     onResize(nw, nh) {
@@ -39,6 +50,18 @@ class MenuController extends Entity {
             Assets.getInstance().getFont("PressStart2P-Regular"),
             this.menuText,
             45
+        );
+
+
+        this.textComponent.addText(
+            "Chroma Scape",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.5,
+                GlobalVars.getInstance().clientHeight * 0.15
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "GAMETITLE",
+            65
         );
     }
 
