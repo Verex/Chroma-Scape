@@ -58,7 +58,7 @@ class Scoreboard extends SplashScreen {
             InputType.BTN_RELEASE,
             'ArrowLeft',
             (event) => {
-                this.moveCursor(1, 0);
+                this.moveCursor(-1, 0);
             }
         );
 
@@ -67,7 +67,7 @@ class Scoreboard extends SplashScreen {
             InputType.BTN_RELEASE,
             'ArrowRight',
             (event) => {
-                this.moveCursor(-1, 0);
+                this.moveCursor(1, 0);
             }
         );
 

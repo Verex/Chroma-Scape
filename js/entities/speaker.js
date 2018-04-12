@@ -12,28 +12,42 @@ class Speaker extends Entity {
         this.componentFactory.construct(ComponentID.COMPONENT_MESH);
         this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
 
+        this.meshComponent.setModel(
+            Assets.getInstance().getModel("test")
+        );
+        this.transformComponent.absScale = vec3.fromValues(50, 50, 50);
+        this.falloff = false;
+    }
 
-        this.audioComponent.sound = new Howl({
-            src: ['./assets/sounds/sprites/effects.mp3'],
-            sprite: {
-              portal: [0, 6852, true],
-              pass1: [6852, 7758],
-              pass2: [7758, 8626],
-              pass3: [8626, 9507]
-            },
-            volume: 0
-        });
+    updateSoundPos() {
+        this.audioComponent.updateSoundPos();
+    }
 
+    playSound(sound, sprite) {
+        this.audioComponent.sound = Assets.getInstance().getSound(sound);
+        this.audioComponent.playSound(sprite);
+    }
 
-        this.audioComponent.playSpatial('portal');
-        this.audioComponent.sound.once('play', () => {
-            this.audioComponent.sound.pannerAttr({
-                panningModel: 'HRTF',
-                refDistance: 0.8,
-                rolloffFactor: 0.35,
-                distanceModel: 'exponential'
-              }, this.audioComponent.sID);
-        });
+    stop() {
+        this.audioComponent.setVolume(0.0);
+    }
+
+    setSound(sound, sprite) {
+        this.audioComponent.sound = Assets.getInstance().getSound(sound);
+
+        if(this.falloff == true) {
+            this.audioComponent.playSpatial(sprite);
+            this.audioComponent.sound.once('play', () => {
+                this.audioComponent.sound.pannerAttr({
+                    panningModel: 'HRTF',
+                    refDistance: 15,
+                    rolloffFactor: 0.9,
+                    distanceModel: 'exponential'
+                  }, this.audioComponent.sID);
+            });
+        } else {
+            this.audioComponent.playSound(sprite);
+        }
         this.audioComponent.setVolume(1.0);
     }
 

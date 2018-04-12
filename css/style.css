@@ -13,6 +13,10 @@ html, body {
   width: 50%;
 }
 
+#hidden {
+  display: none;
+}
+
 #textcanvas {
     position: absolute;
     top: 0;
