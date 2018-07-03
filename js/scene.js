@@ -52,6 +52,24 @@ class Scene {
         this.cameras = [];
         this.mainCameraID = 0;
     }
+
+    entityCreation() {
+        
+    }
+
+    onEntityCreated(newEnt) {
+        switch(newEnt.type) {
+            case EntityType.ENTITY_MENUCAMERA:
+            case EntityType.ENTITY_CAMERA:
+                this.cameras.push(newEnt);
+                break;
+            default: break;
+        }
+        newEnt.sceneNode = new SceneNode(newEnt);
+        if(newEnt.owner) {
+            newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
+        }
+    }
 }
 
 /*

@@ -121,7 +121,6 @@ class App {
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
-
     this.gameworld.gamestate.onGamestateChanged.push(
       {owner:this, cb:this.onGameStateChanged}
     );
