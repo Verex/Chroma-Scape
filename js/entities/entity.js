@@ -32,7 +32,12 @@ class Entity {
         }
 
         this.componentFactory = new EntityComponent.ComponentFactory(this);
-        this.onSolidCollision = undefined;
+    }
+
+    awake() {
+        for(var i = 0; i < this.children.length; i++) {
+            this.children[i].awake();
+        }
     }
 
     tick(dt) {
@@ -47,6 +52,21 @@ class Entity {
         if(cidx >= 0) {
             this.owner.children.splice(cidx, 1);
         }
+    }
+
+    findChild(name) {
+        for(var i = 0; i < this.children.length; i++) {
+            var child = this.children[i];
+            if(child.name == name) {
+                return child;
+            } else {
+                var c = child.findChild(name);
+                if(c) {
+                    return c;
+                }
+            }
+        }
+        return undefined;
     }
 
     getGameWorld() {

@@ -1,3 +1,13 @@
 {
-    "Player"
+    "Player": {
+        "type": "ENTITY_PLAYER"
+    },
+    "Camera": {
+        "parent": "Player",
+        "type": "ENTITY_CAMERA"
+    },
+    "Ship": {
+        "parent": "Player",
+        "type": "ENTITY_SHIP"
+    }
 }

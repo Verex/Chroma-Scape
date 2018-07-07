@@ -1,11 +1,9 @@
 class RenderingStage {
-    constructor(idx, ctx) {
-        this.renderingIndex = idx;
+    constructor(ctx) {
         this.renderingContext = ctx;
-        this.renderScene = null;
     }
 
-    render(scene) {
-        this.renderScene = scene;
+    render(root, program) {
+        this.rootEntity = root;
     }
 }

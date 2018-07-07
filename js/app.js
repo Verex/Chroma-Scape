@@ -113,17 +113,10 @@ class App {
           pass3: [8626, 9507]
         },
         volume: 0
-      })
+      })  
     );
 
-    // Create game world entity.
-    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-    this.gameworld.meshComponent.setModel(
-      assets.getModel("grid")
-    );
-    this.gameworld.gamestate.onGamestateChanged.push(
-      {owner:this, cb:this.onGameStateChanged}
-    );
+    this.newGame();
 
     return AppStatus.STATUS_OK;
   }
@@ -131,7 +124,13 @@ class App {
   newGame() {
     var assets = Assets.getInstance();
 
-    newID = 1;
+    newID = 0;
+    var sceneBuilder = new Scene.Builder();
+    this.scene = sceneBuilder.fromSceneFile("./assets/scenes/game.json").build();
+    this.scene.entityCreation();
+    this.scene.postEntityCreation();
+    this.renderingPipeline = new RenderingPipeline(this.gl);
+    /*
     this.gameworld.children = [];
 
     // Create player entity.
@@ -179,9 +178,9 @@ class App {
     this.gameworld.speakerTwo = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
     this.gameworld.speakerTwo.transformComponent.absOrigin[Math.Z] = 1000;
     this.gameworld.speakerTwo.setSound("effects", "portal");
-    */
-
+    
     this.gameworld.scene.mainCameraID = 1;
+   */
   }
 
   /*
@@ -192,7 +191,7 @@ class App {
   */
   exec() {
     var globals = GlobalVars.getInstance();
-    globals.setTickrate(240);
+    globals.setTickrate(30);
     globals.timescale = 1.0;
 
     /*
@@ -247,6 +246,7 @@ class App {
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
+        /*
 
         this.renderSystems.forEach((value, index, array) =>{
           value.onResize(0, 0);
@@ -261,6 +261,7 @@ class App {
         if(this.gameworld.menucontroller !== undefined) {
           this.gameworld.menucontroller.onResize(this.textCanvas.width, this.textCanvas.height);
         }
+        */
     }
 
     /*
@@ -301,9 +302,13 @@ class App {
         this.scoreboard.update();
       }
     }
+    if(this.scene) {
+      this.scene.tick(dt);
+    }
   }
 
   onGameStateChanged(oldState, newState) {
+    /*
     if (newState == GameStates.GAMESTATE_MENU && oldState == GameStates.GAMESTATE_HISCORE) {
       this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
     }
@@ -321,9 +326,9 @@ class App {
         this.gameworld.hudcontroller = undefined;
       }
     }
+    */
   }
-
-
+/*
   processSplashScreen() {
     this.splash.process();
     if(this.splash.state == SplashState.SPLASH_FADEIN_FINISHED) {
@@ -361,7 +366,7 @@ class App {
       }, this, null, false);
     }
   }
-
+*/
   /*
     Function: render
     Parameters: void
@@ -387,6 +392,9 @@ class App {
           case GameStates.GAMESTATE_HISCORE: this.processHighScore(); break;
         }
       }
+    }
+    if(this.scene && this.renderingPipeline) {
+      this.renderingPipeline.processScene(this.scene); 
     }
   }
 }

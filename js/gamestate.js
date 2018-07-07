@@ -13,7 +13,7 @@ class Gamestate {
         this.localplayer = null; //May not be neccesary 
         this.difficulty = 0.0;
         this.maxdifficulty = 15;
-        this._currentState = GameStates.GAMESTATE_SPLASH;
+        this._currentState = GameStates.GAMESTATE_GAME;
         this.scoreMultiplier = 1.0; // This is an instantaneous score multiplier, it only applies to the increment of the score at any given time
         this.score = 0;
         this.lastZ = 0;

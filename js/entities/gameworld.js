@@ -34,13 +34,6 @@ class GameWorld extends Entity {
 
       this.startPressed = false;
 
-
-      //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
-      //and our renderer will be responsible for processing the gameworld and rendering it's scene
-      this.scene = new Scene();
-      this.sceneNode = new SceneNode(this);
-      this.scene.rootNode = this.sceneNode;
-
       // Assign max z-value before we reset position.
       this.zReset = -2000;
       this.gamestate = new Gamestate();
@@ -157,6 +150,8 @@ class GameWorld extends Entity {
     }
 
     tick(dt) {
+        super.tick(dt);
+        return;
       this.handleZReset();
       this.gamestate.updateDifficultyCurve();
       this.gamestate.updateScore(dt);
