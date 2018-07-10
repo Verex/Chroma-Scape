@@ -111,9 +111,15 @@ class Entity {
             constructor(parent) {
                 this.parent = parent;
             }
-            ofType(type) {
+            ofType(type, notify = false) {
                 if(type.id != -1 && type.construction) {
                     var newEnt = type.construction(this.parent);
+                    if(notify) {
+                        var activeScene = SceneManager.getInstance().activeScene;
+                        if(activeScene) {
+                            activeScene.onEntityCreated(newEnt);
+                        }
+                    }
                     return newEnt;
                 }
             }
