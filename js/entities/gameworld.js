@@ -39,35 +39,36 @@ class GameWorld extends Entity {
       //  Create spawner object.
       this.spawner = new Entity.Factory(this).ofType(EntityType.ENTITY_SPAWNER);
 
-      this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
-      this.player.physicsComponent.velocity[Math.Z] = -80;
-      this.player.ship.transformComponent.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
-      this.player.hasCrashed = false;
-      this.player.ship.transformComponent.updateTransform();
-      this.player.transformComponent.updateTransform();
-
+      
       this.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
       this.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
       this.player.menuCamera.yawBoom = 180;
-
+      
       this.scene.mainCameraID = 1;
     }
-
+    
     awake() {
+        super.awake(); //You have to call this
         this.player = this.findChild("Player");
+        this.spawner = this.findChild("Spawner");
+        
         this.floor = new Entity.Factory(this).ofType(EntityType.ENTITY_DUMMY, true);
         this.floor.transformComponent.absOrigin = vec3.fromValues(0, -5, 0);
         this.floor.meshComponent.setModel(
             Assets.getInstance().getModel("floor")
         );
-
+        
         this.grid = new Entity.Factory(this).ofType(EntityType.ENTITY_DUMMY, true);
         this.grid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
         this.grid.meshComponent.setModel(
             Assets.getInstance().getModel("grid")
         );
-
-        super.awake(); //You have to call this
+        this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
+        this.player.physicsComponent.velocity[Math.Z] = -80;
+        this.player.ship.transformComponent.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
+        this.player.hasCrashed = false;
+        this.player.ship.transformComponent.updateTransform();
+        this.player.transformComponent.updateTransform();
     }
     tick(dt) {
         this.handleZReset();

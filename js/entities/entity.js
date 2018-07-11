@@ -13,7 +13,8 @@ var EntityType = {
     ENTITY_PILLAR: {id: 10},
     ENTITY_MENUCONTROLLER: {id: 11},
     ENTITY_WALL: {id: 12},
-    ENTITY_HUDCONTROLLER: {id: 13}
+    ENTITY_HUDCONTROLLER: {id: 13},
+    ENTITY_GAMESTATE: {id: 14}
 };
 
 var newID = 0;
@@ -67,6 +68,16 @@ class Entity {
             }
         }
         return undefined;
+    }
+
+    findEntity(name) {
+        var root = this;
+        if(root.owner) {
+            do {
+                root = root.owner;
+            } while(root.owner);
+        }
+        return root.findChild(name);
     }
 
     getGameWorld() {

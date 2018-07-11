@@ -9,5 +9,11 @@
     "Ship": {
         "parent": "Player",
         "type": "ENTITY_SHIP"
+    },
+    "Spawner": {
+        "type": "ENTITY_SPAWNER"
+    },
+    "GameState": {
+        "type": "ENTITY_GAMESTATE"
     }
 }
