@@ -57,9 +57,7 @@ class Camera extends Entity {
           // Create new perspective.
           this.setupPerspective();
         }
-
         this.transformComponent.updateTransform();
-
         super.tick(dt);
     }
 };
