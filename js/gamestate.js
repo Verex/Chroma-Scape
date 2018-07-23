@@ -16,5 +16,5 @@ EntityType.ENTITY_GAMESTATE.construction = (owner) => {
     return new Gamestate(
         newID++,
         owner
-    );
+);
 }
