@@ -4,10 +4,26 @@ class TransformComponent extends EntityComponent {
 
         this.worldTransform = mat4.create();
         this.localTransform = mat4.create();
-        this.absOrigin = vec3.fromValues(0,0,0);
-        this.absRotation = vec3.fromValues(0,0,0);
-        this.absScale = vec3.fromValues(1,1,1);
+        this._origin = vec3.fromValues(0,0,0);
+        this._rotation = vec3.fromValues(0,0,0);
+        this._scale = vec3.fromValues(1,1,1);
         this.upVector = vec3.fromValues(0, 1, 0);
+    }
+
+    get absOrigin() {
+
+    }  
+
+    set absOrigin(origin) {
+        this._origin = origin;
+    }
+
+    get localOrigin() {
+
+    }
+
+    set localOrigin(origin) {
+
     }
 
     updateTransform() {
@@ -61,6 +77,7 @@ class TransformComponent extends EntityComponent {
 
     getInvWorldTransform() {
         var res = mat4.create();
+        
         mat4.invert(res, this.worldTransform);
         return res;
     }
