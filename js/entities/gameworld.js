@@ -13,6 +13,7 @@ class GameWorld extends Entity {
     constructor() {
       super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
       this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
+      this.physicsWorld = new CANNON.World();
       // Assign max z-value before we reset position.
       this.zReset = -2000;
     }
@@ -80,19 +81,20 @@ class GameWorld extends Entity {
         var queryCollisionRecursive = (itr) =>{
             if(itr.eid != 0 && itr.eid != ent.eid) {
                 if(itr.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
+                    var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
+                    if(physicsComponent.collisionType != type) {
+                        return;
+                    }
                     var d = Math.distance(
                         ent.transformComponent.getWorldTranslation(),
                         itr.transformComponent.getWorldTranslation()
                     );
-                    if(d < 2000) {
-                        var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
-                        if(physicsComponent.collisionType == type) {
-                            if(physicsComponent.aabb) {
-                                collidables.push(physicsComponent);
-                            }
-                            if(physicsComponent.isMoving()) {
-                                collidables.push(physicsComponent);
-                            }
+                    if(d < 100) {
+                        if(physicsComponent.aabb) {
+                            collidables.push(physicsComponent);
+                        }
+                        if(physicsComponent.isMoving()) {
+                            collidables.push(physicsComponent);
                         }
                     }
                 }

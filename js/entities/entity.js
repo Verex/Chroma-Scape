@@ -122,7 +122,7 @@ class Entity {
             constructor(parent) {
                 this.parent = parent;
             }
-            ofType(type, notify = false) {
+            ofType(type, notify = true) {
                 if(type.id != -1 && type.construction) {
                     var newEnt = type.construction(this.parent);
                     if(notify) {
