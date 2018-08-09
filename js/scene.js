@@ -39,23 +39,6 @@ class SceneNode {
     }
 }
 
-var SceneParser = () => {
-    return {
-        parseSceneFile: (file) => {
-            var data = null;
-            $.ajax({
-                url: file,
-                async: false,
-                success: (resultData, textStatus, xhr) => {
-                    data = resultData;
-                },
-                error: (msg) => { console.error("Mission failed!"); }    
-            });
-            return data;
-        }
-    }
-}
-
 /*
     Scene Class - Recursive Node based rendering
     A scene object contains information that the renderer will render
@@ -64,99 +47,10 @@ var SceneParser = () => {
     A scene will be composed of a scene graph
 */
 class Scene {
-    constructor(builder) {
-        if(arguments.length !== 1) {
-            console.error("Invalid builder!");
-            return;
-        }
-        this.entityData = builder.sceneData;
-        this.instantiatedEntities = {};
+    constructor() {
         this.rootNode = new SceneNode(); //Construct an empty scene node
-        this.rootNode.ent = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
-        this.rootNode.ent.sceneNode = this.rootNode;
         this.cameras = [];
         this.mainCameraID = 0;
-    }
-
-    entityCreation() {
-        var keys = Object.keys(this.entityData);
-        var keyIdx = keys.length - 1;
-        while(keys.length > 0) {
-            var key = keys[keyIdx];
-            if(this.instantiatedEntities[key] == undefined || this.instantiatedEntities[key] == null) {
-                var ent = this.entityData[key];
-                if(ent.parent !== undefined) {
-                    if(this.instantiatedEntities[ent.parent] == undefined || this.instantiatedEntities[ent.parent] == null) {
-                        if(this.entityData[ent.parent] == undefined) {
-                            console.error("No parent: " + ent.parent + " could possibly exist!");
-                            keys.splice(keyIdx, 1); //This is a stupid entity.
-                        }
-                        keyIdx = (keyIdx + 1) % keys.length;
-                        continue; //Wait for parent to be constructed
-                    } else {
-                        var newEnt = new Entity.Factory(
-                            this.instantiatedEntities[ent.parent]
-                        ).ofType(EntityType[ent.type]);
-                        newEnt.name = key;
-                        this.onEntityCreated(newEnt);
-                        this.instantiatedEntities[key] = newEnt;
-                        keys.splice(keyIdx, 1);
-                        keyIdx = keys.length - 1;
-                    }
-                } else {
-                    var newEnt = new Entity.Factory(
-                        this.rootNode.ent
-                    ).ofType(EntityType[ent.type]);
-                    newEnt.name = key;
-                    this.onEntityCreated(newEnt);
-                    this.instantiatedEntities[key] = newEnt;
-                    keys.splice(keyIdx, 1);
-                    keyIdx = keys.length - 1;
-                }
-            } else {
-                keyIdx = (keyIdx + 1) % keys.length;
-                continue;
-            }
-        }
-    }
-    postEntityCreation() {
-        this.rootNode.ent.awake();
-    }
-    onEntityCreated(newEnt) {
-        switch(newEnt.type) {
-            case EntityType.ENTITY_MENUCAMERA:
-            case EntityType.ENTITY_CAMERA:
-                this.cameras.push(newEnt);
-                break;
-            default: break;
-        }
-        newEnt.sceneNode = new SceneNode(newEnt);
-        if(newEnt.owner) {
-            newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
-        } else {
-            newEnt.sceneNode.attachTo(this.rootNode);
-        }
-    }
-
-    tick(dt) {
-        this.rootNode.ent.tick(dt); //Process!
-        this.rootNode.update();
-    }
-    static get Builder() {
-        class Builder { 
-            constructor() {
-
-            }
-            fromSceneFile(src) {
-                this.sceneJSON = SceneParser().parseSceneFile(src);
-                this.sceneData = JSON.parse(this.sceneJSON);
-                return this;
-            }
-            build() {
-                return new Scene(this);
-            }
-        }
-        return Builder;
     }
 }
 

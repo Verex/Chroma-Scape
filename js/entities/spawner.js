@@ -19,18 +19,11 @@ class Spawner extends Entity {
     this.firstPortal = false;
   }
 
-  awake() {
-    super.awake();
-    this.player = this.findEntity("Player");
-    this.gamestate = this.findEntity("GameState");
-    this.enabled = true;
-  }
-
   get lastPortal() {
     if (this.history.portals.length > 0) {
       return this.history.portals[this.history.portals.length - 1];
     } else {
-      return this.player.transformComponent.absOrigin;
+      return this.getGameWorld().player.transformComponent.absOrigin;
     }
   }
 
@@ -46,15 +39,16 @@ class Spawner extends Entity {
 
   spawnRandomPortal() {
     var time = Timer.getInstance().getCurrentTime(),
-        difficulty = this.gamestate.difficultyFraction;
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+
     var z = 0;
 
     if (!this.firstPortal) {
-      z = this.player.transformComponent.absOrigin[Math.Z] - 2200;
+      z = this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 2200;
     } else {
       z = Math.min(
         this.lastPortal[Math.Z] - Math.randInt(800 - (700 * difficulty), 1500 - (1200 * difficulty)),
-        this.player.transformComponent.absOrigin[Math.Z] - 200
+        this.getGameWorld().player.transformComponent.absOrigin[Math.Z] - 200
       );
     }
 
@@ -77,7 +71,7 @@ class Spawner extends Entity {
 
   spawnPillarSet() {
     var time = Timer.getInstance().getCurrentTime(),
-        difficulty = 1.0;
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
 
     var tot = 0;
     for (var r = 0; r < 10; r++) {
@@ -144,14 +138,15 @@ class Spawner extends Entity {
   getNextSpawn() {
     // Get instance of timer.
     var time = Timer.getInstance().getCurrentTime(),
-      difficulty = 1.0;
+        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+
     return time + (this.firstPortal ? 4000 - (3700 * difficulty) : 0);
   }
 
   shouldSpawn() {
     // Get current time.
     var time = Timer.getInstance().getCurrentTime(),
-        player = this.player;
+        player = this.owner.player;
 
     // Check if we are past next spawn time.
     if (time >= this.nextSpawnTime && !player.hasCrashed) {

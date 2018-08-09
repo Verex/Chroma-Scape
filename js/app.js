@@ -113,32 +113,26 @@ class App {
           pass3: [8626, 9507]
         },
         volume: 0
-      })  
+      })
     );
 
-    this.newGame();
+    // Create game world entity.
+    this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
+    this.gameworld.meshComponent.setModel(
+      assets.getModel("grid")
+    );
+
+    this.gameworld.gamestate.onGamestateChanged.push(
+      {owner:this, cb:this.onGameStateChanged}
+    );
 
     return AppStatus.STATUS_OK;
   }
 
   newGame() {
     var assets = Assets.getInstance();
-    newID = 0;
 
-    SceneManager.getInstance().loadScene("./assets/scenes/game.json", (sceneManager, scene) => {
-      sceneManager.activeScene = scene;
-      scene.entityCreation();
-      scene.postEntityCreation();
-    });
-    /*
-    var sceneBuilder = new Scene.Builder();
-    this.scene = sceneBuilder.fromSceneFile("./assets/scenes/game.json").build();
-    this.scene.entityCreation();
-    this.scene.postEntityCreation();
-    */
-
-    this.renderingPipeline = new RenderingPipeline(this.gl);
-    /*
+    newID = 1;
     this.gameworld.children = [];
 
     // Create player entity.
@@ -159,7 +153,7 @@ class App {
     this.gameworld.player.menuCamera.yawBoom = 180;
 
     // Create ship entity.
-    this.gameworld.player.ship = new En1tity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
+    this.gameworld.player.ship = new Entity.Factory(this.gameworld.player).ofType(EntityType.ENTITY_SHIP);
     this.gameworld.player.shipOrigin = this.gameworld.player.ship.transformComponent.absOrigin;
     this.gameworld.player.ship.physicsComponent.aabb = new AABB(this.gameworld.player.ship, 8, 1, 8);
     this.gameworld.player.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
@@ -186,9 +180,9 @@ class App {
     this.gameworld.speakerTwo = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_SPEAKER);
     this.gameworld.speakerTwo.transformComponent.absOrigin[Math.Z] = 1000;
     this.gameworld.speakerTwo.setSound("effects", "portal");
-    
+    */
+
     this.gameworld.scene.mainCameraID = 1;
-   */
   }
 
   /*
@@ -199,7 +193,7 @@ class App {
   */
   exec() {
     var globals = GlobalVars.getInstance();
-    globals.setTickrate(30);
+    globals.setTickrate(240);
     globals.timescale = 1.0;
 
     /*
@@ -254,7 +248,6 @@ class App {
         // Update globals width/height.
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
-        /*
 
         this.renderSystems.forEach((value, index, array) =>{
           value.onResize(0, 0);
@@ -269,7 +262,6 @@ class App {
         if(this.gameworld.menucontroller !== undefined) {
           this.gameworld.menucontroller.onResize(this.textCanvas.width, this.textCanvas.height);
         }
-        */
     }
 
     /*
@@ -310,14 +302,9 @@ class App {
         this.scoreboard.update();
       }
     }
-    var scene = SceneManager.getInstance().activeScene;
-    if(scene) {
-      scene.tick(dt);
-    }
   }
 
   onGameStateChanged(oldState, newState) {
-    /*
     if (newState == GameStates.GAMESTATE_MENU && oldState == GameStates.GAMESTATE_HISCORE) {
       this.gameworld.menucontroller = new Entity.Factory(this.gameworld).ofType(EntityType.ENTITY_MENUCONTROLLER);
     }
@@ -335,9 +322,9 @@ class App {
         this.gameworld.hudcontroller = undefined;
       }
     }
-    */
   }
-/*
+
+
   processSplashScreen() {
     this.splash.process();
     if(this.splash.state == SplashState.SPLASH_FADEIN_FINISHED) {
@@ -375,7 +362,7 @@ class App {
       }, this, null, false);
     }
   }
-*/
+
   /*
     Function: render
     Parameters: void
@@ -386,9 +373,21 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
-    var scene = SceneManager.getInstance().activeScene;
-    if(scene && this.renderingPipeline) {
-      this.renderingPipeline.processScene(scene); 
+    var gameworld = this.gameworld;
+    if(gameworld) {
+      var currentState = gameworld.gamestate.currentState;
+      if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_HISCORE) {
+        this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.renderSystems.forEach((value, index, array) => {
+          value.render(gameworld);
+          value.postProcessing();
+        });
+      } else {
+        switch(currentState) {
+          case GameStates.GAMESTATE_SPLASH: this.processSplashScreen(); break;
+          case GameStates.GAMESTATE_HISCORE: this.processHighScore(); break;
+        }
+      }
     }
   }
 }

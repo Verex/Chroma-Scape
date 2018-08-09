@@ -132,20 +132,6 @@ class Player extends Entity {
         );
     }
 
-    awake() {
-      this.ship = this.findChild("Ship");
-      this.camera = this.findChild("Camera");
-
-      //Set up player camera
-      this.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
-      this.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
-
-      //Set up player ship bounding box
-      this.ship.physicsComponent.aabb = new AABB(this.ship, 8, 1, 8);
-      this.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-      super.awake();
-    }
-
     onMouseMove(event) {
     }
 
@@ -174,6 +160,8 @@ class Player extends Entity {
     }
 
     moveCamera(dt) {
+      if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
+
       var cameraPosition = this.camera.transformComponent.absOrigin,
           shipPosition = this.ship.transformComponent.absOrigin;
 
@@ -183,6 +171,8 @@ class Player extends Entity {
     }
 
     tick(dt) {
+      if(this.getGameWorld().gamestate.currentState >= GameStates.GAMESTATE_GAMEOVER) return;
+
       this.moveCamera(dt);
       this.inputComponent.updateGamepads();
       this.physicsComponent.physicsSimulate(dt);

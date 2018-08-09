@@ -13,8 +13,7 @@ var EntityType = {
     ENTITY_PILLAR: {id: 10},
     ENTITY_MENUCONTROLLER: {id: 11},
     ENTITY_WALL: {id: 12},
-    ENTITY_HUDCONTROLLER: {id: 13},
-    ENTITY_GAMESTATE: {id: 14}
+    ENTITY_HUDCONTROLLER: {id: 13}
 };
 
 var newID = 0;
@@ -33,12 +32,7 @@ class Entity {
         }
 
         this.componentFactory = new EntityComponent.ComponentFactory(this);
-    }
-
-    awake() {
-        for(var i = 0; i < this.children.length; i++) {
-            this.children[i].awake();
-        }
+        this.onSolidCollision = undefined;
     }
 
     tick(dt) {
@@ -48,36 +42,17 @@ class Entity {
         }
     }
 
+    onEntityCreated(newEnt) {
+        if(this.owner) {
+            this.owner.onEntityCreated(newEnt);
+        }
+    }
+
     destroy() {
         var cidx = this.owner.children.indexOf(this);
         if(cidx >= 0) {
             this.owner.children.splice(cidx, 1);
         }
-    }
-
-    findChild(name) {
-        for(var i = 0; i < this.children.length; i++) {
-            var child = this.children[i];
-            if(child.name == name) {
-                return child;
-            } else {
-                var c = child.findChild(name);
-                if(c) {
-                    return c;
-                }
-            }
-        }
-        return undefined;
-    }
-
-    findEntity(name) {
-        var root = this;
-        if(root.owner) {
-            do {
-                root = root.owner;
-            } while(root.owner);
-        }
-        return root.findChild(name);
     }
 
     getGameWorld() {
@@ -122,15 +97,10 @@ class Entity {
             constructor(parent) {
                 this.parent = parent;
             }
-            ofType(type, notify = false) {
+            ofType(type) {
                 if(type.id != -1 && type.construction) {
                     var newEnt = type.construction(this.parent);
-                    if(notify) {
-                        var activeScene = SceneManager.getInstance().activeScene;
-                        if(activeScene) {
-                            activeScene.onEntityCreated(newEnt);
-                        }
-                    }
+                    newEnt.onEntityCreated(newEnt);
                     return newEnt;
                 }
             }
