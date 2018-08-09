@@ -115,6 +115,7 @@ class App {
         volume: 0
       })  
     );
+    
 
     this.newGame();
 

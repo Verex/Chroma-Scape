@@ -7,7 +7,7 @@ class _SceneManager_ {
         var sceneBuilder = new Scene.Builder();
         var scene = sceneBuilder.fromSceneFile(filePath).build();
         this.scenes.push(scene);
-        if(onLoad) {
+            if(onLoad) {
             onLoad(this, scene);
         }
     }

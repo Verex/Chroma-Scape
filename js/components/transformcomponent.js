@@ -47,6 +47,9 @@ class TransformComponent extends EntityComponent {
         vec3.transformMat4(res, pos, originMat);
         return res;
     }
+    setWorldTranslation(translation) {
+        this.absOrigin = this.translateToLocal(translation);
+    }
     getWorldTranslation(component) {
         var res = vec3.create();
         mat4.getTranslation(res, this.worldTransform);
