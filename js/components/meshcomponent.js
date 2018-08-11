@@ -9,7 +9,6 @@ class MeshComponent extends EntityComponent {
     }
     preRender(program, gl) {
         if(!this.model) return;
-
     }
     /*
     uniform mat4 u_viewMatrix;

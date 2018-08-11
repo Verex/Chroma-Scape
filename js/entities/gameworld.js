@@ -13,9 +13,84 @@ class GameWorld extends Entity {
     constructor() {
       super(newID++, undefined, EntityType.ENTITY_GAMEWORLD);
       this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
-      this.physicsWorld = new CANNON.World();
+      this.componentFactory.construct(ComponentID.COMPONENT_INPUT);
+      this.componentFactory.construct(ComponentID.COMPONENT_MESH);
+
+      this.inputComponent = this.getComponent(ComponentID.COMPONENT_INPUT);
+      this.meshComponent = this.getComponent(ComponentID.COMPONENT_MESH);
+      this.audioComponent = this.getComponent(ComponentID.COMPONENT_AUDIO);
+
+      this.audioComponent.sound = new Howl({
+        src: ['./assets/sounds/sprites/effects.mp3'],
+        sprite: {
+          portal: [0, 6852, true],
+          pass1: [6852, 7758],
+          pass2: [7758, 8626],
+          pass3: [8626, 9507]
+        },
+        volume: 0.25
+      });
+
+
+      this.startPressed = false;
+
+
+      //HACK HACK(Jake): I couldn't really think of a place to put this so for now our game world will hold our scene
+      //and our renderer will be responsible for processing the gameworld and rendering it's scene
+      this.scene = new Scene();
+      this.sceneNode = new SceneNode(this);
+      this.scene.rootNode = this.sceneNode;
+
       // Assign max z-value before we reset position.
       this.zReset = -2000;
+      this.gamestate = new Gamestate();
+
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyE',
+        (event) => {
+          this.scene.mainCameraID = ((this.scene.mainCameraID + 1) % this.scene.cameras.length);
+        }
+      );
+
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyQ',
+        (event) => {
+          this.gamestate.currentState = GameStates.GAMESTATE_GAME;
+        }
+      );
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyF',
+        (event) => {
+            postProcessing = !postProcessing;
+        }
+      );
+
+      this.inputComponent.registerEvent(
+        InputMethod.INPUT_KEYBOARD,
+        InputType.BTN_RELEASE,
+        'KeyG',
+        (event) => {
+            god = !god;
+            GlobalVars.getInstance().timescale = (god) ? 8.0 : 1.0;
+        }
+      );
+
+      this.inputComponent.registerEvent(
+          InputMethod.INPUT_KEYBOARD,
+          InputType.BTN_RELEASE,
+          'Enter',
+          (event) => {
+              if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
+                  this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+              }
+          }
+      )
     }
 
     cleanupEntities() {
@@ -40,40 +115,98 @@ class GameWorld extends Entity {
       //  Create spawner object.
       this.spawner = new Entity.Factory(this).ofType(EntityType.ENTITY_SPAWNER);
 
-      
+      this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
+      this.player.physicsComponent.velocity[Math.Z] = -80;
+      this.player.ship.transformComponent.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
+      this.player.hasCrashed = false;
+      this.player.ship.transformComponent.updateTransform();
+      this.player.transformComponent.updateTransform();
+
       this.player.menuCamera.transformComponent.absOrigin = vec3.fromValues(0, 10, -50);
       this.player.menuCamera.transformComponent.absRotation = vec3.fromValues(-10, 180, 0);
       this.player.menuCamera.yawBoom = 180;
-      
+
       this.scene.mainCameraID = 1;
     }
-    
-    awake() {
-        super.awake(); //You have to call this
-        this.player = this.findChild("Player");
-        this.spawner = this.findChild("Spawner");
-        
-        this.floor = new Entity.Factory(this).ofType(EntityType.ENTITY_DUMMY, true);
-        this.floor.transformComponent.absOrigin = vec3.fromValues(0, -5, 0);
-        this.floor.meshComponent.setModel(
-            Assets.getInstance().getModel("floor")
-        );
-        
-        this.grid = new Entity.Factory(this).ofType(EntityType.ENTITY_DUMMY, true);
-        this.grid.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
-        this.grid.meshComponent.setModel(
-            Assets.getInstance().getModel("grid")
-        );
-        this.player.transformComponent.absOrigin = vec3.fromValues(0, 10, 0);
-        this.player.physicsComponent.velocity[Math.Z] = -80;
-        this.player.ship.transformComponent.absOrigin = vec3.fromValues(0.0, 0.0, 0.0);
-        this.player.hasCrashed = false;
-        this.player.ship.transformComponent.updateTransform();
-        this.player.transformComponent.updateTransform();
+
+    onPlayerCrashed() {
+        this.children.forEach((value, index, array) => {
+            if(value.type == EntityType.ENTITY_PORTAL && value.speaker) {
+                console.log("STOPPING");
+                value.speaker.stop();
+            }
+        })
+
     }
+    onPortalClosed() {
+        this.audioComponent.playSound("pass3");
+        this.audioComponent.setVolume(0.05);
+    }
+
+    getActiveCamera() {
+        return this.scene.activeCamera;
+    }
+
+    onEntityCreated(newEnt) {
+      switch(newEnt.type) {
+          case EntityType.ENTITY_MENUCAMERA:
+          case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
+              console.log("NEW CAMERA!");
+              this.scene.cameras.push(newEnt);
+              break;
+          default: break;
+      }
+      newEnt.sceneNode = new SceneNode(newEnt);
+      if(newEnt.owner) {
+          newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
+      }
+    }
+
     tick(dt) {
-        this.handleZReset();
-        super.tick(dt);
+      this.handleZReset();
+      this.gamestate.updateDifficultyCurve();
+      this.gamestate.updateScore(dt);
+      if(this.hudcontroller !== undefined) {
+          this.hudcontroller.updateScore(this.gamestate.score);
+      }
+      if(this.gamestate.currentState == GameStates.GAMESTATE_MENU) {
+          if(this.inputComponent.gpButton(0).pressed && !this.startPressed) {
+              this.startPressed = true;
+          }
+          if(!this.inputComponent.gpButton(0).pressed && this.startPressed) {
+              this.startPressed = false;
+              this.gamestate.currentState = GameStates.GAMESTATE_MENUPAN;
+          }
+      }
+      if(this.gamestate.currentState == GameStates.GAMESTATE_MENUPAN) {
+          //var timefraction = GlobalVars.getInstance().curtime / this.turnTime;
+          var boom = this.player.menuCamera.yawBoom;
+
+          this.player.menuCamera.transformComponent.absOrigin[Math.Z] = Math.cos(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absOrigin[Math.X] = Math.sin(Math.radians(boom)) * 50;
+          this.player.menuCamera.transformComponent.absRotation[Math.YAW] = boom;
+
+          this.player.menuCamera.yawBoom -= 35 * dt;
+
+          if(this.player.menuCamera.yawBoom < 1) {
+              this.player.menuCamera.yawBoom = 0;
+              var timer = Timer.getInstance();
+              timer.createRelativeTimer("GAMESTART", 1500, () => {
+                  // Change current game state.
+                  this.gamestate.currentState = GameStates.GAMESTATE_GAME;
+
+                  // Enable spawner.
+                  this.spawner.enabled = true;
+
+                  // Set initial acceleration for the player.
+                  this.player.physicsComponent.acceleration[Math.Z] = -1.1;
+
+                  // Change camera ID.
+                  this.scene.mainCameraID = 0;
+              }, this, null, false);
+          }
+      }
+      super.tick(dt);
     }
 
     queryCollisionTree(ent, type = CollisionType.COLLISION_SOLID) {
@@ -81,20 +214,19 @@ class GameWorld extends Entity {
         var queryCollisionRecursive = (itr) =>{
             if(itr.eid != 0 && itr.eid != ent.eid) {
                 if(itr.hasComponent(ComponentID.COMPONENT_PHYSICS)) {
-                    var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
-                    if(physicsComponent.collisionType != type) {
-                        return;
-                    }
                     var d = Math.distance(
                         ent.transformComponent.getWorldTranslation(),
                         itr.transformComponent.getWorldTranslation()
                     );
-                    if(d < 100) {
-                        if(physicsComponent.aabb) {
-                            collidables.push(physicsComponent);
-                        }
-                        if(physicsComponent.isMoving()) {
-                            collidables.push(physicsComponent);
+                    if(d < 2000) {
+                        var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
+                        if(physicsComponent.collisionType == type) {
+                            if(physicsComponent.aabb) {
+                                collidables.push(physicsComponent);
+                            }
+                            if(physicsComponent.isMoving()) {
+                                collidables.push(physicsComponent);
+                            }
                         }
                     }
                 }

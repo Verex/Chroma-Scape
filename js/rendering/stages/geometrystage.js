@@ -5,23 +5,12 @@ class GeometryStage extends RenderingStage {
 
 
     render(root, program) {
-        super.render(root);   
-        var recursiveRender = (ent) => {
+        super.delegateRender((ent, program) => {
             if(ent.hasComponent(ComponentID.COMPONENT_MESH)) {
                 var meshComponent = ent.getComponent(ComponentID.COMPONENT_MESH);
                 meshComponent.render(program, this.renderingContext);
             }
-
-            if(ent.children.length > 0) {
-                for(var i = 0; i < ent.children.length; i++) {
-                    var child = ent.children[i];
-                    recursiveRender(child);
-                }
-            }
-        };
-
-        recursiveRender(root); //Start processing the tree depth first.
-
-
+        });
+        super.render(root, program);
     }
 }

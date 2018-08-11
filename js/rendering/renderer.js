@@ -1,4 +1,4 @@
-/*
+ /*
     Renderer class
     A renderer object will be responsible for rendering a scene
     A renderer object should be able to be extended for more specific use
@@ -104,6 +104,7 @@ class Renderer {
         this.program.activate();
 
         var cameraID = gameworld.scene.mainCameraID;
+        console.log(gameworld.scene.cameras);
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_projectionMatrix"),
             false,

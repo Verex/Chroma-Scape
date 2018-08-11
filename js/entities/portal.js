@@ -36,7 +36,7 @@ class Portal extends Entity {
       var position = this.transformComponent.absOrigin,
           playerPosition = this.owner.player.transformComponent.absOrigin;
       if (position[Math.Z] + 5 > playerPosition[Math.Z]) {
-        if (this.disabled) {
+        if (this.disabled || god) {
           // Destroy associated wall entity.
           if (this.wall) {
             this.wall.enableNext();
