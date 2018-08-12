@@ -169,12 +169,25 @@ class Player extends Entity {
           cameraRotation = this.camera.transformComponent.absRotation,
           shipPosition = this.ship.transformComponent.absOrigin;
 
+      var rollScale = this.ship.getSwayScale(Math.ROLL), pitchScale = this.ship.getSwayScale(Math.PITCH);
+
       // Interpolate the camera's X and Y position.
       this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.01, dt));
       this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.02, dt));
 
+      var targetDistance = 50, zoomDistance = 10;
+
+      if (rollScale != 0) {
+        targetDistance -= zoomDistance * Math.abs(rollScale);
+      }
+      
+      if (pitchScale != 0) {
+        targetDistance -= zoomDistance * Math.abs(pitchScale);
+      }
+
+      this.camera.transformComponent.absOrigin[Math.Z] = Math.lerp(cameraPosition[Math.Z], targetDistance, 1 - Math.pow(0.3, dt));
+
       var maxRoll = 20, maxYaw = 25, maxPitch = 28;
-      var rollScale = this.ship.getSwayScale(Math.ROLL), pitchScale = this.ship.getSwayScale(Math.PITCH);
       var rollTarget = maxRoll * rollScale, 
           yawTarget = maxYaw * rollScale, 
           pitchTarget = maxPitch * pitchScale - 10;
