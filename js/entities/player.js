@@ -159,18 +159,49 @@ class Player extends Entity {
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
       this.hasCrashed = true;
       this.getGameWorld().onPlayerCrashed();
-      this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_HISCORE;
+      this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_MENU;
     }
 
     moveCamera(dt) {
       if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
 
       var cameraPosition = this.camera.transformComponent.absOrigin,
-          shipPosition = this.ship.transformComponent.absOrigin;
+          cameraRotation = this.camera.transformComponent.absRotation,
+          shipPosition = this.ship.transformComponent.absOrigin,
+          shipRotation = this.ship.transformComponent.absRotation,
+          shipAngVelocity = this.ship.physicsComponent.angularVelocity,
+          shipMaxAngVelocity = this.ship.physicsComponent.maxAngularVelocity;
 
       // Interpolate the camera's X and Y position.
-      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 3 * dt);
-      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 2 * dt);
+      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.02, dt));
+      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.06, dt));
+
+      var maxRoll = 20, maxYaw = 25, maxPitch = 35;
+      var rollScale = this.ship.getSwayScale(Math.ROLL), pitchScale = this.ship.getSwayScale(Math.PITCH);
+      var rollTarget = maxRoll * rollScale, 
+          yawTarget = maxYaw * rollScale, 
+          pitchTarget = maxPitch * pitchScale - 10;
+
+      var rollFactor = 0.30, yawFactor = 0.30, pitchFactor = 0.22;
+
+      if (Math.between(-0.2, 0.2, rollScale)) {
+        rollFactor = 0.18;
+        yawFactor = 0.18;
+      } else {
+        rollFactor -= 0.1 * rollScale;
+        pitchFactor -= 0.1 * rollScale;
+      }
+
+      if (Math.between(-0.2, 0.2, pitchScale)) {
+        pitchFactor = 0.15;
+      } else {
+        pitchFactor -= 0.02 * pitchScale;
+      }
+
+      // Interpolate camera rotations.
+      this.camera.transformComponent.absRotation[Math.ROLL] = Math.lerp(cameraRotation[Math.ROLL], rollTarget, 1 - Math.pow(rollFactor, dt));
+      this.camera.transformComponent.absRotation[Math.YAW] = Math.lerp(cameraRotation[Math.YAW], yawTarget, 1 - Math.pow(yawFactor, dt));
+      this.camera.transformComponent.absRotation[Math.PITCH] = Math.lerp(cameraRotation[Math.PITCH], pitchTarget, 1 - Math.pow(pitchFactor, dt));
     }
 
     tick(dt) {
