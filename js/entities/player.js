@@ -167,29 +167,26 @@ class Player extends Entity {
 
       var cameraPosition = this.camera.transformComponent.absOrigin,
           cameraRotation = this.camera.transformComponent.absRotation,
-          shipPosition = this.ship.transformComponent.absOrigin,
-          shipRotation = this.ship.transformComponent.absRotation,
-          shipAngVelocity = this.ship.physicsComponent.angularVelocity,
-          shipMaxAngVelocity = this.ship.physicsComponent.maxAngularVelocity;
+          shipPosition = this.ship.transformComponent.absOrigin;
 
       // Interpolate the camera's X and Y position.
-      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.02, dt));
-      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.06, dt));
+      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.01, dt));
+      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.02, dt));
 
-      var maxRoll = 20, maxYaw = 25, maxPitch = 35;
+      var maxRoll = 20, maxYaw = 25, maxPitch = 28;
       var rollScale = this.ship.getSwayScale(Math.ROLL), pitchScale = this.ship.getSwayScale(Math.PITCH);
       var rollTarget = maxRoll * rollScale, 
           yawTarget = maxYaw * rollScale, 
           pitchTarget = maxPitch * pitchScale - 10;
 
-      var rollFactor = 0.30, yawFactor = 0.30, pitchFactor = 0.22;
+      var rollFactor = 0.25, yawFactor = 0.22, pitchFactor = 0.22;
 
       if (Math.between(-0.2, 0.2, rollScale)) {
-        rollFactor = 0.18;
-        yawFactor = 0.18;
+        rollFactor = 0.12;
+        yawFactor = 0.1;
       } else {
-        rollFactor -= 0.1 * rollScale;
-        pitchFactor -= 0.1 * rollScale;
+        rollFactor -= 0.08 * rollScale;
+        pitchFactor -= 0.08 * rollScale;
       }
 
       if (Math.between(-0.2, 0.2, pitchScale)) {

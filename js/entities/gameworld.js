@@ -195,6 +195,9 @@ class GameWorld extends Entity {
                   // Change current game state.
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
 
+                    // Update when we started the gameplay run.
+                  GlobalVars.getInstance().gametime = GlobalVars.getInstance().curtime;
+
                   // Enable spawner.
                   this.spawner.enabled = true;
 
