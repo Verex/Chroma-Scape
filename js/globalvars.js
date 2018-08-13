@@ -8,6 +8,7 @@ class _GlobalVars_ //Internal class
         this.interpolation = 0; //Fraction of how far we are in between game world updates
         this.tickcount = 0; //The total number of game world updates
         this.curtime = 0; //The cumulative time SINCE the beginning of execution
+        this.gametime = 0; // The cumulative time at which the gameplay started (post menu).
         this.lasttime = 0; //Previous time stamp
         this.maxtimeskip = 400;
         this.framecount = 0; //Number of frames being pushed to renderer
