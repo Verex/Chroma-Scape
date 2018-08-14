@@ -3,8 +3,8 @@ class RenderPass {
         this.ctx = glContext;
         this.name = name;
         this.passProgram = new Program.Builder(glContext).
-            withShader(vtx, glContext.VERTEX_SHADER, name + "-vtx").
-            withShader(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
+            withShaderSource(vtx, glContext.VERTEX_SHADER, name + "-vtx").
+            withShaderSource(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
             build();
     }
 
@@ -25,7 +25,7 @@ class RenderPass {
         // Bind the position buffer.
         this.ctx.bindBuffer(this.ctx.ARRAY_BUFFER, viewport.posBuffer);
       
-        // Tell the position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+        // Tell thep position attribute how to get data out of positionBuffer (ARRAY_BUFFER)
         var size = 2;          // 2 components per iteration
         var type = this.ctx.FLOAT;   // the data is 32bit floats
         var normalize = false; // don't normalize the data

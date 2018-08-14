@@ -1,0 +1,18 @@
+{
+    "Metadata":
+    {
+        "Author": "Jake Thornton",
+        "Version": "0.0.1",
+        "Name": "Standard-Shader"
+    },
+    "Fragment":
+    {
+      "name":"standard-fragment",
+      "type":"glsl"  
+    },
+    "Vertex":
+    {
+        "name":"standard-vertex",
+        "type":"glsl"
+    }
+}

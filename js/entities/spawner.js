@@ -16,6 +16,9 @@ class Spawner extends Entity {
       pillars: []
     };
 
+    // Define pillar reuse array.
+    this.recycledPillars = [];
+
     this.firstPortal = false;
   }
 
@@ -38,8 +41,9 @@ class Spawner extends Entity {
   }
 
   spawnRandomPortal() {
+    // Get current time and difficulty values.
     var time = Timer.getInstance().getCurrentTime(),
-        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+      difficulty = (this.getGameWorld().gamestate.difficulty / this.getGameWorld().gamestate.maxdifficulty);
 
     var z = 0;
 
@@ -70,13 +74,14 @@ class Spawner extends Entity {
   }
 
   spawnPillarSet() {
+    // Get current time and difficulty values.
     var time = Timer.getInstance().getCurrentTime(),
-        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+      difficulty = (this.getGameWorld().gamestate.difficulty / this.getGameWorld().gamestate.maxdifficulty);
 
     var tot = 0;
     for (var r = 0; r < 10; r++) {
       var r1 = Math.floor(10 * difficulty), r2 = Math.floor(20 * difficulty),
-          count = Math.randInt(0 + r1, 6 + r2);
+        count = Math.randInt(0 + r1, 6 + r2);
 
       var zStart = this.lastPortal[Math.Z] + (150 * r);
 
@@ -89,7 +94,7 @@ class Spawner extends Entity {
 
       for (var c = 0; c < count; c++) {
         var near = false,
-            position = vec3.create();
+          position = vec3.create();
 
         do {
           near = false;
@@ -124,12 +129,39 @@ class Spawner extends Entity {
 
         } while (near);
 
-        this.history.pillars.push(position);
+        var pillar = null;
 
-        var pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+        // Check if we can recycle any pillars.
+        if (this.recycledPillars.length > 0) {
+          console.log("Pillar recycled.");
+
+          // Get first pillar.
+          pillar = this.recycledPillars.shift();
+
+          // Assign position of reused pillar.
+          pillar.transformComponent.absOrigin = vec3.clone(position);
+
+          // Pillar is done being recycled.
+          pillar.recycled = false;
+        } else {
+          console.log("New pillar spawned.");
+
+          // Spawn new pillar.
+          pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
+
+          // Scale new pillar.
+          pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
+
+          // Create new AABB.
+          pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+        }
+
+        // Push pillar's position into history.
+        pillar.posHistoryID = this.history.pillars.push(position);
+
+        // Assign spawn time for pillar.
         pillar.spawnTime = time - (Math.randInt(100, 1200));
-        pillar.transformComponent.absScale = vec3.fromValues(5, 10, 5);
-        pillar.physicsComponent.aabb = new AABB(pillar, 10, 80, 10);
+
         tot += 1;
       }
     }
@@ -138,7 +170,7 @@ class Spawner extends Entity {
   getNextSpawn() {
     // Get instance of timer.
     var time = Timer.getInstance().getCurrentTime(),
-        difficulty = (this.getGameWorld().gamestate.difficulty/this.getGameWorld().gamestate.maxdifficulty);
+      difficulty = (this.getGameWorld().gamestate.difficulty / this.getGameWorld().gamestate.maxdifficulty);
 
     return time + (this.firstPortal ? 4000 - (3700 * difficulty) : 0);
   }
@@ -146,7 +178,7 @@ class Spawner extends Entity {
   shouldSpawn() {
     // Get current time.
     var time = Timer.getInstance().getCurrentTime(),
-        player = this.owner.player;
+      player = this.owner.player;
 
     // Check if we are past next spawn time.
     if (time >= this.nextSpawnTime && !player.hasCrashed) {
@@ -162,7 +194,7 @@ class Spawner extends Entity {
 
   tick(dt) {
     // Check if we should spawn a portal.
-    if(!this.enabled) {
+    if (!this.enabled) {
       this.nextSpawnTime = this.getNextSpawn();
     } else if (this.shouldSpawn()) {
       // Spawn a random portal in front of player.
@@ -179,8 +211,8 @@ class Spawner extends Entity {
 }
 
 EntityType.ENTITY_SPAWNER.construction = (owner) => {
-    return new Spawner(
-        newID++,
-        owner
-    );
+  return new Spawner(
+    newID++,
+    owner
+  );
 }

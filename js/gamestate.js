@@ -40,7 +40,7 @@ class Gamestate {
 
     updateDifficultyCurve() {
         this.difficulty = this.difficultyCurve(
-            GlobalVars.getInstance().curtime
+            GlobalVars.getInstance().curtime - GlobalVars.getInstance().gametime
         );
     }
 

@@ -26,6 +26,10 @@ class Portal extends Entity {
           assets.getModel("portal")
         );
 
+        this.meshComponent.setMaterial(
+          assets.getMaterial("Portal")
+        );
+
         var cidx = Math.randInt(0, 3);
         this.color = COLORSET[cidx];
 
@@ -36,7 +40,7 @@ class Portal extends Entity {
       var position = this.transformComponent.absOrigin,
           playerPosition = this.owner.player.transformComponent.absOrigin;
       if (position[Math.Z] + 5 > playerPosition[Math.Z]) {
-        if (this.disabled) {
+        if (this.disabled || god) {
           // Destroy associated wall entity.
           if (this.wall) {
             this.wall.enableNext();
@@ -46,11 +50,22 @@ class Portal extends Entity {
           // Destroy entity.
           this.destroy();
         } else {
+          console.log("Crash from portal.");
           this.owner.player.crash();
         }
       }
     }
-
+    setupMaterial(gl) {
+      var color = this.color.serialize();
+      var program = this.meshComponent.material.renderPrograms[0];
+      gl.uniform4f(
+                program.uniformLocation("u_PortalColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+      );
+    }
     tick(dt) {
       this.checkForMiss();
       this.physicsComponent.physicsSimulate(dt);

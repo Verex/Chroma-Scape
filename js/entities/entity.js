@@ -42,6 +42,12 @@ class Entity {
         }
     }
 
+    onEntityCreated(newEnt) {
+        if(this.owner) {
+            this.owner.onEntityCreated(newEnt);
+        }
+    }
+
     destroy() {
         var cidx = this.owner.children.indexOf(this);
         if(cidx >= 0) {
@@ -94,6 +100,7 @@ class Entity {
             ofType(type) {
                 if(type.id != -1 && type.construction) {
                     var newEnt = type.construction(this.parent);
+                    newEnt.onEntityCreated(newEnt);
                     return newEnt;
                 }
             }

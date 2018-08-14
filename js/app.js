@@ -43,9 +43,6 @@ var getLowest = function(limit, scope, cb) {
 class App {
   constructor() {
     this.start = 0; //The time in which the program began execution
-
-    this.renderSystems = [];
-    this.postRenderSystems = [];
   }
 
   /*
@@ -88,8 +85,9 @@ class App {
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
 
-    this.renderSystems.push(
-      new Renderer(this.gl, this.textCtx)
+    this.renderingPipeline = new RenderingPipeline(this.gl);
+    this.renderingPipeline.stages.push(
+      new UITextStage(this.textCtx)
     );
 
     var assets = Assets.getInstance();
@@ -100,6 +98,19 @@ class App {
     assets.addModel(this.gl, PortalMesh(), "portal");
     assets.addModel(this.gl, PillarMesh(), "pillar");
     assets.addModel(this.gl, FloorMesh(), "floor");
+
+    assets.addShader(this.gl, "Standard-Shader");
+    assets.addShader(this.gl, "Ship-Shader");
+    assets.addShader(this.gl, "Portal-Shader");
+    assets.addShader(this.gl, "Pillar-Shader");
+    assets.addShader(this.gl, "Laser-Wall-Shader");
+
+
+    assets.addMaterial(this.gl, "Ship");
+    assets.addMaterial(this.gl, "Standard");
+    assets.addMaterial(this.gl, "Portal");
+    assets.addMaterial(this.gl, "Pillar");
+    assets.addMaterial(this.gl, "LaserWall");
 
 
     assets.addSound(
@@ -121,6 +132,10 @@ class App {
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
     );
+    this.gameworld.meshComponent.setMaterial(
+      assets.getMaterial("Standard")
+    );
+
     this.gameworld.gamestate.onGamestateChanged.push(
       {owner:this, cb:this.onGameStateChanged}
     );
@@ -248,9 +263,12 @@ class App {
         globals.clientWidth = this.canvas.clientWidth;
         globals.clientHeight = this.canvas.clientHeight;
 
+        /*
         this.renderSystems.forEach((value, index, array) =>{
           value.onResize(0, 0);
         });
+        */
+        this.renderingPipeline.onResize();
 
         this.splash.onResize(this.textCanvas.width, this.textCanvas.height);
         this.scoreboard.onResize(this.textCanvas.width, this.textCanvas.height);
@@ -372,15 +390,14 @@ class App {
       All of our render systems are responsible for rendering our gameworld
       so we're gunna pass our gameworld to our render function
     */
+   
     var gameworld = this.gameworld;
     if(gameworld) {
       var currentState = gameworld.gamestate.currentState;
       if(currentState > GameStates.GAMESTATE_SPLASH && currentState < GameStates.GAMESTATE_HISCORE) {
         this.textCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.renderSystems.forEach((value, index, array) => {
-          value.render(gameworld);
-          value.postProcessing();
-        });
+        var scene = gameworld.scene;
+        this.renderingPipeline.processScene(scene);
       } else {
         switch(currentState) {
           case GameStates.GAMESTATE_SPLASH: this.processSplashScreen(); break;

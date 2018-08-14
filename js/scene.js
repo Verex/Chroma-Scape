@@ -37,6 +37,7 @@ class SceneNode {
         var m = this.worldMatrix;
         this.children.forEach((child) => { child.update(m); });
     }
+
 }
 
 /*
@@ -52,23 +53,12 @@ class Scene {
         this.cameras = [];
         this.mainCameraID = 0;
     }
-
-    entityCreation() {
-        
+    get activeCamera() {
+        return this.cameras[this.mainCameraID];
     }
 
-    onEntityCreated(newEnt) {
-        switch(newEnt.type) {
-            case EntityType.ENTITY_MENUCAMERA:
-            case EntityType.ENTITY_CAMERA:
-                this.cameras.push(newEnt);
-                break;
-            default: break;
-        }
-        newEnt.sceneNode = new SceneNode(newEnt);
-        if(newEnt.owner) {
-            newEnt.sceneNode.attachTo(newEnt.owner.sceneNode);
-        }
+    set activeCamera(id) {
+        this.mainCameraID = id;
     }
 }
 

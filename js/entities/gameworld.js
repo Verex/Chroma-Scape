@@ -76,7 +76,8 @@ class GameWorld extends Entity {
         InputType.BTN_RELEASE,
         'KeyG',
         (event) => {
-            console.log(this.audioComponent);
+            god = !god;
+            GlobalVars.getInstance().timescale = (god) ? 8.0 : 1.0;
         }
       );
 
@@ -142,10 +143,15 @@ class GameWorld extends Entity {
         this.audioComponent.setVolume(0.05);
     }
 
+    getActiveCamera() {
+        return this.scene.activeCamera;
+    }
+
     onEntityCreated(newEnt) {
       switch(newEnt.type) {
           case EntityType.ENTITY_MENUCAMERA:
           case EntityType.ENTITY_CAMERA: //We need to add our camera to our scene
+              console.log("NEW CAMERA!");
               this.scene.cameras.push(newEnt);
               break;
           default: break;
@@ -189,6 +195,9 @@ class GameWorld extends Entity {
                   // Change current game state.
                   this.gamestate.currentState = GameStates.GAMESTATE_GAME;
 
+                    // Update when we started the gameplay run.
+                  GlobalVars.getInstance().gametime = GlobalVars.getInstance().curtime;
+
                   // Enable spawner.
                   this.spawner.enabled = true;
 
@@ -212,7 +221,7 @@ class GameWorld extends Entity {
                         ent.transformComponent.getWorldTranslation(),
                         itr.transformComponent.getWorldTranslation()
                     );
-                    if(d < 2000) {
+                    if(d < 200) {
                         var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
                         if(physicsComponent.collisionType == type) {
                             if(physicsComponent.aabb) {

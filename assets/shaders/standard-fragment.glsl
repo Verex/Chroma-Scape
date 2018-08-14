@@ -11,8 +11,9 @@ uniform vec4 u_thrusterColor;
 
 void main()
 {
+  gl_FragColor = v_color;
     // Define replace colors.
-    
+    /*
     vec4 r_selectionColor = vec4(1.0, 0.0, 1.0, 1.0);
     vec4 r_thrusterColor = vec4(1.0, 0.0, 0.9, 1.0);
 
@@ -22,5 +23,5 @@ void main()
       gl_FragColor = u_thrusterColor;
     else
         gl_FragColor = v_color;
-        
+        */
 }

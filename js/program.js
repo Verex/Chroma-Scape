@@ -1,32 +1,10 @@
-var ShaderParser = () => {
-    return {
-        /*
-            Function: parseShaderFile
-            Parameters: @srcFile - String: the filepath on the server for the shader file
-            Purpose: 
-                This function parses the shader file from the .glsl file that was passed to our program
-        */
-        parseShaderFile: (srcFile) => {
-            var data = null;
-            $.ajax({
-                url: srcFile,
-                async: false,
-                success: (resultData, textStatus, xhr) => { 
-                    console.log("[SHADER]: Loaded: " + srcFile + " status: (" + xhr.status + ")" + textStatus);
-                    data = resultData; 
-                },
-                error: (msg) => { console.error("You don screwed up! ");} 
-            });
-            return data;
-        }
-    };
-};
 var ProgramStatus = {
     PROGRAM_OK: 0,
     PROGRAM_VTXSHADER_FAIL: 1,
     PROGRAM_FGTSHADER_FAIL: 2,
     PROGRAM_OTHER_FAIL: 3
 };
+
 class Shader {
     constructor(glContext, source, type) {
         this.ctx = glContext;
@@ -185,10 +163,13 @@ class Program {
                 this.ctx = glContext;
                 this.shaders = new Map();
             }
-            withShader(src, type, name) {
+            withShader(name, shader) {
+                this.shaders.set(name, shader);
+            }
+            withShaderSource(src, type, name) {
                 this.shaders.set(name, new Shader(
                     this.ctx,
-                    ShaderParser().parseShaderFile(src),
+                    Files.getInstance().loadFile(src),
                     type
                 ));
                 return this;
