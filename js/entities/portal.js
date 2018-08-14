@@ -50,6 +50,7 @@ class Portal extends Entity {
           // Destroy entity.
           this.destroy();
         } else {
+          console.log("Crash from portal.");
           this.owner.player.crash();
         }
       }

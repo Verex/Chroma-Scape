@@ -23,7 +23,7 @@ class Ship extends Entity {
         // Assign physics component parameters.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
         this.physicsComponent.maxAngularVelocity = 90;
-        this.physicsComponent.maxVelocity = 60;
+        this.physicsComponent.maxVelocity = 70;
 
         // Define linear boundaries.
         this.linearBounds = {};
@@ -186,9 +186,16 @@ class Ship extends Entity {
           this.getGameWorld().onPortalClosed();
           this.owner.onCollisionOverlap(other);
         } else {
+          console.log("Crash from portal (Color mismatch)");
           this.owner.crash();
         }
       } else if (other.owner.type == EntityType.ENTITY_PILLAR) {
+        // Make sure we're not crashing into recycled pillar.
+        // HACK HACK: This probably can be solved another way. 
+        //if (other.owner.recycled) return;
+
+        console.log("Crash from pillar. Recycled: ", other.owner.recycled);
+
         this.owner.crash();
       }
     }
