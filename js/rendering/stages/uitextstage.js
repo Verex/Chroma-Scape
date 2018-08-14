@@ -12,7 +12,5 @@ class UITextStage extends RenderingStage {
         });
         super.render(root, program);
 
-    }
-
-    
+    }    
 }

@@ -26,6 +26,10 @@ class Portal extends Entity {
           assets.getModel("portal")
         );
 
+        this.meshComponent.setMaterial(
+          assets.getMaterial("Portal")
+        );
+
         var cidx = Math.randInt(0, 3);
         this.color = COLORSET[cidx];
 
@@ -50,7 +54,17 @@ class Portal extends Entity {
         }
       }
     }
-
+    setupMaterial(gl) {
+      var color = this.color.serialize();
+      var program = this.meshComponent.material.renderPrograms[0];
+      gl.uniform4f(
+                program.uniformLocation("u_PortalColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+      );
+    }
     tick(dt) {
       this.checkForMiss();
       this.physicsComponent.physicsSimulate(dt);

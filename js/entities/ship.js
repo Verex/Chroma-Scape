@@ -16,6 +16,9 @@ class Ship extends Entity {
           Assets.getInstance().getModel("ship")
         );
 
+        this.meshComponent.setMaterial(
+          Assets.getInstance().getMaterial("Ship")
+        );
 
         // Assign physics component parameters.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
@@ -243,6 +246,30 @@ class Ship extends Entity {
             );
 
       return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
+    }
+
+    setupMaterial(gl) {
+      var color = this.owner.color.serialize();
+      var program = this.meshComponent.material.renderPrograms[0];
+      gl.uniform4f(
+                program.uniformLocation("u_selectionColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+      );
+
+      // HACK HACK: Thruster color based on time? Must be better way to do this.
+      var cTime = Timer.getInstance().getCurrentTime(),
+        f = cTime / 500;
+        var add = 0.2 * (Math.sin(f) * 0.5 + 0.5);
+        gl.uniform4f(
+          program.uniformLocation("u_thrusterColor"),
+          0.086 + add,
+          0.596 + add,
+          0.886 + add,
+          1.0
+        );
     }
 
     tick(dt) {

@@ -9,8 +9,8 @@ class RenderingPipeline {
         this.stages = [];
         this.renderingContext = glContext;
         this.renderProgram = new Program.Builder(glContext).
-        withShader("assets/shaders/vertex.glsl", glContext.VERTEX_SHADER, "VERTEX").
-        withShader("assets/shaders/fragment.glsl", glContext.FRAGMENT_SHADER, "FRAGMENT").
+        withShaderSource("assets/shaders/vertex.glsl", glContext.VERTEX_SHADER, "VERTEX").
+        withShaderSource("assets/shaders/fragment.glsl", glContext.FRAGMENT_SHADER, "FRAGMENT").
         build();
         this.renderTargets = [];
         this.renderTargets[0] = new RenderTarget(glContext, glContext.canvas.width, glContext.canvas.height, true, true); //This is our render target
@@ -30,22 +30,23 @@ class RenderingPipeline {
         this.renderingContext.clear(this.renderingContext.COLOR_BUFFER_BIT | this.renderingContext.DEPTH_BUFFER_BIT);
         this.viewport.bind(); //Bind our viewport
         this.renderProgram.activate(); //Activate our rendering program
-        if(scene.activeCamera === undefined) return;
+        var activeCamera = scene.activeCamera;
+        if(activeCamera === undefined) return;
         this.renderingContext.uniformMatrix4fv(
             this.renderProgram.uniformLocation("u_projectionMatrix"),
             false,
-            scene.activeCamera.projectionMatrix
+            activeCamera.projectionMatrix
         );
 
         this.renderingContext.uniformMatrix4fv(
             this.renderProgram.uniformLocation("u_viewMatrix"),
             false,
-            scene.activeCamera.sceneNode.worldMatrix
+            activeCamera.sceneNode.worldMatrix
         );
         var rootElement = scene.rootNode.ent;
         for(var i = 0; i < this.stages.length; i++) {
             var stage = this.stages[i];
-            stage.render(rootElement, this.renderProgram);
+            stage.render(rootElement, this.renderProgram, activeCamera);
         }
     }
 }

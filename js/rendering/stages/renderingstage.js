@@ -7,12 +7,12 @@ class RenderingStage {
         this.renderFunc = func;
     }
 
-    render(root, program) {
+    render(root, program, camera) {
         this.rootEntity = root;
         var renderFunc = this.renderFunc;
         var recursiveRender = (ent) => {
             if(renderFunc !== undefined) {
-                renderFunc.apply(this, [ent, program]);
+                renderFunc.apply(this, [ent, program, camera]);
             }
 
             if(ent.children.length > 0) {
