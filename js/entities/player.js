@@ -30,8 +30,8 @@ class Player extends Entity {
 
         // Assign movement control key codes.
 
-        this.gpSensitivity = 0.82;
-        this.gpInvertedY = false;
+        this.gpSensitivity = 0.80;
+        this.gpInvertedY = true;
 
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
@@ -175,17 +175,19 @@ class Player extends Entity {
       this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.01, dt));
       this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.02, dt));
 
-      var targetDistance = 50, zoomDistance = 10;
+      var targetDistance = 50, zoomDistance = 8, zoomFactor = 0.12;
 
       if (rollScale != 0) {
         targetDistance -= zoomDistance * Math.abs(rollScale);
+        zoomFactor = 0.32;
       }
       
       if (pitchScale != 0) {
         targetDistance -= zoomDistance * Math.abs(pitchScale);
+        zoomFactor = 0.32;
       }
 
-      this.camera.transformComponent.absOrigin[Math.Z] = Math.lerp(cameraPosition[Math.Z], targetDistance, 1 - Math.pow(0.3, dt));
+      this.camera.transformComponent.absOrigin[Math.Z] = Math.lerp(cameraPosition[Math.Z], targetDistance, 1 - Math.pow(zoomFactor, dt));
 
       var maxRoll = 20, maxYaw = 25, maxPitch = 28;
       var rollTarget = maxRoll * rollScale, 
