@@ -3,11 +3,13 @@ var gameControls = {
     keyRight: 'KeyD',
     keyUp: 'KeyW',
     keyDown: 'KeyS',
+    keyBoost: 'Space',
     color0: 'KeyJ',
     color1: 'KeyL',
 
     gpColor0: 6,
     gpColor1: 7,
+    gpBoost: 0,
   };
 class GameWorld extends Entity {
     constructor() {
