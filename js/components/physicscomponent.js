@@ -97,7 +97,7 @@ class PhysicsComponent extends EntityComponent {
                 var collidable = collidables[i];
                 vec3.copy(
                     this.aabb.origin,
-                    transformComponent.translateToWorld(tempOrigin)
+                    tempOrigin
                 );
                 if(this.aabb.checkCollision(collidable.aabb)) {
                     collision = true;

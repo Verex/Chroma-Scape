@@ -16,11 +16,14 @@ class Ship extends Entity {
           Assets.getInstance().getModel("ship")
         );
 
+        this.meshComponent.setMaterial(
+          Assets.getInstance().getMaterial("Ship")
+        );
 
         // Assign physics component parameters.
         this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
         this.physicsComponent.maxAngularVelocity = 90;
-        this.physicsComponent.maxVelocity = 60;
+        this.physicsComponent.maxVelocity = 70;
 
         // Define linear boundaries.
         this.linearBounds = {};
@@ -183,14 +186,24 @@ class Ship extends Entity {
           this.getGameWorld().onPortalClosed();
           this.owner.onCollisionOverlap(other);
         } else {
+          console.log("Crash from portal (Color mismatch)");
           this.owner.crash();
         }
       } else if (other.owner.type == EntityType.ENTITY_PILLAR) {
+        // Make sure we're not crashing into recycled pillar.
+        // HACK HACK: This probably can be solved another way. 
+        //if (other.owner.recycled) return;
+
+        console.log("Crash from pillar. Recycled: ", other.owner.recycled);
+
         this.owner.crash();
       }
     }
 
     canSway(direction) {
+      // Ensure correct gamestate.
+      if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return false;
+
       var opposite = null,
           positionAxis = null,
           rotationAxis = null,
@@ -240,6 +253,30 @@ class Ship extends Entity {
             );
 
       return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
+    }
+
+    setupMaterial(gl) {
+      var color = this.owner.color.serialize();
+      var program = this.meshComponent.material.renderPrograms[0];
+      gl.uniform4f(
+                program.uniformLocation("u_selectionColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+      );
+
+      // HACK HACK: Thruster color based on time? Must be better way to do this.
+      var cTime = Timer.getInstance().getCurrentTime(),
+        f = cTime / 500;
+        var add = 0.2 * (Math.sin(f) * 0.5 + 0.5);
+        gl.uniform4f(
+          program.uniformLocation("u_thrusterColor"),
+          0.086 + add,
+          0.596 + add,
+          0.886 + add,
+          1.0
+        );
     }
 
     tick(dt) {

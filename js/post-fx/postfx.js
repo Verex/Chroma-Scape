@@ -1,24 +1,30 @@
-class RenderPass {
-    constructor(glContext, vtx, fgmt, name) {
-        this.ctx = glContext;
-        this.name = name;
-        this.passProgram = new Program.Builder(glContext).
-            withShaderSource(vtx, glContext.VERTEX_SHADER, name + "-vtx").
-            withShaderSource(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
-            build();
+class PostFX {
+    constructor(ctx, target) {
+        this.ctx = ctx;
+        this.renderTarget = target;
     }
 
-    setUniforms() {
-
+    setEffectShader(name) {
+        var shader = Assets.getInstance().getShader(name);
+        var programBuilder = new Program.Builder(this.ctx);
+        if(shader.Vertex !== undefined) {
+            programBuilder.withShader(name + "-vtx", shader.Vertex);
+        }
+        if(shader.Fragment !== undefined) {
+            programBuilder.withShader(name + "-fgmt", shader.Fragment);
+        }
+        this.program = programBuilder.build();
     }
 
-    doPass(viewport) {
-        this.passProgram.activate();
+    doEffect(src, viewport) {
+        this.program.activate();
 
-        var positionLocation = this.passProgram.attributeLocation("a_position");
-        var texcoordLocation = this.passProgram.attributeLocation("a_texCoord");
-
-        this.setUniforms();
+        if(src !== undefined && src !== null) {
+            src.bindTexture();
+        }
+        this.renderTarget.bind();
+        var positionLocation = this.program.attributeLocation("a_position");
+        var texcoordLocation = this.program.attributeLocation("a_texCoord");
 
         this.ctx.enableVertexAttribArray(positionLocation);
 
@@ -45,5 +51,6 @@ class RenderPass {
         this.ctx.vertexAttribPointer(
             texcoordLocation, size, type, normalize, stride, offset);
         viewport.render();
+        this.renderTarget.bindTexture();
     }
 };

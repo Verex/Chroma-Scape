@@ -30,8 +30,8 @@ class Player extends Entity {
 
         // Assign movement control key codes.
 
-        this.gpSensitivity = 0.82;
-        this.gpInvertedY = false;
+        this.gpSensitivity = 0.80;
+        this.gpInvertedY = true;
 
         // Add components.
         this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
@@ -132,20 +132,6 @@ class Player extends Entity {
         );
     }
 
-    awake() {
-      this.ship = this.findChild("Ship");
-      this.camera = this.findChild("Camera");
-
-      //Set up player camera
-      this.camera.transformComponent.absOrigin = vec3.fromValues(0, 10, 50);
-      this.camera.transformComponent.absRotation = vec3.fromValues(-10, 0, 0);
-
-      //Set up player ship bounding box
-      this.ship.physicsComponent.aabb = new AABB(this.ship, 8, 1, 8);
-      this.ship.physicsComponent.aabb.translation = vec3.fromValues(0, -0.25, -0.13);
-      super.awake();
-    }
-
     onMouseMove(event) {
     }
 
@@ -166,23 +152,73 @@ class Player extends Entity {
     }
 
     crash() {
+      if(god) {
+        return;
+      }
       this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
       this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
       this.hasCrashed = true;
       this.getGameWorld().onPlayerCrashed();
-      this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_HISCORE;
+      this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_MENU;
     }
 
     moveCamera(dt) {
+      if(this.getGameWorld().gamestate.currentState != GameStates.GAMESTATE_GAME) return;
+
       var cameraPosition = this.camera.transformComponent.absOrigin,
+          cameraRotation = this.camera.transformComponent.absRotation,
           shipPosition = this.ship.transformComponent.absOrigin;
 
+      var rollScale = this.ship.getSwayScale(Math.ROLL), pitchScale = this.ship.getSwayScale(Math.PITCH);
+
       // Interpolate the camera's X and Y position.
-      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 3 * dt);
-      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 2 * dt);
+      this.camera.transformComponent.absOrigin[Math.X] = Math.lerp(cameraPosition[Math.X], shipPosition[Math.X], 1 - Math.pow(0.01, dt));
+      this.camera.transformComponent.absOrigin[Math.Y] = Math.lerp(cameraPosition[Math.Y], shipPosition[Math.Y] + 10, 1 - Math.pow(0.02, dt));
+
+      var targetDistance = 50, zoomDistance = 8, zoomFactor = 0.12;
+
+      if (rollScale != 0) {
+        targetDistance -= zoomDistance * Math.abs(rollScale);
+        zoomFactor = 0.32;
+      }
+      
+      if (pitchScale != 0) {
+        targetDistance -= zoomDistance * Math.abs(pitchScale);
+        zoomFactor = 0.32;
+      }
+
+      this.camera.transformComponent.absOrigin[Math.Z] = Math.lerp(cameraPosition[Math.Z], targetDistance, 1 - Math.pow(zoomFactor, dt));
+
+      var maxRoll = 20, maxYaw = 25, maxPitch = 28;
+      var rollTarget = maxRoll * rollScale, 
+          yawTarget = maxYaw * rollScale, 
+          pitchTarget = maxPitch * pitchScale - 10;
+
+      var rollFactor = 0.25, yawFactor = 0.22, pitchFactor = 0.22;
+
+      if (Math.between(-0.2, 0.2, rollScale)) {
+        rollFactor = 0.12;
+        yawFactor = 0.1;
+      } else {
+        rollFactor -= 0.08 * rollScale;
+        pitchFactor -= 0.08 * rollScale;
+      }
+
+      if (Math.between(-0.2, 0.2, pitchScale)) {
+        pitchFactor = 0.15;
+      } else {
+        pitchFactor -= 0.02 * pitchScale;
+      }
+
+      // Interpolate camera rotations.
+      this.camera.transformComponent.absRotation[Math.ROLL] = Math.lerp(cameraRotation[Math.ROLL], rollTarget, 1 - Math.pow(rollFactor, dt));
+      this.camera.transformComponent.absRotation[Math.YAW] = Math.lerp(cameraRotation[Math.YAW], yawTarget, 1 - Math.pow(yawFactor, dt));
+      this.camera.transformComponent.absRotation[Math.PITCH] = Math.lerp(cameraRotation[Math.PITCH], pitchTarget, 1 - Math.pow(pitchFactor, dt));
     }
 
     tick(dt) {
+      if(this.getGameWorld().gamestate.currentState >= GameStates.GAMESTATE_GAMEOVER) return;
+
       this.moveCamera(dt);
       this.inputComponent.updateGamepads();
       this.physicsComponent.physicsSimulate(dt);

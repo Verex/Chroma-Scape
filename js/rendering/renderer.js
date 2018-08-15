@@ -1,4 +1,4 @@
-/*
+ /*
     Renderer class
     A renderer object will be responsible for rendering a scene
     A renderer object should be able to be extended for more specific use
@@ -63,7 +63,7 @@ class Renderer {
         });
       }
     }
-
+// no im not messing with your code.  fuck off jake. he thinks my art is legendary... thus im legendary
     postProcessing() {
         var gl = this.ctx;
         var viewport = this.viewport;
@@ -91,19 +91,21 @@ class Renderer {
         this.viewport.bind();
         this.viewport.render();
     }
-
+    //thank you for calling florida polytechnic university's EnRoLlMeNt SeRvIcEs
     onResize(nw, nh) {
         this.renderTargets[0] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, true, true); //This is our render target
         this.renderTargets[1] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, false, true);
         this.renderTargets[2] = new RenderTarget(this.ctx, this.ctx.canvas.width, this.ctx.canvas.height, false, true);
         this.viewport = new Viewport(this.ctx, 50, 50, this.ctx.canvas.width - 100, this.ctx.canvas.height - 100);
     }
+    //Jakes sorta cool, jakes sorta rad, jakes way behind... so quit reading this and get back to work jake.
     render(gameworld) {
         this.renderTargets[0].bind();
         this.clear(DARK);
         this.program.activate();
 
         var cameraID = gameworld.scene.mainCameraID;
+        console.log(gameworld.scene.cameras);
         this.ctx.uniformMatrix4fv(
             this.program.uniformLocation("u_projectionMatrix"),
             false,
@@ -118,3 +120,4 @@ class Renderer {
         this.recursiveRender(gameworld);
     }
 }
+// you ramble a lot don't you. and you don't trust me... asshole.

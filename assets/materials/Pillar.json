@@ -1,0 +1,15 @@
+{
+    "Shaders":
+    [
+        "Pillar-Shader"
+    ],
+    "Passes":
+    {
+        "Pass0":
+        {
+            "shader": 0,
+            "fragment": 1,
+            "vtx": 1
+        }
+    }
+}

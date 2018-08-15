@@ -5,34 +5,42 @@
     <title>Chroma Scape</title>
 
     <!-- Include external libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+    -->
+    <script src="js/lib/__cache__/jquery.min.js"></script>
+    <script src="js/lib/__cache__/opentype.min.js"></script>
     <script src="js/lib/gl-matrix.js"></script>
     <script src="js/lib/howler/howler.core.js"></script>
     <script src="js/lib/howler/plugins/howler.spatial.js"></script>
-    <script src="js/lib/cannon/build/cannon.js"></script>
 
     <!-- Include core game files -->
     <script src="js/app.js"></script>
     <script src="js/math.js"></script>
     <script src="js/globalvars.js"></script>
+    <script src="js/fileloader.js">   </script>
     <script src="js/steptimer.js"></script>
     <script src="js/color.js"></script>
-    <script src="js/rendering/program.js"></script>
-    <script src="js/rendering/renderer.js"></script>
-    <script src="js/rendering/rendertarget.js"></script>
-    <script src="js/rendering/renderpass.js"></script>
-    <script src="js/rendering/renderpipeline.js"></script>
-    <script src="js/rendering/stages/renderingstage.js"></script>
-    <script src="js/rendering/stages/geometrystage.js"></script>
-    <script src="js/viewport.js"></script>
+    <script src="js/program.js"></script>
     <script src="js/scene.js"></script>
-    <script src="js/scenemanager.js"></script>
     <script src="js/model.js"></script>
     <script src="js/aabb.js"></script>
     <script src="js/assets.js"></script>
+    <script src="js/gamestate.js"></script>
     <script src="js/splashscreen.js"></script>
     <script src="js/scoreboard.js"></script>
+
+    <!-- Include Rendering System & Related Components -->
+    <script src="js/rendering/rendertarget.js"></script>
+    <script src="js/rendering/renderpass.js"></script>
+    <script src="js/rendering/viewport.js"></script>
+    <script src="js/rendering/renderpipeline.js"></script>
+    <script src="js/rendering/material.js"></script>
+    <script src="js/rendering/stages/renderingstage.js"></script>
+    <script src="js/rendering/stages/geometrystage.js"></script>
+    <script src="js/rendering/stages/uitextstage.js"></script>
+    <script src="js/rendering/stages/postfxstage.js"></script>
+
 
     <!-- Include Post Processing Effects -->
     <script src="js/post-fx/ui-pass.js"></script>
@@ -42,6 +50,7 @@
     <script src="js/post-fx/scale-pass.js"></script>
     <script src="js/post-fx/curved-pass.js"></script>
     <script src="js/post-fx/barrel-pass.js"></script>
+    <script src="js/post-fx/postfx.js"></script>
 
     <!-- Include entity components -->
     <script src="js/components/component.js"></script>
@@ -66,7 +75,6 @@
     <script src="js/entities/menucontroller.js"></script>
     <script src="js/entities/hudcontroller.js"></script>
     <script src="js/entities/wall.js"></script>
-    <script src="js/gamestate.js"></script>
 
     <!-- Include js mesh files -->
     <script src="js/meshes/test.js"></script>
@@ -92,6 +100,7 @@
       var debug = null; //This variable exists so that we can print information about our "main class" in console without jQuery getting in our way.
       var drawAABB = false;
       var postProcessing = true;
+      var god = false;
 
       var fonts = ['PressStart2P-Regular'];
       $(document).ready(() => {

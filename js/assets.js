@@ -1,31 +1,10 @@
-var AssetParser = () => {
-    return {
-        /*
-            Function: parseShaderFile
-            Parameters: @srcFile - String: the filepath on the server for the shader file
-            Purpose: 
-                This function parses the shader file from the .glsl file that was passed to our program
-        */
-        parseAssetFile: (srcFile) => {
-            var data = null;
-            $.ajax({
-                url: srcFile,
-                async: false,
-                success: (resultData, textStatus, xhr) => { 
-                    console.log("[ASSETS]: Loaded: " + srcFile + " status: (" + xhr.status + ")" + textStatus);
-                    data = resultData; 
-                },
-                error: (msg) => { console.error("You don screwed up! ");} 
-            });
-            return data;
-        }
-    };
-};
 class _Assets_ {
     constructor() {
         this.models = new Map();
         this.sounds = new Map();
         this.fonts = new Map();
+        this.shaders = new Map();
+        this.materials = new Map();
     }
 
     addFont(name, font) {
@@ -50,6 +29,44 @@ class _Assets_ {
             mesh.vertices(),
             mesh.color()
         );
+    }
+    addMaterial(gl, name) {
+        var fileName = "assets/materials/" + name + ".json";
+        var materialEntry = JSON.parse(Files.getInstance().loadFile(fileName));
+        var shaders = materialEntry["Shaders"];
+        var passes = materialEntry["Passes"];
+        this.materials[name] = new Material(gl, shaders, passes);
+    }
+    getMaterial(name) {
+        return this.materials[name];
+    }
+    getShader(name) {
+        return this.shaders[name];
+    }
+    addShader(gl, name) {
+        var fileName = "assets/shaders/" + name + ".json";
+        var shaderEntry = JSON.parse(Files.getInstance().loadFile(fileName));
+        this.shaders[name] = {};
+        if(shaderEntry["Fragment"] !== undefined) {
+            var fragmentShader = shaderEntry["Fragment"]["name"];
+            var fragmentType = shaderEntry["Fragment"]["type"];
+            var fragmentPath = "assets/shaders/" + fragmentShader + "." + fragmentType;
+            this.shaders[name]["Fragment"] = new Shader(
+                gl,
+                Files.getInstance().loadFile(fragmentPath, "SHADER"),
+                gl.FRAGMENT_SHADER
+            );
+        }
+        if(shaderEntry["Vertex"] !== undefined) {
+            var vertexShader = shaderEntry["Vertex"]["name"];
+            var vertexType = shaderEntry["Vertex"]["type"];
+            var vertexPath = "assets/shaders/" + vertexShader + "." + vertexType;
+            this.shaders[name]["Vertex"] = new Shader(
+                gl,
+                Files.getInstance().loadFile(vertexPath, "SHADER"),
+                gl.VERTEX_SHADER
+            )
+        }
     }
 
     getModel(name) {
