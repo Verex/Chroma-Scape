@@ -30,6 +30,12 @@ class RenderTarget {
         glContext.bindTexture(glContext.TEXTURE_2D, null);
         glContext.bindRenderbuffer(glContext.RENDERBUFFER, null);
     }
+    clear(color = BLACK) {
+        //this.ctx.colorMask(false, false, false, true);
+        this.ctx.clearColor(color.r, color.g, color.b, color.a);
+        this.ctx.enable(this.ctx.DEPTH_TEST);
+        this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
+    }
 
     bind() {
         this.ctx.bindFramebuffer(this.ctx.FRAMEBUFFER, this.frameBuffer);

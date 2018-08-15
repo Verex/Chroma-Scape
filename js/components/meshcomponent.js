@@ -10,8 +10,7 @@ class MeshComponent extends EntityComponent {
         this.model = model;
     }
 
-    render(program, gl, camera) {
-        program.activate();
+    render(gl, camera) {
         if (!this.shouldRender) return;
         if(!this.model) return;
         if (this.material == undefined) {
