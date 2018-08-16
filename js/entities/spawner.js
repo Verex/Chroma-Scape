@@ -181,11 +181,7 @@ class Spawner extends Entity {
       player = this.owner.player;
 
     // Check if we are past next spawn time.
-    if (time >= this.nextSpawnTime && !player.hasCrashed) {
-      if (Math.abs(player.transformComponent.absOrigin[Math.Z] - this.lastPortal[Math.Z]) > 5000) {
-        this.nextSpawnTime = this.getNextSpawn();
-        return false;
-      }
+    if (!player.hasCrashed && Math.abs(player.transformComponent.absOrigin[Math.Z] - this.lastPortal[Math.Z]) < 7500) {
       return true;
     }
 
