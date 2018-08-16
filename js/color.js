@@ -28,3 +28,12 @@ var COLORSET = [
   new Color(8, 47, 175),
   new Color(135, 9, 153)
 ];
+
+var RANDOM = () => {
+    return new Color(
+        Math.randInt(0, 255),
+        Math.randInt(0, 255),
+        Math.randInt(0, 255),
+        255
+    );
+}

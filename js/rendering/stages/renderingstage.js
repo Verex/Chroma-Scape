@@ -1,18 +1,23 @@
 class RenderingStage {
     constructor(ctx) {
         this.renderingContext = ctx;
+        this.renderTargets = [];
     }
 
     delegateRender(func) {
         this.renderFunc = func;
     }
 
-    render(root, program) {
+    onResize() {
+
+    }
+
+    render(root, viewport, camera) {
         this.rootEntity = root;
         var renderFunc = this.renderFunc;
         var recursiveRender = (ent) => {
             if(renderFunc !== undefined) {
-                renderFunc.apply(this, [ent, program]);
+                renderFunc.apply(this, [ent, viewport, camera]);
             }
 
             if(ent.children.length > 0) {

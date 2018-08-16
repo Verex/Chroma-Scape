@@ -85,10 +85,6 @@ class App {
     this.canvas.width = this.canvas.clientWidth;
     this.canvas.height = this.canvas.clientHeight;
 
-    this.renderingPipeline = new RenderingPipeline(this.gl);
-    this.renderingPipeline.stages.push(
-      new UITextStage(this.textCtx)
-    );
 
     var assets = Assets.getInstance();
     assets.addModel(this.gl, TestMesh(), "test");
@@ -101,9 +97,21 @@ class App {
 
     assets.addShader(this.gl, "Standard-Shader");
     assets.addShader(this.gl, "Ship-Shader");
+    assets.addShader(this.gl, "Portal-Shader");
+    assets.addShader(this.gl, "Pillar-Shader");
+    assets.addShader(this.gl, "Laser-Wall-Shader");
 
+    //Post FX Shaders
+    assets.addShader(this.gl, "CRT-Shader");
+
+
+    assets.addMaterial(this.gl, "Ship");
     assets.addMaterial(this.gl, "Standard");
-    console.log(assets.getMaterial("Standard"));
+    assets.addMaterial(this.gl, "Portal");
+    assets.addMaterial(this.gl, "Pillar");
+    assets.addMaterial(this.gl, "LaserWall");
+
+
     assets.addSound(
       "effects",
       new Howl({
@@ -118,10 +126,20 @@ class App {
       })
     );
 
+    this.renderingPipeline = new RenderingPipeline(this.gl);
+    this.renderingPipeline.stages.push(
+      new UITextStage(this.textCtx)
+    );
+    this.renderingPipeline.stages.push(
+      new PostFXStage(this.gl)
+    );
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
     this.gameworld.meshComponent.setModel(
       assets.getModel("grid")
+    );
+    this.gameworld.meshComponent.setMaterial(
+      assets.getMaterial("Standard")
     );
 
     this.gameworld.gamestate.onGamestateChanged.push(

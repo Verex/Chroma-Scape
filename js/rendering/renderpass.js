@@ -3,8 +3,8 @@ class RenderPass {
         this.ctx = glContext;
         this.name = name;
         this.passProgram = new Program.Builder(glContext).
-            withShader(vtx, glContext.VERTEX_SHADER, name + "-vtx").
-            withShader(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
+            withShaderSource(vtx, glContext.VERTEX_SHADER, name + "-vtx").
+            withShaderSource(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
             build();
     }
 

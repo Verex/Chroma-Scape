@@ -15,6 +15,10 @@ class Wall extends Entity {
           assets.getModel("wall")
         );
 
+        this.meshComponent.setMaterial(
+          assets.getMaterial("LaserWall")
+        );
+
         this.meshComponent.shouldRender = false;
     }
 
@@ -48,6 +52,27 @@ class Wall extends Entity {
     tick(dt) {
       this.transformComponent.updateTransform();
       super.tick(dt);
+    }
+
+    setupMaterial(gl) {
+          var cTime = Timer.getInstance().getCurrentTime() - this.spawnTime,
+              red = (Math.sin(cTime / 500) * 0.5 + 0.5);
+          var program = this.meshComponent.material.renderPrograms[0];
+          gl.uniform4f(
+              program.uniformLocation("u_ColorCycle1"),
+              red,
+              0.0,
+              0.0,
+              0.0
+          );
+
+          gl.uniform4f(
+              program.uniformLocation("u_ColorCycle2"),
+              1.0 - red,
+              0.0,
+              0.0,
+              0.0
+          ); 
     }
 
     onCollisionOverlap(owner) {

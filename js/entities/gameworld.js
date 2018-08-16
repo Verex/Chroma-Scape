@@ -223,7 +223,7 @@ class GameWorld extends Entity {
                         ent.transformComponent.getWorldTranslation(),
                         itr.transformComponent.getWorldTranslation()
                     );
-                    if(d < 2000) {
+                    if(d < 200) {
                         var physicsComponent = itr.getComponent(ComponentID.COMPONENT_PHYSICS);
                         if(physicsComponent.collisionType == type) {
                             if(physicsComponent.aabb) {
