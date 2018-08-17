@@ -102,7 +102,14 @@ class App {
     assets.addShader(this.gl, "Laser-Wall-Shader");
 
     //Post FX Shaders
+    assets.addShader(this.gl, "Copy-Shader");
+    assets.addShader(this.gl, "Chromatic-Abberation-Shader");
     assets.addShader(this.gl, "CRT-Shader");
+    assets.addShader(this.gl, "Bright-Filter-Shader");
+    assets.addShader(this.gl, "Horizontal-Blur-Shader");
+    assets.addShader(this.gl, "Vertical-Blur-Shader");
+    assets.addShader(this.gl, "Combine-Shader");
+    assets.addShader(this.gl, "Viewport-Shader");
 
 
     assets.addMaterial(this.gl, "Ship");
@@ -110,6 +117,7 @@ class App {
     assets.addMaterial(this.gl, "Portal");
     assets.addMaterial(this.gl, "Pillar");
     assets.addMaterial(this.gl, "LaserWall");
+    assets.addMaterial(this.gl, "Viewport");
 
 
     assets.addSound(
@@ -132,6 +140,9 @@ class App {
     );
     this.renderingPipeline.stages.push(
       new PostFXStage(this.gl)
+    );
+    this.renderingPipeline.stages.push(
+      new ScreenFXStage(this.gl)
     );
     // Create game world entity.
     this.gameworld = new Entity.Factory(null).ofType(EntityType.ENTITY_GAMEWORLD);
