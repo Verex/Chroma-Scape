@@ -22,12 +22,13 @@ class RenderingPipeline {
 
     processScene(scene) {
         this.viewport.bind(); //Bind our viewport
+        this.renderingContext.enable(this.renderingContext.DEPTH_TEST);
         var activeCamera = scene.activeCamera;
         if(activeCamera === undefined) return;
         var rootElement = scene.rootNode.ent;
         for(var i = 0; i < this.stages.length; i++) {
             var stage = this.stages[i];
-            stage.render(rootElement, this.viewport, activeCamera);
+            stage.render(rootElement, this.viewport, activeCamera, this);
         }
     }
 }

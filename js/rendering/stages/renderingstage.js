@@ -12,7 +12,7 @@ class RenderingStage {
 
     }
 
-    render(root, viewport, camera) {
+    render(root, viewport, camera, previousStage) {
         this.rootEntity = root;
         var renderFunc = this.renderFunc;
         var recursiveRender = (ent) => {

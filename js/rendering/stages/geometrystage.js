@@ -10,9 +10,14 @@ class GeometryStage extends RenderingStage {
         this.renderTargets[0] = new RenderTarget(ctx, ctx.canvas.width, ctx.canvas.height, true, true); //This is our render target
     }
 
-    render(root, viewport, camera) {
+    get output() {
+        return this.renderTargets[0];
+    }
+
+    render(root, viewport, camera, pipeline) {
         this.renderTargets[0].bind();
         this.renderTargets[0].clear(DARK);
+
         super.delegateRender((ent, program) => {
             if(ent.hasComponent(ComponentID.COMPONENT_MESH)) {
                 var meshComponent = ent.getComponent(ComponentID.COMPONENT_MESH);

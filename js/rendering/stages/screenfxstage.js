@@ -18,7 +18,7 @@ class ScreenFXStage extends RenderingStage {
     }
 
 
-    render(root, viewport, camera) {
+    render(root, viewport, camera, pipeline) {
         this.chromaticAbberationEffect.doEffect(undefined, viewport);
         this.crtEffect.doEffect(this.chromaticAbberationEffect.renderTarget, viewport);
         this.viewportOutput.doEffect(this.crtEffect.renderTarget, viewport); //Render our game

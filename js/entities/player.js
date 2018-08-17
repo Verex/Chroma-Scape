@@ -163,9 +163,13 @@ class Player extends Entity {
     }
     this.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
     this.physicsComponent.acceleration = vec3.fromValues(0, 0, 0);
+    this.ship.physicsComponent.velocity = vec3.fromValues(0, 0, 0);
+    this.ship.transformComponent.absOrigin = vec3.fromValues(0, 0, 0);
+    this.ship.transformComponent.absRotation = vec3.fromValues(0, 0, 0);
+    this.movement = [false, false, false, false];
     this.hasCrashed = true;
     this.getGameWorld().onPlayerCrashed();
-    this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_MENU;
+    this.getGameWorld().gamestate.currentState = GameStates.GAMESTATE_HISCORE;
   }
 
   moveCamera(dt) {

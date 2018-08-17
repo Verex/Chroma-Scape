@@ -3,7 +3,7 @@ class UITextStage extends RenderingStage {
         super(ctx);
     }
 
-    render(root, viewport, camera) {
+    render(root, viewport, camera, pipeline) {
         super.delegateRender((ent) => {
             if(ent.hasComponent(ComponentID.COMPONENT_TEXT)) {
                 var textComponent = ent.getComponent(ComponentID.COMPONENT_TEXT);

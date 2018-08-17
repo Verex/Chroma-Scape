@@ -265,13 +265,15 @@ class GameWorld extends Entity {
         queryCollisionRecursive(this);
         moving.forEach((value, index, array) => {
             collidables.forEach((nValue, nIndex, nArray) => {
-                if(nValue.owner.eid != value.owner.eid) {
-                    if(value.aabb.checkCollision(
-                        nValue.aabb
-                    ) && GlobalVars.getInstance().tickcount > 1) {
-                        value.owner.onCollisionOverlap(nValue);
-                        nValue.owner.onCollisionOverlap(value);
-                        //console.log("COLLISION!");
+                if(nValue && nValue.owner && value && value.owner) {
+                    if(nValue.owner.eid != value.owner.eid) {
+                        if(value.aabb.checkCollision(
+                            nValue.aabb
+                        ) && GlobalVars.getInstance().tickcount > 1) {
+                            value.owner.onCollisionOverlap(nValue);
+                            nValue.owner.onCollisionOverlap(value);
+                            //console.log("COLLISION!");
+                        }
                     }
                 }
             });

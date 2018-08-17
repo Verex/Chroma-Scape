@@ -110,6 +110,7 @@ class App {
     assets.addShader(this.gl, "Vertical-Blur-Shader");
     assets.addShader(this.gl, "Combine-Shader");
     assets.addShader(this.gl, "Viewport-Shader");
+    assets.addShader(this.gl, "DOF-Shader");
 
 
     assets.addMaterial(this.gl, "Ship");

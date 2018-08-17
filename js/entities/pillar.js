@@ -42,6 +42,7 @@ class Pillar extends Entity {
             1.0
         );
     }
+    onCollisionOverlap() {}
     checkForMiss() {
         var position = this.transformComponent.absOrigin,
             playerPosition = this.owner.player.transformComponent.absOrigin;

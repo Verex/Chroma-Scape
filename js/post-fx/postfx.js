@@ -24,6 +24,7 @@ class PostFX {
         }
         if(this.renderTarget !== null) {
             this.renderTarget.bind();
+            this.renderTarget.clear();
         } else {
             this.ctx.bindFramebuffer(this.ctx.FRAMEBUFFER, null);
         }

@@ -36,6 +36,71 @@ class MenuController extends Entity {
             "GAMETITLE",
             65
         );
+
+        this.textComponent.addText(
+            "J - Orange",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.75,
+                GlobalVars.getInstance().clientHeight * 0.35
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "ORANGE",
+            30
+        );
+        this.textComponent.addText(
+            "L - Blue",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.75,
+                GlobalVars.getInstance().clientHeight * 0.55
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "BLUE",
+            30
+        );
+        this.textComponent.addText(
+            "J+L - Purple",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.75,
+                GlobalVars.getInstance().clientHeight * 0.45
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "PURPLE",
+            30
+        );
+        this.textComponent.addText(
+            "Nothing - White",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.75,
+                GlobalVars.getInstance().clientHeight * 0.25
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "WHITE",
+            30
+        );
+        this.textComponent.addText(
+            "Fly through portals by matching their colors!",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.25,
+                GlobalVars.getInstance().clientHeight * 0.35
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "Tooltip",
+            20
+        );
+        this.textComponent.addText(
+            "These are temporary control tooltips",
+            vec2.fromValues(
+                GlobalVars.getInstance().clientWidth * 0.25,
+                GlobalVars.getInstance().clientHeight * 0.40
+            ),
+            Assets.getInstance().getFont("PressStart2P-Regular"),
+            "Lol",
+            20
+        );
+        this.textComponent.setTextColor("ORANGE", 'orange');
+        this.textComponent.setTextColor("BLUE", 'blue');
+        this.textComponent.setTextColor("PURPLE", 'purple');
+        this.textComponent.setTextColor("WHITE", 'white');
     }
 
     onResize(nw, nh) {

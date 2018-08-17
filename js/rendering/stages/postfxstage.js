@@ -21,12 +21,15 @@ class PostFXStage extends RenderingStage {
         this.verticalBlurEffect = new PostFX(ctx, this.renderTargets[0]);
         this.verticalBlurEffect.setEffectShader("Vertical-Blur-Shader");
 
-        this.combineEffect = new PostFX(ctx, this.finalRenderTarget);
+        this.combineEffect = new PostFX(ctx, this.renderTargets[1]);
         this.combineEffect.setEffectShader("Combine-Shader");
+
+        this.DOFEffect = new PostFX(ctx, this.finalRenderTarget);
+        this.DOFEffect.setEffectShader("DOF-Shader");
 
     }
 
-    render(root, viewport, camera) {
+    render(root, viewport, camera, pipeline) {
         viewport.bind();
         this.copyEffect.doEffect(undefined, viewport); //Copy our scene
         this.brightFilterEffect.doEffect(undefined, viewport);
@@ -48,6 +51,8 @@ class PostFXStage extends RenderingStage {
         this.renderingContext.activeTexture(this.renderingContext.TEXTURE0);
 
         this.combineEffect.doEffect(this.originalSceneTarget, viewport);
-        this.combineEffect.renderTarget.bindTexture();
+
+        this.DOFEffect.doEffect(this.combineEffect.renderTarget, viewport);
+        this.DOFEffect.renderTarget.bindTexture();
     }
 }
