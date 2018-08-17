@@ -79,55 +79,38 @@ class Spawner extends Entity {
       difficulty = (this.getGameWorld().gamestate.difficulty / this.getGameWorld().gamestate.maxdifficulty);
 
     var tot = 0;
-    for (var r = 0; r < 10; r++) {
-      var r1 = Math.floor(10 * difficulty), r2 = Math.floor(20 * difficulty),
-        count = Math.randInt(0 + r1, 6 + r2);
 
-      var zStart = this.lastPortal[Math.Z] + (150 * r);
+    var zStart = (Math.ceil(this.lastPortal[Math.Z] / 10) * 10),
+        prePortal = this.history.portals[this.history.portals.length - 2],
+        zEnd = zStart + 700;
 
-      if (this.history.portals.length > 1) {
-        var maxZ = this.history.portals[this.history.portals.length - 2][Math.Z];
-        if (Math.abs((zStart + 100) - maxZ) < 100) {
-          break;
-        }
+    if (prePortal != null) {
+      zEnd = (Math.floor(prePortal[Math.Z] / 10) * 10);
+    }
+
+    var rowCount = Math.floor((zEnd - zStart) / 10) - 5;
+    console.log("Start: ", zStart, " End: ", zEnd, " - ", rowCount );
+
+    var maxRowChance = 12 - (Math.floor(6 * difficulty));
+
+    for (var r = 0; r < rowCount; r++) {
+      if (Math.randomRange(0, maxRowChance) > 1) {
+        continue;
       }
 
-      for (var c = 0; c < count; c++) {
-        var near = false,
-          position = vec3.create();
+      var maxPillarChance = 25 - (Math.floor(10 * difficulty)),
+          pillarZ = zStart + (r * 10) + 5;
 
-        do {
-          near = false;
-          position = vec3.fromValues(
-            Math.randInt(-400, 400),
-            40.5,
-            zStart + Math.randInt(-150, 150)
-          );
+      for (var c = -18; c < 18; c++) {
+        if (Math.randomRange(0, maxPillarChance) > 1) {
+          continue;
+        }
 
-          // Check if too close to portal spawn.
-          for (var m = 1; m < 10; m++) {
-            if (this.history.portals.length - m < 0) continue;
-            var p = this.history.portals[this.history.portals.length - m];
-
-            if (vec3.dist(position, p) < 75 ||
-              Math.abs(position[Math.Z] - p[Math.Z]) < 30) {
-              near = true;
-              break;
-            }
-          }
-
-          var distance = 25 + 100 * (1 - difficulty);
-          for (var m = 1; m < tot; m++) {
-            if (this.history.pillars.length - m < 0) continue;
-            var p = this.history.pillars[this.history.pillars.length - m];
-
-            if (vec3.dist(position, p) < distance) {
-              near = true;
-              break;
-            }
-          }
-
-        } while (near);
+        var position = vec3.fromValues(
+          (c * 10) + 5,
+          40.1,
+          pillarZ
+        );
 
         var pillar = null;
 
@@ -162,6 +145,8 @@ class Spawner extends Entity {
         tot += 1;
       }
     }
+
+    console.log("Total pillars: ", tot);
   }
 
   getNextSpawn() {
