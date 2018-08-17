@@ -9,7 +9,7 @@ class RenderingPipeline {
         this.stages = [];
         this.renderingContext = glContext;
         this.stages[0] = new GeometryStage(this.renderingContext);
-        this.viewport = new Viewport(glContext, 50, 50, glContext.canvas.width - 100, glContext.canvas.height - 100);
+        this.viewport = new Viewport(glContext, 50, 50, glContext.canvas.width, glContext.canvas.height);
     }
 
     onResize() {
@@ -17,7 +17,7 @@ class RenderingPipeline {
             var stage = this.stages[i];
             stage.onResize();
         }
-        this.viewport = new Viewport(this.renderingContext, 50, 50, this.renderingContext.canvas.width - 100, this.renderingContext.canvas.height - 100);
+        this.viewport = new Viewport(this.renderingContext, 50, 50, this.renderingContext.canvas.width, this.renderingContext.canvas.height);
     }
 
     processScene(scene) {

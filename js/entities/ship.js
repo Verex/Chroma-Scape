@@ -323,6 +323,26 @@ class Ship extends Entity {
         rotationAxis = Math.ROLL;
         minInclude = true;
         break;
+      }
+      
+      var usingGamepad = this.owner.inputComponent.gamepad != -1,
+      withinBounds =
+      Math.between(
+        this.angularBounds[rotationAxis].min,
+        this.angularBounds[rotationAxis].max,
+        this.transformComponent.absRotation[rotationAxis],
+        minInclude, maxInclude
+      ) &&
+      Math.between(
+        this.linearBounds[positionAxis].min,
+        this.linearBounds[positionAxis].max,
+        this.transformComponent.absOrigin[positionAxis],
+        minInclude, maxInclude
+      );
+      
+      return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
+    }
+  
     setupMaterial(gl) {
       var color = this.owner.color.serialize();
       var program = this.meshComponent.material.renderPrograms[0];
@@ -354,25 +374,7 @@ class Ship extends Entity {
         this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
         super.tick(dt);
     }
-
-    var usingGamepad = this.owner.inputComponent.gamepad != -1,
-      withinBounds =
-        Math.between(
-          this.angularBounds[rotationAxis].min,
-          this.angularBounds[rotationAxis].max,
-          this.transformComponent.absRotation[rotationAxis],
-          minInclude, maxInclude
-        ) &&
-        Math.between(
-          this.linearBounds[positionAxis].min,
-          this.linearBounds[positionAxis].max,
-          this.transformComponent.absOrigin[positionAxis],
-          minInclude, maxInclude
-        );
-
-    return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
-  }
-
+    
   tick(dt) {
     this.move(dt);
     this.physicsComponent.physicsSimulate(dt);

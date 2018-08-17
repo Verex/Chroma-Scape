@@ -33,7 +33,7 @@ class Viewport {
     bind() {
         this.ctx.viewport(this.x, this.y, this.width, this.height);
     }
-
+    
     render() {
         var primitiveType = this.ctx.TRIANGLES;
         var offset = 0;
