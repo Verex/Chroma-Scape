@@ -16,6 +16,10 @@ class Ship extends Entity {
       Assets.getInstance().getModel("ship")
     );
 
+    this.meshComponent.setMaterial(
+        Assets.getInstance().getMaterial("Ship")
+    );
+
     // Assign physics component parameters.
     this.physicsComponent.collisionType = CollisionType.COLLISION_SOLID;
     this.physicsComponent.maxAngularVelocity = 90;
@@ -274,7 +278,6 @@ class Ship extends Entity {
       }
     } else if (other.owner.type == EntityType.ENTITY_PILLAR) {
       console.log("Crash from pillar. Recycled: ", other.owner.recycled);
-
       this.owner.crash();
     }
   }
@@ -314,26 +317,58 @@ class Ship extends Entity {
         rotationAxis = Math.ROLL;
         minInclude = true;
         break;
+      }
+      
+      var usingGamepad = this.owner.inputComponent.gamepad != -1,
+      withinBounds =
+      Math.between(
+        this.angularBounds[rotationAxis].min,
+        this.angularBounds[rotationAxis].max,
+        this.transformComponent.absRotation[rotationAxis],
+        minInclude, maxInclude
+      ) &&
+      Math.between(
+        this.linearBounds[positionAxis].min,
+        this.linearBounds[positionAxis].max,
+        this.transformComponent.absOrigin[positionAxis],
+        minInclude, maxInclude
+      );
+      
+      return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
+    }
+  
+    setupMaterial(gl) {
+      var color = this.owner.color.serialize();
+      var program = this.meshComponent.material.renderPrograms[0];
+      gl.uniform4f(
+                program.uniformLocation("u_selectionColor"),
+                color[0],
+                color[1],
+                color[2],
+                color[3]
+      );
+
+      // HACK HACK: Thruster color based on time? Must be better way to do this.
+      var cTime = Timer.getInstance().getCurrentTime(),
+        f = cTime / 500;
+        var add = 0.2 * (Math.sin(f) * 0.5 + 0.5);
+        gl.uniform4f(
+          program.uniformLocation("u_thrusterColor"),
+          0.086 + add,
+          0.596 + add,
+          0.886 + add,
+          1.0
+        );
     }
 
-    var usingGamepad = this.owner.inputComponent.gamepad != -1,
-      withinBounds =
-        Math.between(
-          this.angularBounds[rotationAxis].min,
-          this.angularBounds[rotationAxis].max,
-          this.transformComponent.absRotation[rotationAxis],
-          minInclude, maxInclude
-        ) &&
-        Math.between(
-          this.linearBounds[positionAxis].min,
-          this.linearBounds[positionAxis].max,
-          this.transformComponent.absOrigin[positionAxis],
-          minInclude, maxInclude
-        );
-
-    return (!this.owner.movement[opposite] || usingGamepad) && withinBounds;
-  }
-
+    tick(dt) {
+        this.move(dt);
+        this.physicsComponent.physicsSimulate(dt);
+        this.transformComponent.updateTransform();
+        this.physicsComponent.aabb.origin = this.transformComponent.getWorldTranslation();
+        super.tick(dt);
+    }
+    
   tick(dt) {
     this.move(dt);
     this.physicsComponent.physicsSimulate(dt);

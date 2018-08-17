@@ -24,8 +24,24 @@ class Pillar extends Entity {
         this.meshComponent.setModel(
             assets.getModel("pillar")
         );
-    }
 
+        this.meshComponent.setMaterial(
+            assets.getMaterial("Pillar")
+        );
+    }
+    setupMaterial(gl) {
+        var cTime = Timer.getInstance().getCurrentTime() - this.spawnTime,
+            red = (Math.sin(cTime / 500) * 0.5 + 0.5);
+        var program = this.meshComponent.material.renderPrograms[0];
+
+        gl.uniform4f(
+            program.uniformLocation("u_BeaconColor"),
+            red,
+            0.0,
+            0.0,
+            1.0
+        );
+    }
     checkForMiss() {
         var position = this.transformComponent.absOrigin,
             playerPosition = this.owner.player.transformComponent.absOrigin;
@@ -61,9 +77,6 @@ class Pillar extends Entity {
         super.tick(dt);
     }
 
-    onCollisionOverlap(owner) {
-
-    }
 };
 EntityType.ENTITY_PILLAR.construction = (owner) => {
     return new Pillar(

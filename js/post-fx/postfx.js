@@ -1,25 +1,46 @@
-class RenderPass {
-    constructor(glContext, vtx, fgmt, name) {
-        this.ctx = glContext;
-        this.name = name;
-        this.passProgram = new Program.Builder(glContext).
-            withShaderSource(vtx, glContext.VERTEX_SHADER, name + "-vtx").
-            withShaderSource(fgmt, glContext.FRAGMENT_SHADER, name + "-fgmt").
-            build();
+class PostFX {
+    constructor(ctx, target) {
+        this.ctx = ctx;
+        this.renderTarget = target;
     }
 
-    setUniforms() {
-
+    setEffectShader(name) {
+        var shader = Assets.getInstance().getShader(name);
+        var programBuilder = new Program.Builder(this.ctx);
+        if(shader.Vertex !== undefined) {
+            programBuilder.withShader(name + "-vtx", shader.Vertex);
+        }
+        if(shader.Fragment !== undefined) {
+            programBuilder.withShader(name + "-fgmt", shader.Fragment);
+        }
+        this.program = programBuilder.build();
     }
 
-    doPass(viewport) {
-        this.passProgram.activate();
+    doEffect(src, viewport) {
+        this.program.activate();
 
-        var positionLocation = this.passProgram.attributeLocation("a_position");
-        var texcoordLocation = this.passProgram.attributeLocation("a_texCoord");
+        if(src !== undefined && src !== null) {
+            src.bindTexture();
+        }
+        if(this.renderTarget !== null) {
+            this.renderTarget.bind();
+        } else {
+            this.ctx.bindFramebuffer(this.ctx.FRAMEBUFFER, null);
+        }
+        var positionLocation = this.program.attributeLocation("a_position");
+        var texcoordLocation = this.program.attributeLocation("a_texCoord");
+        var screenSizeLocation = this.program.uniformLocation("u_screenSize");
+        var timeLocation = this.program.uniformLocation("u_time");
+        if(timeLocation !== undefined) {
+            this.ctx.uniform1f(
+                timeLocation,
+                GlobalVars.getInstance().curtime
+            );
+        }
 
-        this.setUniforms();
+        this.ctx.uniform2f(screenSizeLocation, viewport.width, viewport.height);
 
+        
         this.ctx.enableVertexAttribArray(positionLocation);
 
         // Bind the position buffer.

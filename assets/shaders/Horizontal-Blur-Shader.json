@@ -1,0 +1,19 @@
+
+{
+    "Metadata":
+    {
+        "Author": "Jake Thornton",
+        "Version": "0.0.1",
+        "Name": "CRT-Shader"
+    },
+    "Fragment":
+    {
+        "name":"blur-fragment",
+        "type": "glsl"
+    },
+    "Vertex":
+    {
+        "name":"horizontal-blur-vertex",
+        "type":"glsl"
+    }
+}

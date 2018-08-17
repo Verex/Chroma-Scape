@@ -163,7 +163,10 @@ class Program {
                 this.ctx = glContext;
                 this.shaders = new Map();
             }
-            withShader(src, type, name) {
+            withShader(name, shader) {
+                this.shaders.set(name, shader);
+            }
+            withShaderSource(src, type, name) {
                 this.shaders.set(name, new Shader(
                     this.ctx,
                     Files.getInstance().loadFile(src),
