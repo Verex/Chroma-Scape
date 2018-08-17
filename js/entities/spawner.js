@@ -133,7 +133,6 @@ class Spawner extends Entity {
 
         // Check if we can recycle any pillars.
         if (this.recycledPillars.length > 0) {
-          console.log("Pillar recycled.");
 
           // Get first pillar.
           pillar = this.recycledPillars.shift();
@@ -144,8 +143,6 @@ class Spawner extends Entity {
           // Pillar is done being recycled.
           pillar.recycled = false;
         } else {
-          console.log("New pillar spawned.");
-
           // Spawn new pillar.
           pillar = this.spawn(EntityType.ENTITY_PILLAR, position);
 
@@ -172,7 +169,7 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
       difficulty = (this.getGameWorld().gamestate.difficulty / this.getGameWorld().gamestate.maxdifficulty);
 
-    return time + (this.firstPortal ? 4000 - (3700 * difficulty) : 0);
+    return time + (this.firstPortal ? 1000 : 0);
   }
 
   shouldSpawn() {
@@ -180,8 +177,9 @@ class Spawner extends Entity {
     var time = Timer.getInstance().getCurrentTime(),
       player = this.owner.player;
 
-    // Check if we are past next spawn time.
-    if (!player.hasCrashed && Math.abs(player.transformComponent.absOrigin[Math.Z] - this.lastPortal[Math.Z]) < 7500) {
+    // Return true if we have passed the alloted spawn time.
+    if (this.nextSpawnTime < time && !player.hasCrashed 
+      && Math.abs(player.transformComponent.absOrigin[Math.Z] - this.lastPortal[Math.Z]) < 7000) {
       return true;
     }
 
