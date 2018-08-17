@@ -22,7 +22,8 @@ class Gamestate {
         this.onGamestateChanged = [];
         //TODO(Jake): This needs to start accounting for the time elapsed since THE GAME STARTED!!!
         this.difficultyCurve = (time) => {
-            return Math.pow(1.000005, time) - 1;
+            return (0.000000000003 * Math.pow(time, 2)) + (Math.sin(0.00001 * time));
+            //return Math.pow(1.000005, time) - 1;
         }; //Difficulty curve mapping time to difficulty
     }
     set currentState(state) {

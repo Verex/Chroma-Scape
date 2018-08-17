@@ -30,7 +30,7 @@ class Ship extends Entity {
 
     // Define linear boundaries.
     this.linearBounds = {};
-    this.linearBounds[Math.X] = { min: -80, max: 80 };
+    this.linearBounds[Math.X] = { min: -177, max: 177 };
     this.linearBounds[Math.Y] = { min: 1, max: 60 };
     this.linearBounds[Math.Z] = { min: 0, max: 0 };
 
@@ -94,9 +94,6 @@ class Ship extends Entity {
         }
       } else if (!boostBtnPressed) {
         this.boostPressed = false;
-
-        // Reset boost time.
-        this.lastBoostTime = 0;
       }
 
       var horizontalDirection = MoveDirection.LEFT,
@@ -167,9 +164,6 @@ class Ship extends Entity {
         }
       } else if (!boostBtnPressed) {
         this.boostPressed = false;
-
-        // Reset boost time.
-        this.lastBoostTime = 0;
       }
 
       /*
@@ -228,7 +222,7 @@ class Ship extends Entity {
       var shouldStop = true;
 
       // Check if we should apply horizontal boost.
-      if (Math.abs(hScale) > 0.4) {
+      if (Math.abs(hScale) > 0.35) {
 
         // Add velocity in horizontal direction.
         this.physicsComponent.velocity[Math.X] += -this.boostVelocity * (hScale / Math.abs(hScale));
@@ -238,7 +232,7 @@ class Ship extends Entity {
       }
 
       // Check if we should apply vertical boost.
-      if (Math.abs(vScale) > 0.4) {
+      if (Math.abs(vScale) > 0.35) {
         // Add velocity in vertical direction.
         this.physicsComponent.velocity[Math.Y] += this.boostVelocity * (vScale / Math.abs(vScale));
 

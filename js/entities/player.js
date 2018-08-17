@@ -32,7 +32,7 @@ class Player extends Entity {
     // Assign movement control key codes.
 
     this.gpSensitivity = 0.80;
-    this.gpInvertedY = true;
+    this.gpInvertedY = false;
 
     // Add components.
     this.componentFactory.construct(ComponentID.COMPONENT_TRANSFORM);
